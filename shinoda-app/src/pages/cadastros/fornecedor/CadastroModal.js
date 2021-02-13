@@ -65,10 +65,7 @@ export default class CadastroModal extends Component {
                 cnpj: this.state.cnpj
               })
               .then(async function () {
-                alert('CADASTRADO COM SUCESSO');
-                this.setState({
-                    modal: !this.state.modal
-                });
+                alert('CADASTRADO COM SUCESSO');;
               })
               .catch(async function (error) {
                 alert('ALGO DE ERRADO NAO ESTA CERTO \n' + error);
