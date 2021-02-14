@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MDBDataTable, MDBBtn, MDBIcon, MDBPopoverHeader, MDBPopoverBody, MDBPopover } from 'mdbreact';
+import { MDBDataTable, MDBBtn, MDBIcon, MDBPopoverHeader, MDBPopoverBody, MDBPopover, MDBModal, MDBModalBody, MDBInput, MDBModalHeader } from 'mdbreact';
 
 import axios from 'axios'
 
@@ -45,23 +45,75 @@ export default class DatatablePage extends Component{
               }
             ],
             data: []
-        }
+        },
+        dataInputs: {
+        },
     }
 
-    deletar = (id) => {
-        axios.delete('http://localhost:3333/suppliers/:',{
+    deletar = async (id) => {
+        await axios.delete('http://localhost:3333/suppliers/:',{
             data : {id: id}
         })
-        window.location.reload();
+    window.location.reload()
     }
 
-    cancelar = () => {
-        window.location.reload();
+    atualziar = async (id) => {
+        let aviso = 'Favor verificar os campos:'
+        let obj = Object.entries(this.state.dataInputs)
+        console.log(obj)
+        for(let i = 0; i < 4;i++){
+            for(let k = 0; k < 2; k++){
+                if(obj[i][k] === ''){
+                    aviso += '\n' + obj[i][0]
+                }
+            }
+        }
+        if (aviso !== 'Favor verificar os campos:'){
+            alert(aviso)
+        } else {
+            axios.put('http://localhost:3333/suppliers/:', {
+                data: {
+                    id: 36,
+                    nomeFantasia: this.state.dataInputs.nomeFantasia,
+                    razaoSocial: this.state.dataInputs.razaoSocial,
+                    endereco: this.state.dataInputs.endereco,
+                    cnpj: this.state.dataInputs.cnpj
+                },            
+            })
+            .then(async function () {
+            alert('Atualizado com Sucesso');;
+            })
+            .catch(async function (error) {
+            alert('ALGO DE ERRADO NAO ESTA CERTO \n' + error);
+            });
+            window.location.reload();
+        }
+    }
+    editar = async (id) => {
+        this.toggle()
+        let data = []
+        await this.state.data.rows.map(dados => {
+            if(dados.id === id){
+                data = {
+                    id: dados.id,
+                    razaoSocial: dados.razaoSocial,
+                    nomeFantasia: dados.nomeFantasia,
+                    endereco: dados.endereco,
+                    cnpj: dados.cnpj
+                }
+            }
+        })
+        this.setState({dataInputs: data})
+        console.log("data:",data)
+        console.log("estado:",this.state.dataInputs)
+        return (data)
     }
 
-    editar = (id) => {
-        alert(id)
-    }
+    toggle = () => {
+        this.setState({
+            modal: !this.state.modal
+        });
+    };
     
     async componentDidMount() {
 
@@ -97,7 +149,7 @@ export default class DatatablePage extends Component{
                                 <MDBIcon icon="check" size = "1x" />
                             </MDBBtn>
 
-                            <MDBBtn color = "danger" onClick={this.cancelar} >
+                            <MDBBtn color = "danger" onClick={() => window.location.reload()} >
                                 <MDBIcon icon="times" size = "1x" />
                             </MDBBtn>
 
@@ -126,8 +178,45 @@ export default class DatatablePage extends Component{
               striped
               bordered
               data={this.state.data}
-            />  
-            {console.log("componente")}
+            />
+            <MDBModal
+                isOpen={this.state.modal}
+                toggle={this.editar}
+                size="md"
+                cascading
+            >
+                <MDBModalHeader
+                    toggle={this.editar}
+                    titleClass="d-inline title"
+                    className="text-center light-blue darken-3 white-text"
+                >
+                    <MDBIcon icon="dolly" />
+                        <>   Editar cadastro do Fornecedor</>
+                    </MDBModalHeader>
+
+                    <MDBModalBody>
+                        <MDBInput label="Nome Fantasia"  onChange = {this.handleChangeNomeFantasia} />
+                        <MDBInput label="Razão Social"  onChange = {this.handleChangeRazaoSocial} />
+                        <MDBInput label="Endereço"  onChange = {this.handleChangeEndereco}  />
+                        <MDBInput label="CNPJ"  onChange = {this.handleChangeCnpj} />
+                        <div className="text-center mt-1-half">
+                            <MDBBtn
+                                color="info"
+                                className="mb-2"
+                                onClick={this.atualziar}
+                            >
+                                Atualizar
+                            </MDBBtn>
+                            <MDBBtn
+                                color="danger"
+                                className="mb-2"
+                                onClick={() => window.location.reload()}
+                            >
+                                Cancelar
+                            </MDBBtn>
+                        </div>
+                    </MDBModalBody>
+            </MDBModal>
             </div>
             
             

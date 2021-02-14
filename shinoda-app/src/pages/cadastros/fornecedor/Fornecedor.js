@@ -1,6 +1,6 @@
 import {Component} from 'react'
 import Tabela from './Tabela'
-import CadastroModal from './CadastroModal'
+import Modal from './CadastroModal'
 
 export default class Fornecedor extends Component {
 
@@ -11,7 +11,7 @@ export default class Fornecedor extends Component {
 
                 <Tabela />
 
-                <CadastroModal />
+                <Modal />
 
             </div>
         )

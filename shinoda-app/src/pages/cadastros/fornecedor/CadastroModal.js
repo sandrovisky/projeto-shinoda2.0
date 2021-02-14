@@ -5,7 +5,7 @@ import { MDBInput, MDBBtn, MDBModal, MDBModalHeader, MDBModalBody, MDBIcon } fro
 
 
 
-export default class CadastroModal extends Component {
+export default class Modal extends Component {
 
     constructor(){
         super()
@@ -24,10 +24,6 @@ export default class CadastroModal extends Component {
         });
     };
     
-    logValue = value => {
-        console.log(value);
-    };
-
     handleChangeNomeFantasia = (e) => {
         this.setState({nomeFantasia: e.target.value});
     }
@@ -48,7 +44,7 @@ export default class CadastroModal extends Component {
         let aviso = 'Favor verificar os campos:'
         let obj = Object.entries(this.state)
         console.log(obj)
-        for(let i = 0; i < 3;i++){
+        for(let i = 0; i < 4;i++){
             for(let k = 0; k < 2; k++){
                 if(obj[i][k] === ''){
                     aviso += '\n' + obj[i][0]
