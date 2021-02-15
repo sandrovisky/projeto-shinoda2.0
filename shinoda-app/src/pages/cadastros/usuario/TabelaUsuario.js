@@ -11,37 +11,17 @@ export default class DatatablePage extends Component{
                 label: 'id',
                 field: 'id',
                 sort: 'asc',
-                width: 150
               },
               {
-                label: 'Nome Fantasia',
-                field: 'nomeFantasia',
+                label: 'Usuario',
+                field: 'usuario',
                 sort: 'asc',
-                width: 270
-              },
-              {
-                label: 'Razão Social',
-                field: 'razaoSocial',
-                sort: 'asc',
-                width: 200
-              },
-              {
-                label: 'Endereço',
-                field: 'endereco',
-                sort: 'asc',
-                width: 100
-              },
-              {
-                label: 'CNPJ',
-                field: 'cnpj',
-                sort: 'asc',
-                width: 150
               },
               {
                 label: 'Ações',
                 field: 'action',
                 sort: 'asc',
-                width: 150
+                
               }
             ],
             data: []
@@ -50,18 +30,41 @@ export default class DatatablePage extends Component{
         },
     }
 
+    handleChangeUsuario = (e) => {
+        this.setState(prevState => {
+            let dataInputs = Object.assign({}, prevState.dataInputs); 
+            dataInputs.usuario = e.target.value                            
+            return { dataInputs };                      
+        })
+    }
+
+    handleChangeSenha = (e) => {
+        this.setState(prevState => {
+            let dataInputs = Object.assign({}, prevState.dataInputs); 
+            dataInputs.senha = e.target.value                            
+            return { dataInputs };                      
+        })
+    }
+
+    handleChangeSenha2 = (e) => {
+        this.setState(prevState => {
+            let dataInputs = Object.assign({}, prevState.dataInputs); 
+            dataInputs.senha2 = e.target.value                            
+            return { dataInputs };                      
+        })
+    }
+
     deletar = async (id) => {
-        await axios.delete('http://localhost:3333/suppliers/:',{
+        await axios.delete('http://localhost:3333/users/:',{
             data : {id: id}
         })
     window.location.reload()
     }
 
-    atualziar = async (id) => {
+    atualizar = async (id) => {
         let aviso = 'Favor verificar os campos:'
-        let obj = Object.entries(this.state.dataInputs)
-        console.log(obj)
-        for(let i = 0; i < 4;i++){
+        let obj = Object.entries(this.state.dataInputs)        
+        for(let i = 0; i < 1;i++){
             for(let k = 0; k < 2; k++){
                 if(obj[i][k] === ''){
                     aviso += '\n' + obj[i][0]
@@ -70,25 +73,19 @@ export default class DatatablePage extends Component{
         }
         if (aviso !== 'Favor verificar os campos:'){
             alert(aviso)
-        } else {
-            axios.put('http://localhost:3333/suppliers/:', {
-                data: {
-                    id: 36,
-                    nomeFantasia: this.state.dataInputs.nomeFantasia,
-                    razaoSocial: this.state.dataInputs.razaoSocial,
-                    endereco: this.state.dataInputs.endereco,
-                    cnpj: this.state.dataInputs.cnpj
-                },            
+        } else if (this.state.dataInputs.senha !== this.state.dataInputs.senha2 || this.state.dataInputs.senha2 === ""){
+            alert("As senhas não coincidem")
+        }else {
+            await axios.put('http://localhost:3333/users/:',{
+                id: this.state.dataInputs.id, 
+                usuario: this.state.dataInputs.usuario, 
+                senha: this.state.dataInputs.senha,          
             })
-            .then(async function () {
-            alert('Atualizado com Sucesso');;
-            })
-            .catch(async function (error) {
-            alert('ALGO DE ERRADO NAO ESTA CERTO \n' + error);
-            });
-            window.location.reload();
+            window.location.reload()
         }
+    
     }
+
     editar = async (id) => {
         this.toggle()
         let data = []
@@ -96,17 +93,13 @@ export default class DatatablePage extends Component{
             if(dados.id === id){
                 data = {
                     id: dados.id,
-                    razaoSocial: dados.razaoSocial,
-                    nomeFantasia: dados.nomeFantasia,
-                    endereco: dados.endereco,
-                    cnpj: dados.cnpj
+                    usuario: dados.usuario,
+                    senha: "",
                 }
             }
         })
         this.setState({dataInputs: data})
-        console.log("data:",data)
-        console.log("estado:",this.state.dataInputs)
-        return (data)
+        console.log(this.state.dataInputs)
     }
 
     toggle = () => {
@@ -118,7 +111,7 @@ export default class DatatablePage extends Component{
     async componentDidMount() {
 
         const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/suppliers'
+            baseURL: 'http://localhost:3333/users'
         }); 
 
         const response =  await cadastros.get('');
@@ -127,10 +120,7 @@ export default class DatatablePage extends Component{
 
         response.data.map(dados => rows.push({
             id: dados.id,
-            nomeFantasia: dados.nomeFantasia,
-            razaoSocial: dados.razaoSocial,
-            endereco: dados.endereco,
-            cnpj: dados.cnpj,
+            usuario: dados.usuario,
             action: <div>
                 <MDBPopover
                     placement="left"
@@ -173,11 +163,12 @@ export default class DatatablePage extends Component{
     render(){
         
         return (
-            <div>
+            <div >
               <MDBDataTable responsive
               striped
               bordered
               data={this.state.data}
+              style = {{fontSize: "20px", textAlign: "center"}}
             />
             <MDBModal
                 isOpen={this.state.modal}
@@ -188,22 +179,22 @@ export default class DatatablePage extends Component{
                 <MDBModalHeader
                     toggle={this.editar}
                     titleClass="d-inline title"
-                    className="text-center light-blue darken-3 white-text"
+                    className="text-center black darken-3 text  white-text"
                 >
-                    <MDBIcon icon="dolly" />
-                        <>   Editar cadastro do Fornecedor</>
+                    
+                        <>   Editar cadastro de Usuario</>
                     </MDBModalHeader>
 
                     <MDBModalBody>
-                        <MDBInput label="Nome Fantasia"  onChange = {this.handleChangeNomeFantasia} />
-                        <MDBInput label="Razão Social"  onChange = {this.handleChangeRazaoSocial} />
-                        <MDBInput label="Endereço"  onChange = {this.handleChangeEndereco}  />
-                        <MDBInput label="CNPJ"  onChange = {this.handleChangeCnpj} />
+                        <MDBInput label="Usuario" value = {this.state.dataInputs.usuario} onChange = {this.handleChangeUsuario} />
+                        <MDBInput type = "password" label="Senha" value = {this.state.dataInputs.senha} onChange = {this.handleChangeSenha} />
+                        <MDBInput type = "password" label="Confirme a senha" value = {this.state.dataInputs.senha2}  onChange = {this.handleChangeSenha2} />
+                        
                         <div className="text-center mt-1-half">
                             <MDBBtn
                                 color="info"
                                 className="mb-2"
-                                onClick={this.atualziar}
+                                onClick={this.atualizar}
                             >
                                 Atualizar
                             </MDBBtn>

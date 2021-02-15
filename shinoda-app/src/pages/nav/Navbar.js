@@ -45,8 +45,7 @@ export default class Navbar extends Component {
 
                                     <MDBNavbarNav left>
 
-                                        
-                                        <MDBNavItem active>          
+                                         <MDBNavItem active>          
                                                                    
                                             <MDBNavLink onClick = {this.onClickHome} to="/">Home</MDBNavLink>
                                         
@@ -57,14 +56,6 @@ export default class Navbar extends Component {
                                         
                                             <MDBNavLink onClick = {this.onClickCadastro} to="cadastros">Cadastros</MDBNavLink>
                                         
-                                        </MDBNavItem>
-
-                                        <MDBNavItem>
-                                            <MDBNavLink to="#">Pricing</MDBNavLink>
-                                        </MDBNavItem>
-
-                                        <MDBNavItem>
-                                            <MDBNavLink to="#">Options</MDBNavLink>
                                         </MDBNavItem>
 
                                     </MDBNavbarNav>

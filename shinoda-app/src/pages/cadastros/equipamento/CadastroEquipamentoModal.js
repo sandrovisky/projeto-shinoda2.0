@@ -10,11 +10,10 @@ export default class Modal extends Component {
     constructor(){
         super()
         this.state = {
-            nomeFantasia: '',
-            razaoSocial: '',
-            endereco: '',
-            cnpj: '',
-            modal: false
+            tipo: '',
+            tag: '',
+            nome: '',
+            capacidade: ''
         }
     }
     
@@ -24,23 +23,23 @@ export default class Modal extends Component {
         });
     };
     
-    handleChangeNomeFantasia = (e) => {
-        this.setState({nomeFantasia: e.target.value});
+    handleChangeTipo = (e) => {
+        this.setState({tipo: e.target.value});
     }
 
-    handleChangeCnpj = (e) => {
-        this.setState({cnpj: e.target.value});
+    handleChangeTag = (e) => {
+        this.setState({tag: e.target.value});
     }
 
-    handleChangeRazaoSocial = (e) => {
-        this.setState({razaoSocial: e.target.value});
+    handleChangeNome = (e) => {
+        this.setState({nome: e.target.value});
     }
 
-    handleChangeEndereco = (e) => {
-        this.setState({endereco: e.target.value});
+    handleChangeCapacidade = (e) => {
+        this.setState({capacidade: e.target.value});
     }
  
-    cadastrar = () => {
+    cadastrar = async () => {
         let aviso = 'Favor verificar os campos:'
         let obj = Object.entries(this.state)
         console.log(obj)
@@ -54,19 +53,13 @@ export default class Modal extends Component {
         if (aviso !== 'Favor verificar os campos:'){
             alert(aviso)
         } else {
-            axios.post('http://localhost:3333/suppliers', {
-                nomeFantasia: this.state.nomeFantasia,
-                razaoSocial: this.state.razaoSocial,
-                endereco: this.state.endereco,
-                cnpj: this.state.cnpj
-              })
-              .then(async function () {
-                alert('CADASTRADO COM SUCESSO');;
-              })
-              .catch(async function (error) {
-                alert('ALGO DE ERRADO NAO ESTA CERTO \n' + error);
-              });
-              window.location.reload();
+            await axios.post('http://localhost:3333/users', {
+                tipo: this.state.tipo,
+                tag: this.state.tag,
+                nome: this.state.nome,
+                capacidade: this.state.capacidade
+                })
+            window.location.reload();
         }
     }
 
@@ -78,7 +71,7 @@ export default class Modal extends Component {
             <div >                
 
                 <MDBBtn onClick={this.toggle} className="mx-auto">
-                    Novo Fornecedor
+                    Cadastrar Equipamento
                 </MDBBtn>
                 <MDBModal
                     isOpen={this.state.modal}
@@ -89,17 +82,17 @@ export default class Modal extends Component {
                     <MDBModalHeader
                         toggle={this.toggle}
                         titleClass="d-inline title"
-                        className="text-center light-blue darken-3 white-text"
+                        className="text-center black darken-3 white-text"
                     >
-                        <MDBIcon icon="dolly" />
-                        <>   Cadastro de Fornecedor</>
+                        
+                        <>   Cadastro de Usuario</>
                     </MDBModalHeader>
 
                     <MDBModalBody>
-                        <MDBInput label="Nome Fantasia" onChange = {this.handleChangeNomeFantasia} />
-                        <MDBInput label="Razão Social"  onChange = {this.handleChangeRazaoSocial} />
-                        <MDBInput label="Endereço" onChange = {this.handleChangeEndereco}  />
-                        <MDBInput label="CNPJ"  onChange = {this.handleChangeCnpj} />
+                        <MDBInput label="Tipo" onChange = {this.handleChangeTipo} />
+                        <MDBInput label="Tag"  onChange = {this.handleChangeTag} />
+                        <MDBInput label="Nome" onChange = {this.handleChangeNome}  />
+                        <MDBInput label="Capacidade" onChange = {this.handleChangeCapacidade}  />
                         <div className="text-center mt-1-half">
                             <MDBBtn
                                 color="info"
