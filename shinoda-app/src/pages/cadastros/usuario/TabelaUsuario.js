@@ -54,17 +54,10 @@ export default class DatatablePage extends Component{
         })
     }
 
-    deletar = async (id) => {
-        await axios.delete('http://localhost:3333/users/:',{
-            data : {id: id}
-        })
-    window.location.reload()
-    }
-
     atualizar = async (id) => {
         let aviso = 'Favor verificar os campos:'
         let obj = Object.entries(this.state.dataInputs)        
-        for(let i = 0; i < 1;i++){
+        for(let i = 0; i < 3;i++){
             for(let k = 0; k < 2; k++){
                 if(obj[i][k] === ''){
                     aviso += '\n' + obj[i][0]
@@ -78,12 +71,10 @@ export default class DatatablePage extends Component{
         }else {
             await axios.put('http://localhost:3333/users/:',{
                 id: this.state.dataInputs.id, 
-                usuario: this.state.dataInputs.usuario, 
                 senha: this.state.dataInputs.senha,          
             })
             window.location.reload()
-        }
-    
+        }    
     }
 
     editar = async (id) => {
@@ -121,32 +112,8 @@ export default class DatatablePage extends Component{
         response.data.map(dados => rows.push({
             id: dados.id,
             usuario: dados.usuario,
-            action: <div>
-                <MDBPopover
-                    placement="left"
-                    popover
-                    clickable 
-                    id="popper1"
-                >
-                    <MDBBtn color = "danger" >
-                        <MDBIcon icon="trash-alt" size = "1x" />
-                    </MDBBtn>
-                    <div>
-                        <MDBPopoverHeader><strong>Confirmar exclusão</strong></MDBPopoverHeader>
-                        <MDBPopoverBody>
-
-                            <MDBBtn color = "success" onClick={(e) => this.deletar(dados.id)}>
-                                <MDBIcon icon="check" size = "1x" />
-                            </MDBBtn>
-
-                            <MDBBtn color = "danger" onClick={() => window.location.reload()} >
-                                <MDBIcon icon="times" size = "1x" />
-                            </MDBBtn>
-
-                        </MDBPopoverBody>
-                    </div>
-                </MDBPopover>
-                
+            action: 
+            <div>                
                 <MDBBtn color = "warning" onClick={(e) => this.editar(dados.id)}>
                     <MDBIcon icon="pencil-alt" size = "1x" />
                 </MDBBtn>
@@ -186,7 +153,7 @@ export default class DatatablePage extends Component{
                     </MDBModalHeader>
 
                     <MDBModalBody>
-                        <MDBInput label="Usuario" value = {this.state.dataInputs.usuario} onChange = {this.handleChangeUsuario} />
+                        <MDBInput label="Usuario" value = {this.state.dataInputs.usuario} />
                         <MDBInput type = "password" label="Senha" value = {this.state.dataInputs.senha} onChange = {this.handleChangeSenha} />
                         <MDBInput type = "password" label="Confirme a senha" value = {this.state.dataInputs.senha2}  onChange = {this.handleChangeSenha2} />
                         

@@ -12,12 +12,12 @@ export default class Cadastros extends Component {
       return (        
         <div className="d-flex justify-content-around" style = {{padding: "0em 2em 2em 2em", borderRadius: "10px", border: "2px solid", borderColor: "black", margin: "5em 3em 0 3em", textAlign: 'center'}}>
             
-        <MDBContainer>
+        <MDBContainer className = "container-fluid" >
         <h1>Cadastros</h1>
-        <MDBRow>
+        <MDBRow >
 
-            <MDBCol style = {{textAlignLast: "center"}}>
-                <div className="p-2 col-example text-left">
+            
+                <div className="p-2 col-md-3 text-left">
                     <div>
                         <Link to = "/cadastros/equipamento">
                             <MDBIcon icon="hammer" size= "10x" />
@@ -26,7 +26,7 @@ export default class Cadastros extends Component {
                     <label >Cadastro de Equipamento</label>
                 </div>
 
-                <div className="p-2 col-example text-left">
+                <div className="p-2 col-md-3 text-left">
                     <div>
                         <Link to = "/cadastros/fornecedor">
                             <MDBIcon icon="dolly" size= "10x" />
@@ -34,10 +34,10 @@ export default class Cadastros extends Component {
                     </div>                    
                     <label htmlFor="icoTanque">Cadastro de Fornecedor</label>
                 </div>
-            </MDBCol>
+            {/* </MDBCol>
 
-            <MDBCol style = {{textAlignLast: "center"}}>
-                <div className="p-2 col-example text-left">
+            <MDBCol style = {{textAlignLast: "center"}}> */}
+                <div className="p-2 col-md-3 text-left">
                     <div>
                         <Link to = "/cadastros/usuario" >
                             <MDBIcon icon="user-plus" size= "10x" />
@@ -46,7 +46,7 @@ export default class Cadastros extends Component {
                     <label htmlFor="icoTanque">Cadastro de Usuário</label>
                 </div>
 
-                <div className="p-2 col-example text-left">
+                <div className="p-2 col-md-3 text-left">
                     <div>
                         <Link to = "/cadastros/produto">
                             <MDBIcon icon="plus-circle" size= "10x" />
@@ -54,7 +54,7 @@ export default class Cadastros extends Component {
                     </div>                    
                     <label >Cadastro de Produto</label>
                 </div>
-            </MDBCol>
+            
 
         </MDBRow>
         </MDBContainer>           

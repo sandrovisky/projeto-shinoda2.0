@@ -53,7 +53,7 @@ export default class Modal extends Component {
         if (aviso !== 'Favor verificar os campos:'){
             alert(aviso)
         } else {
-            await axios.post('http://localhost:3333/users', {
+            await axios.post('http://localhost:3333/equipment', {
                 tipo: this.state.tipo,
                 tag: this.state.tag,
                 nome: this.state.nome,
@@ -85,7 +85,7 @@ export default class Modal extends Component {
                         className="text-center black darken-3 white-text"
                     >
                         
-                        <>   Cadastro de Usuario</>
+                        <>   Cadastro de Equipamento</>
                     </MDBModalHeader>
 
                     <MDBModalBody>

@@ -87,7 +87,7 @@ export default class DatatablePage extends Component{
     atualizar = async (id) => {
         let aviso = 'Favor verificar os campos:'
         let obj = Object.entries(this.state.dataInputs)        
-        for(let i = 0; i < 1;i++){
+        for(let i = 0; i < 5;i++){
             for(let k = 0; k < 2; k++){
                 if(obj[i][k] === ''){
                     aviso += '\n' + obj[i][0]

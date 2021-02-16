@@ -36,6 +36,12 @@ export default class Modal extends Component {
     }
  
     cadastrar = async () => {
+
+        const response = await axios.get('http://localhost:3333/users/:',{
+            params : {usuario: this.state.usuario}
+
+        })
+        console.log(response.data)
         let aviso = 'Favor verificar os campos:'
         let obj = Object.entries(this.state)
         console.log(obj)
@@ -48,6 +54,8 @@ export default class Modal extends Component {
         }
         if (aviso !== 'Favor verificar os campos:'){
             alert(aviso)
+        } else if (response.data !== null) {
+            alert("Usuario ja cadastrado")
         } else if (this.state.senha !== this.state.senha2){
             alert("As senhas não coincidem")
         }else {
