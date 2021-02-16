@@ -17,31 +17,39 @@ export default class Modal extends Component {
         }
     }
     
+    //Função responsavel por abertura e fechamento do modal
     toggle = () => {
         this.setState({
             modal: !this.state.modal
         });
     };
     
+    //Função que salva no state a senha inserido no modal de cadastro de novo usuario
     handleChangeSenha = (e) => {
         this.setState({senha: e.target.value});
     }
 
+    //Função que salva no state a senha2, usada para confirmar se senhas coincidem, inserido no modal de cadastro de novo usuario
     handleChangeSenha2 = (e) => {
         this.setState({senha2: e.target.value});
     }
 
+    //Função que salva no state o usuario inserido no modal de cadastro de novo usuario
     handleChangeUsuario = (e) => {
         this.setState({usuario: e.target.value});
     }
  
+    //Função que vai cadastrar um novo usuario no banco de dados
     cadastrar = async () => {
 
+        //constante que sera usada para verificar se ja existe um mesmo usuario cadastrado
         const response = await axios.get('http://localhost:3333/users/:',{
             params : {usuario: this.state.usuario}
 
         })
         console.log(response.data)
+        
+        //verifica se os campos estao preenchidos
         let aviso = 'Favor verificar os campos:'
         let obj = Object.entries(this.state)
         console.log(obj)
@@ -54,6 +62,7 @@ export default class Modal extends Component {
         }
         if (aviso !== 'Favor verificar os campos:'){
             alert(aviso)
+        //--------------------------------------------   
         } else if (response.data !== null) {
             alert("Usuario ja cadastrado")
         } else if (this.state.senha !== this.state.senha2){
@@ -62,7 +71,16 @@ export default class Modal extends Component {
             await axios.post('http://localhost:3333/users', {
                 usuario: this.state.usuario,
                 senha: this.state.senha
-                })
+            })
+            .then(async function () {
+                alert('Cadastrado com sucesso');
+            })
+            .catch(function (error) {
+                if (error.response) {
+                    alert("ERRO \n" + error.response.data.message);
+                    console.log(error.response);
+                    console.log(error.response);
+                }})
             window.location.reload();
         }
     }

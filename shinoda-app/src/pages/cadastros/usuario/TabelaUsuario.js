@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MDBDataTable, MDBBtn, MDBIcon, MDBPopoverHeader, MDBPopoverBody, MDBPopover, MDBModal, MDBModalBody, MDBInput, MDBModalHeader } from 'mdbreact';
+import { MDBDataTable, MDBBtn, MDBIcon, MDBModal, MDBModalBody, MDBInput, MDBModalHeader } from 'mdbreact';
 
 import axios from 'axios'
 
@@ -30,14 +30,7 @@ export default class DatatablePage extends Component{
         },
     }
 
-    handleChangeUsuario = (e) => {
-        this.setState(prevState => {
-            let dataInputs = Object.assign({}, prevState.dataInputs); 
-            dataInputs.usuario = e.target.value                            
-            return { dataInputs };                      
-        })
-    }
-
+    //Função que salva a senha inserido no modal de edição do usuario
     handleChangeSenha = (e) => {
         this.setState(prevState => {
             let dataInputs = Object.assign({}, prevState.dataInputs); 
@@ -46,6 +39,7 @@ export default class DatatablePage extends Component{
         })
     }
 
+    //Função que salva o nome inserido no modal de edição do usuario
     handleChangeSenha2 = (e) => {
         this.setState(prevState => {
             let dataInputs = Object.assign({}, prevState.dataInputs); 
@@ -54,10 +48,13 @@ export default class DatatablePage extends Component{
         })
     }
 
+    //Função que vai atualizar o usuario cadastrado no banco de dados
     atualizar = async (id) => {
+
+        //verifica se os campos estao preenchidos
         let aviso = 'Favor verificar os campos:'
         let obj = Object.entries(this.state.dataInputs)        
-        for(let i = 0; i < 3;i++){
+        for(let i = 0; i < obj.length;i++){
             for(let k = 0; k < 2; k++){
                 if(obj[i][k] === ''){
                     aviso += '\n' + obj[i][0]
@@ -66,20 +63,31 @@ export default class DatatablePage extends Component{
         }
         if (aviso !== 'Favor verificar os campos:'){
             alert(aviso)
+        //--------------------------------------------   
         } else if (this.state.dataInputs.senha !== this.state.dataInputs.senha2 || this.state.dataInputs.senha2 === ""){
             alert("As senhas não coincidem")
         }else {
-            await axios.put('http://localhost:3333/users/:',{
-                id: this.state.dataInputs.id, 
+            await axios.put(`http://localhost:3333/users/${this.state.dataInputs.id}`,{ 
                 senha: this.state.dataInputs.senha,          
             })
-            window.location.reload()
+            .then(async function () {
+                alert('Vinculado com sucesso');
+            })
+            .catch(function (error) {
+                if (error.response) {
+                  alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
+                  console.log(error.response);
+                  console.log(error.response);
+                }})
+            window.location.reload();
         }    
     }
 
+    //funcao que abre o modal preenchidos com os campos de acordo com a id do cadastro
     editar = async (id) => {
         this.toggle()
         let data = []
+        //MAP no state para pegar apenas o objeto com a id desejada
         await this.state.data.rows.map(dados => {
             if(dados.id === id){
                 data = {
@@ -93,14 +101,17 @@ export default class DatatablePage extends Component{
         console.log(this.state.dataInputs)
     }
 
+    //função de abertura e fechamento do modal
     toggle = () => {
         this.setState({
             modal: !this.state.modal
         });
     };
     
+    //fazendo uma requisição para API e manipulando os dados para serem preenchidos na tabela
     async componentDidMount() {
 
+        //obtendo os dados da rota
         const cadastros = axios.create({
             baseURL: 'http://localhost:3333/users'
         }); 
@@ -109,11 +120,14 @@ export default class DatatablePage extends Component{
 
         let rows = []
 
+        //manipulando os dados que preencherão a tabela
         response.data.map(dados => rows.push({
             id: dados.id,
             usuario: dados.usuario,
             action: 
-            <div>                
+            <div>            
+
+                {/* botao que abre modal preenchido com os dados do cadastro */}    
                 <MDBBtn color = "warning" onClick={(e) => this.editar(dados.id)}>
                     <MDBIcon icon="pencil-alt" size = "1x" />
                 </MDBBtn>

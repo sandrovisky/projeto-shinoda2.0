@@ -50,6 +50,7 @@ export default class DatatablePage extends Component{
         },
     }
 
+    //Função que salva o nome inserido no modal de edição do fornecedor
     handleChangeNomeFantasia = (e) => {
         this.setState(prevState => {
             let dataInputs = Object.assign({}, prevState.dataInputs); 
@@ -58,6 +59,7 @@ export default class DatatablePage extends Component{
         })
     }
 
+    //Função que salva a razao social inserido no modal de edição do fornecedor
     handleChangeRazaoSocial = (e) => {
         this.setState(prevState => {
             let dataInputs = Object.assign({}, prevState.dataInputs); 
@@ -66,6 +68,7 @@ export default class DatatablePage extends Component{
         })
     }
 
+    //Função que salva o nome inserido no modal de edição do fornecedor
     handleChangeEndereco = (e) => {
         this.setState(prevState => {
             let dataInputs = Object.assign({}, prevState.dataInputs); 
@@ -74,6 +77,7 @@ export default class DatatablePage extends Component{
         })
     }
 
+    //Função que salva o CNPJ inserido no modal de edição do fornecedor
     handleChangeCnpj = (e) => {
         this.setState(prevState => {
             let dataInputs = Object.assign({}, prevState.dataInputs); 
@@ -82,19 +86,32 @@ export default class DatatablePage extends Component{
         })
     }
 
+    //Função que deleta o fornecedor no banco de dados
     deletar = async (id) => {
         const response = await axios.delete('http://localhost:3333/suppliers/:',{
             data : {id: id}
         })
-    window.location.reload()
+        .then(async function () {
+            alert('Vinculado com sucesso');
+        })
+        .catch(function (error) {
+            if (error.response) {
+              alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
+              console.log(error.response);
+              console.log(error.response);
+            }})
+        window.location.reload();
     console.log(response)
     }
 
+    //Função que vai atualizar o fornecedor cadastrado no banco de dados
     atualziar = async (id) => {
+
+        //verifica se os campos estao preenchidos
         let aviso = 'Favor verificar os campos:'
         let obj = Object.entries(this.state.dataInputs)
         console.log(obj)
-        for(let i = 0; i < 5;i++){
+        for(let i = 0; i < obj.length;i++){
             for(let k = 0; k < 2; k++){
                 if(obj[i][k] === ''){
                     aviso += '\n' + obj[i][0]
@@ -103,6 +120,7 @@ export default class DatatablePage extends Component{
         }
         if (aviso !== 'Favor verificar os campos:'){
             alert(aviso)
+        //--------------------------------------------   
         } else {
             await axios.put('http://localhost:3333/suppliers/:',{
                 id: this.state.dataInputs.id, 
@@ -111,14 +129,25 @@ export default class DatatablePage extends Component{
                 endereco: this.state.dataInputs.endereco, 
                 cnpj: this.state.dataInputs.cnpj            
             })
-            window.location.reload()
+            .then(async function () {
+                alert('Vinculado com sucesso');
+            })
+            .catch(function (error) {
+                if (error.response) {
+                  alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
+                  console.log(error.response);
+                  console.log(error.response);
+                }})
+            window.location.reload();
         }
     
     }
 
+    //funcao que abre o modal preenchidos com os campos de acordo com a id do cadastro
     editar = async (id) => {
         this.toggle()
         let data = []
+        //MAP no state para pegar apenas o objeto com a id desejada
         await this.state.data.rows.map(dados => {
             if(dados.id === id){
                 data = {
@@ -134,14 +163,17 @@ export default class DatatablePage extends Component{
         console.log(this.state.dataInputs)
     }
 
+    //função de abertura e fechamento do modal
     toggle = () => {
         this.setState({
             modal: !this.state.modal
         });
     };
     
+    //fazendo uma requisição para API e manipulando os dados para serem preenchidos na tabela
     async componentDidMount() {
 
+        //obtendo os dados da rota
         const cadastros = axios.create({
             baseURL: 'http://localhost:3333/suppliers'
         }); 
@@ -150,6 +182,7 @@ export default class DatatablePage extends Component{
 
         let rows = []
 
+        //manipulando os dados que preencherão a tabela
         response.data.map(dados => rows.push({
             id: dados.id,
             nomeFantasia: dados.nomeFantasia,
@@ -157,12 +190,16 @@ export default class DatatablePage extends Component{
             endereco: dados.endereco,
             cnpj: dados.cnpj,
             action: <div>
+
+                {/* popover de exclusão do cadastro */}
                 <MDBPopover
                     placement="left"
                     popover
                     clickable 
                     id="popper1"
                 >
+
+                    {/* botao de exclusão */}
                     <MDBBtn color = "danger" >
                         <MDBIcon icon="trash-alt" size = "1x" />
                     </MDBBtn>
@@ -170,10 +207,12 @@ export default class DatatablePage extends Component{
                         <MDBPopoverHeader><strong>Confirmar exclusão</strong></MDBPopoverHeader>
                         <MDBPopoverBody>
 
+                            {/* botao de confirmação da exclusão */}
                             <MDBBtn color = "success" onClick={(e) => this.deletar(dados.id)}>
                                 <MDBIcon icon="check" size = "1x" />
                             </MDBBtn>
 
+                            {/* botao de cancelar a exclusão */}
                             <MDBBtn color = "danger" onClick={() => window.location.reload()} >
                                 <MDBIcon icon="times" size = "1x" />
                             </MDBBtn>
@@ -182,6 +221,7 @@ export default class DatatablePage extends Component{
                     </div>
                 </MDBPopover>
                 
+                {/* botao que abre modal preenchido com os dados do cadastro */}
                 <MDBBtn color = "warning" onClick={(e) => this.editar(dados.id)}>
                     <MDBIcon icon="pencil-alt" size = "1x" />
                 </MDBBtn>

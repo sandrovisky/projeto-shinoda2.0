@@ -17,25 +17,32 @@ export default class Modal extends Component {
         }
     }
     
+    //Função responsavel por abertura e fechamento do modal
     toggle = () => {
         this.setState({
             modal: !this.state.modal
         });
     };
     
+    //Função que salva no state o nome inserido no modal de cadastro de novo produto
     handleChangeNome = (e) => {
         this.setState({nome: e.target.value});
     }
 
+    //Função que salva no state o codigo inserido no modal de cadastro de novo produto
     handleChangeCodigo = (e) => {
         this.setState({codigo: e.target.value});
     }
 
+    //Função que salva no state a medida inserido no modal de cadastro de novo produto
     handleChangeMedida = (e) => {
         this.setState({medida: e.target.value});
     }
  
-    cadastrar = () => {
+    //Função que vai cadastrar um novo produto no banco de dados
+    cadastrar = async () => {
+
+        //verifica se os campos estao preenchidos
         let aviso = 'Favor verificar os campos:'
         let obj = Object.entries(this.state)
         console.log(obj)
@@ -48,12 +55,22 @@ export default class Modal extends Component {
         }
         if (aviso !== 'Favor verificar os campos:'){
             alert(aviso)
+        //--------------------------------------------   
         } else {
             axios.post('http://localhost:3333/products', {
                 codigo: this.state.codigo,
                 nome: this.state.nome,
                 medida: this.state.medida
-                })
+            })
+            .then(async function () {
+                alert('Cadastrado com sucesso');
+            })
+            .catch(function (error) {
+                if (error.response) {
+                  alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
+                  console.log(error.response);
+                  console.log(error.response);
+                }})
             window.location.reload();
         }
     }

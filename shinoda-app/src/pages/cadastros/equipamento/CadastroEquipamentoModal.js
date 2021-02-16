@@ -17,29 +17,37 @@ export default class Modal extends Component {
         }
     }
     
+    //Função responsavel por abertura e fechamento do modal
     toggle = () => {
         this.setState({
             modal: !this.state.modal
         });
     };
     
+    //Função que salva no state o tipo inserido no modal de cadastro de novo equipamento
     handleChangeTipo = (e) => {
         this.setState({tipo: e.target.value});
     }
 
+    ///Função que salva no state a tag inserido no modal de cadastro de novo equipamento
     handleChangeTag = (e) => {
         this.setState({tag: e.target.value});
     }
 
+    //Função que salva no state o nome inserido no modal de cadastro de novo equipamento
     handleChangeNome = (e) => {
         this.setState({nome: e.target.value});
     }
 
+    //Função que salva no state a capacidade inserido no modal de cadastro de novo equipamento
     handleChangeCapacidade = (e) => {
         this.setState({capacidade: e.target.value});
     }
  
+    //Função que vai cadastrar um novo equipamento no banco de dados
     cadastrar = async () => {
+
+        //verifica se os campos estao preenchidos
         let aviso = 'Favor verificar os campos:'
         let obj = Object.entries(this.state)
         console.log(obj)
@@ -52,13 +60,23 @@ export default class Modal extends Component {
         }
         if (aviso !== 'Favor verificar os campos:'){
             alert(aviso)
+        //--------------------------------------------    
         } else {
             await axios.post('http://localhost:3333/equipment', {
                 tipo: this.state.tipo,
                 tag: this.state.tag,
                 nome: this.state.nome,
                 capacidade: this.state.capacidade
-                })
+            })
+            .then(async function () {
+                alert('Cadastrado com sucesso');
+            })
+            .catch(function (error) {
+                if (error.response) {
+                    alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
+                    console.log(error.response);
+                    console.log(error.response);
+                }})
             window.location.reload();
         }
     }
