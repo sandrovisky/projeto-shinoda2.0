@@ -1,8 +1,10 @@
 import React from "react";
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBInput, MDBTable, MDBTableHead, MDBTableBody } from "mdbreact";
+import axios from 'axios'
 
 import SelectSupplier from './component/SupplierSelect'
 import SelectProduct from './component/ProductSelect'
+import TableDataMoveItens from './component/TableDataMoveItens'
 
 var dataAtual = new Date();
 var dia = dataAtual.getDate();
@@ -14,6 +16,8 @@ if (mes < 10) {
 }
 var dataHoje = `${ano}-${mes}-${dia}`
 
+let x = 0
+
 class NovaEntrada extends React.Component {
 
 state = {
@@ -21,6 +25,52 @@ state = {
   formActivePanel1Changed: false,
   idSupplier: 0,
   idProduct: 0,
+  idMove: 0,
+  tableDataMoveItens: [],
+  click: 0
+}
+
+cadastrar = async () => {
+    if (this.state.idMove){
+        await axios.post('http://localhost:3333/move-itens', {
+            idMove: this.state.idMove,
+            idProduct: this.state.idProduct,
+            createdBy: 1,
+            updatedBy: 1
+        })
+        this.setState({click: this.state.click+1})
+        
+    }else{
+
+        //funcao q cria registro na tabela MOVE
+        const result = await axios.post('http://localhost:3333/moves', {
+            nf: this.state.nf,
+            pedido: this.state.pedido,
+            status: 2,
+            createdBy: 1,
+            updatedBy: 1,
+            idSupplier: this.state.idSupplier
+        })
+        .then(async function (response) {
+            return (response)         
+        })
+        .catch(function (error) {
+            alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
+        })
+        if (result.data.id !== null){
+            this.setState({idMove: result.data.id})
+        }        
+
+        //adicionar produto a tabela move-itens
+        await axios.post('http://localhost:3333/move-itens', {
+            idMove: this.state.idMove,
+            idProduct: this.state.idProduct,
+            createdBy: 1,
+            updatedBy: 1
+        })
+        this.setState({click: this.state.click+1})
+        
+    }
 }
 
 swapFormActive = (a) => (param) => (e) => {
@@ -60,7 +110,7 @@ onHandleChangeNF = (e) => {
 }
 
 onHandleChangeNPedido = (e) => {
-    this.setState({ nPedido: e.target.value })
+    this.setState({ pedido: e.target.value })
 }
 
 onHandleChangeNLote = (e) => {
@@ -71,12 +121,21 @@ onHandleChangeDataValidade = (e) => {
     this.setState({ dataValidade: e.target.value })
 }
 
+async componentDidUpdate(prevState){
+    if(this.state.idMove !== prevState.idMove){
+        return true
+    }
+}
+
 render() {
   return (
       <div style = {{padding: "0em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black", margin: "5em 1em 0 1em"}}>
 {}
         <MDBContainer >
             <h3 className="text-center font-weight-bold pt-4 pb-5 mb-2"><strong>Formulario de nova entrada</strong></h3>
+            {this.state.idSupplier}
+            {this.state.nf}
+            {this.state.pedido}
             <MDBRow>
             
             {/* 
@@ -86,31 +145,19 @@ render() {
             (<MDBCol md="12">
                 <h3 className="text-center font-weight-bold pt-4 pb-5 mb-2">Entrada</h3>
                 <h6 className="font-weight-bold pl-0 my-4">
-                    <strong>ID: {this.state.idSupplier}</strong>
+                    <strong>ID: {this.state.click}</strong>
                 </h6>
                 <MDBContainer style = {{padding: "1em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black" }}>
                     <SelectSupplier getIdSupplier = {this.getIdSupplier} />
                     
                     <MDBRow>
                         <MDBCol>
-                            <MDBInput label="Nº da NF" className="mt-4" autoFocus={this.calculateAutofocus(1)}  />
+                            <MDBInput label="Nº da NF" onChange = {this.onHandleChangeNF} className="mt-4" autoFocus={this.calculateAutofocus(1)}  />
                             
                         </MDBCol>
 
                         <MDBCol>
-                            <MDBInput label="Nº do Pedido" className="mt-4" />
-                        </MDBCol>
-                    </MDBRow>
-
-                    <MDBRow>
-                        <MDBCol>
-                            <label htmlFor="lote">Nº do Lote</label>
-                            <MDBInput id="lote" label="" className="mt-4" autoFocus={this.calculateAutofocus(1)}  />                        
-                        </MDBCol>
-
-                        <MDBCol>
-                            <label htmlFor="date">Vencimento</label>
-                            <MDBInput disablePast id= "date" type = "date" className="mt-4" min={dataHoje} />
+                            <MDBInput label="Nº do Pedido"  onChange = {this.onHandleChangeNPedido} className="mt-4" />
                         </MDBCol>
                     </MDBRow>
 
@@ -124,52 +171,20 @@ render() {
 
                     <MDBRow>
                         <MDBCol>
-                            <MDBBtn color="primary" size="sm" rounded style = {{width: "100%", margin: "1em 0 0 0"}} >Adicionar</MDBBtn>
+                            <MDBBtn color="primary" size="sm" rounded style = {{width: "100%", margin: "1em 0 0 0"}} onClick = {this.cadastrar} >Adicionar</MDBBtn>
                         </MDBCol>
                     </MDBRow>
                     
                     
                 </MDBContainer>
                 <MDBContainer style = {{padding: "1em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black", marginTop: "0.5em" }}>
-                    <MDBTable>
-                        <MDBTableHead>
-                            <tr>
-                                <th>id</th>
-                                <th>produto</th>
-                                <th></th>
-                            </tr>
-                        </MDBTableHead>
-                        <MDBTableBody>
-                            <tr>
-                                <td>1</td>
-                                <td>ovo branco</td>
-                                <td><MDBBtn size="sm" color = "danger" >
-                                        <MDBIcon icon="trash-alt" size = "1x" />
-                                    </MDBBtn>
-                                    </td>
-                            </tr>
 
-                            <tr>
-                                <td>2</td>
-                                <td>Açucar</td>
-                                <td>
-                                    <MDBBtn size="sm" color = "danger" >
-                                        <MDBIcon icon="trash-alt" size = "1x" />
-                                    </MDBBtn>
-                                </td>
-                            </tr>
 
-                            <tr>
-                                <td>3</td>
-                                <td>Graxa em pó</td>
-                                <td>
-                                    <MDBBtn size="sm" color = "danger" >
-                                        <MDBIcon icon="trash-alt" size = "1x" />
-                                    </MDBBtn>
-                                </td>
-                            </tr>
-                        </MDBTableBody>
-                    </MDBTable>
+
+                    <TableDataMoveItens click = {this.state.click} idMove = {this.state.idMove} />
+
+
+
                 </MDBContainer>
                 <MDBBtn color="danger" rounded className="float-left" onClick = {() => window.history.back()}>cancelar</MDBBtn>
                 <MDBBtn color="mdb-color" rounded className="float-right" onClick={this.handleNextPrevClick(1)(2)}>next</MDBBtn>
