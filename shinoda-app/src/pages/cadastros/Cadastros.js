@@ -1,7 +1,7 @@
 import {Component} from 'react'
 import { Link } from 'react-router-dom'
 
-import { MDBIcon, MDBRow, MDBCol, MDBContainer } from 'mdbreact'
+import { MDBIcon, MDBRow, MDBContainer } from 'mdbreact'
 
 
 

@@ -107,10 +107,10 @@ export default class Modal extends Component {
                     </MDBModalHeader>
 
                     <MDBModalBody>
-                        <MDBInput label="Tipo" onChange = {this.handleChangeTipo} />
-                        <MDBInput label="Tag"  onChange = {this.handleChangeTag} />
-                        <MDBInput label="Nome" onChange = {this.handleChangeNome}  />
-                        <MDBInput label="Capacidade" onChange = {this.handleChangeCapacidade}  />
+                        <MDBInput required label="Tipo" onChange = {this.handleChangeTipo} />
+                        <MDBInput required label="Tag"  onChange = {this.handleChangeTag} />
+                        <MDBInput required label="Nome" onChange = {this.handleChangeNome}  />
+                        <MDBInput required label="Capacidade" onChange = {this.handleChangeCapacidade}  />
                         <div className="text-center mt-1-half">
                             <MDBBtn
                                 color="info"

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-select": "^4.1.0",
+    "react-select-search": "^3.0.2"
+  }
+}

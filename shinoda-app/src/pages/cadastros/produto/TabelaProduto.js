@@ -142,17 +142,9 @@ export default class DatatablePage extends Component{
     };
 
     //função de abertura e fechamento do modal de vincular produto a forncedor
-    toggle2 = (dados) => {
-        console.log(dados)
-        this.setState({
-            id: dados.id
-        });
-        this.setState({
-            nome: dados.nome
-        });
-        this.setState({
-            modal2: !this.state.modal2
-        });
+    toggle2 = async (id) => {
+        this.setState({ modal2: !this.state.modal2 });
+        this.setState({ id: id });
     };
 
     //função que vincula fornecedor ao produto no banco de dados
@@ -229,7 +221,7 @@ export default class DatatablePage extends Component{
                 </MDBBtn>
 
                 {/* botao que abre modal onde sera selecionado o fornecedor para o produto */}
-                <MDBBtn color = "primary" onClick={(e) => this.toggle2(dados)}>
+                <MDBBtn color = "primary" onClick={(e) => this.toggle2(dados.id)}>
                     <MDBIcon icon="edit" size = "1x" />
                 </MDBBtn>
             </div>
