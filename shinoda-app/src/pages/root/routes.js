@@ -12,6 +12,8 @@ import Equipamento from '../cadastros/equipamento/Equipamento'
 import Entrada from '../almoxarife/Entrada'
 import EntradaNovo from '../almoxarife/NovaEntrada'
 
+import Laboratorio from '../lab/Index'
+
 
 
 export default class Routes extends Component {
@@ -41,6 +43,8 @@ export default class Routes extends Component {
                     <Route path = '/cadastros/usuario' component = {Usuario} />
 
                     <Route path = '/cadastros/equipamento' component = {Equipamento} />
+
+                    <Route path = '/laboratorio' component = {Laboratorio} />
 
                         
                 </Switch>

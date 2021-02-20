@@ -21,6 +21,10 @@ export default class Navbar extends Component {
         history.push('/entrada')
     }
 
+    onClickLaboratorio = () => {
+        history.push('/laboratorio')
+    }
+
     onClickCadastro = () => {
         history.push('/cadastros')
     }
@@ -65,6 +69,12 @@ export default class Navbar extends Component {
                                         <MDBNavItem>
                                         
                                             <MDBNavLink onClick = {this.onClickEntrada} to="entrada">Entrada</MDBNavLink>
+                                        
+                                        </MDBNavItem>
+
+                                        <MDBNavItem>
+                                        
+                                            <MDBNavLink onClick = {this.onClickLaboratorio} to="laboratorio">Laboratório</MDBNavLink>
                                         
                                         </MDBNavItem>
 

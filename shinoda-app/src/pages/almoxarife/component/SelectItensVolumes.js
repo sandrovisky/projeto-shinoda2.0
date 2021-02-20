@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 
 import axios from 'axios'
 
-export default class TabelaEntrada extends Component{   
+export default class SelectItensVolumes extends Component{   
     
     state = {
 
     }
-    
+
     //fazendo uma requisição para API e manipulando os dados para serem preenchidos na tabela
     async componentDidUpdate(prevProps) {
 

@@ -1,4 +1,5 @@
 import {Component} from 'react'
+import { MDBBtn } from 'mdbreact'
 
 import logo from '../../assets/images/shinoda.jpg'
 
@@ -24,6 +25,10 @@ export default class Home extends Component {
                 <input onChange = {this.onHandleChangetexto} type="text" />
             
                 <Teste texto = {this.state.texto} />
+
+                 <a href="www.facebook.com" onclick="console.log('O link foi clicado.'); return false"><MDBBtn value = "Clique Aqui" />
+                    
+                </a>
              </div>
             
       )

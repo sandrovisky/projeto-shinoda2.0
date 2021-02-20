@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 import axios from 'axios'
 
-export default class TabelaEntrada extends Component{   
+export default class TabelaEntradaVolumes extends Component{   
     
     state = {
     }
@@ -22,8 +22,6 @@ export default class TabelaEntrada extends Component{
             console.log(error.response);
         })
         
-        this.setState({delete: this.state.delete+1})
-        this.props.getDelete(this.state.delete)
     }
 
 
@@ -38,6 +36,8 @@ export default class TabelaEntrada extends Component{
             }); 
 
             const response =  await cadastros.get(`${this.props.idMove}`);
+            console.log(response.data)
+            console.log("oi")
         
             //manipulando os dados que preencherão a tabela
             let tableData = []
@@ -63,6 +63,7 @@ export default class TabelaEntrada extends Component{
     render(){
         return (
             <div>
+                {this.props.click}
                     <MDBTable>
                         <MDBTableHead>
                             <tr>
