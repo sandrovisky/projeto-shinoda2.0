@@ -30,8 +30,8 @@ export default class TabelaEntrada extends Component{
         
         return (
             <div>
-                <select required value = {this.props.idSupplier === 0 ? "" : this.props.idSupplier} onChange = {this.handleChange} className="browser-default custom-select" >
-                    <option value = ""></option>
+                <select value = {this.props.idSupplier === 0 ? "" : this.props.idSupplier} onChange = {this.handleChange} className="browser-default custom-select" >
+                    <option value = "">Selecione  Fornecedor</option>
                     {this.state.option}
                 </select>
             </div>                     

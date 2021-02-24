@@ -46,6 +46,7 @@ export default class TabelaEntrada extends Component{
         codigoLote: ''
     }
 
+    //função q cria analise com banco de dados
     SalvarAnalise = async () => {
         await axios.post('http://localhost:3333/analysis', {
             idProduct: this.state.dadosAnalise.idProduct,
@@ -64,12 +65,11 @@ export default class TabelaEntrada extends Component{
             }
         })
         window.location.reload()
-    }
-    teste = (dado) => {
-        this.setState({idAnalysis: dado})
-        console.log(this.state.idAnalysis)
-    }
+    }    
+
+    //busca dados inseridos no bando de dados nos states
     obtemDados = async () => {
+
         //obtendo os dados da rota
         const cadastros = axios.create({
             baseURL: 'http://localhost:3333/lotes/'
@@ -77,7 +77,6 @@ export default class TabelaEntrada extends Component{
         let x = this.state.codigoLote.toString()
         const response =  await cadastros.get(`${x}`);
 
-        console.log(response.data)
         if (response.data === null ) {
             alert("Codigo do lote nao encontrado")
             return false
@@ -97,7 +96,6 @@ export default class TabelaEntrada extends Component{
                 dadosAnalise.idMoveitensvolume =  response.data.moveitensvolume.id
                 return { dadosAnalise };                                 
             })
-            console.log()
             return true
         }        
     }
@@ -159,11 +157,19 @@ export default class TabelaEntrada extends Component{
     };
 
     //Função responsavel por abertura e fechamento do modal de finalizado
-    toggleFinalizado = () => {
+    toggleFinalizado = async ( codigo ) => {
         this.setState({
             modalFinalizado: !this.state.modalFinalizado
         });
     };
+
+    //funcao q pega os dados para o modal de finalizado
+    Finalizado = async (codigo) => {
+        await this.setState({verificaCod: 0})
+        await this.setState({codigoLote: codigo})
+        this.obtemDados()
+        this.toggleFinalizado()
+    }
 
     //Função responsavel por abertura e fechamento do modal de coleta
     toggleNovaAnalise = () => {
@@ -188,6 +194,7 @@ export default class TabelaEntrada extends Component{
         this.setState({codigoLote: e.target.value})
     }
 
+    //função que pega o codigo inserido para criar os campos no modal de analise
     handleSubmit = async e => {
         e.preventDefault()
         this.setState({verificaCod: 0}) 
@@ -197,16 +204,18 @@ export default class TabelaEntrada extends Component{
         }
     }
 
-    handleSubmitColeta = async e => {
-        e.preventDefault()
-        this.setState({verificaCod: 0}) 
-        const x = await this.obtemDados()
-        if(x){            
-            this.toggleColeta2()
-        }
+    // //
+    // handleSubmitColeta = async e => {
+    //     e.preventDefault()
+    //     this.setState({verificaCod: 0}) 
+    //     const x = await this.obtemDados()
+    //     if(x){            
+    //         this.toggleColeta2()
+    //     }
         
-    }
+    // }
 
+    //função q compara o codigo inserido com o que pertence ao lote
     handleSubmitVerificaLote = async e => {
         e.preventDefault()
 
@@ -220,13 +229,13 @@ export default class TabelaEntrada extends Component{
         
     }
 
+    //FUNÇÃO Q SALVA OS DADOS DIGITADOS NO FORMULARIO DE COLETA
     handleSubmitFormularioAnalise = async (e) => {
 
         e.preventDefault()     
         
         if (this.state.verificaCod !== 0){
             alert(this.state.idMoveitensvolume)
-            console.log("nao veio")
             await axios.put('http://localhost:3333/analysis/:', {
                 id: this.state.dadosAnalise.idAnalysis,
                 status: 0,
@@ -332,8 +341,6 @@ export default class TabelaEntrada extends Component{
         const response =  await cadastros.get('');
         let rows = []
 
-        console.log(response.data)
-
         //manipulando os dados que preencherão a tabela
         response.data.map(dados => rows.push({
             id: dados.analysis === null ? "" : dados.analysis.id,       
@@ -341,7 +348,7 @@ export default class TabelaEntrada extends Component{
             produto: dados.moveitens.product.nome,
             validade: dados.dataValidade,
             action:  (dados.analysis === null) ? (<MDBBtn onClick={() =>this.coleta(dados.codigo)} color="primary">Coletar</MDBBtn>) : 
-                (parseInt(dados.analysis.status) === 1 ? <MDBBtn onClick={() =>this.toggleLancamento(dados.codigo)} color="warning">Lançar</MDBBtn> : <MDBBtn onClick={this.toggleFinalizado} color="success">Finalizado</MDBBtn> )        
+                (parseInt(dados.analysis.status) === 1 ? <MDBBtn onClick={() =>this.toggleLancamento(dados.codigo)} color="warning">Lançar</MDBBtn> : <MDBBtn onClick={() => this.Finalizado(dados.codigo)} color="success">Finalizado</MDBBtn> )        
         }))
 
         this.setState(prevState => {
@@ -368,7 +375,7 @@ export default class TabelaEntrada extends Component{
                 style = {{fontSize: "20px", textAlign: "center"}}
                 />
                 
-                {/* MODAL DE COLETA 2/2 */}
+                {/* MODAL DE COLETA  */}
                 <MDBModal
                     isOpen={this.state.modalColeta2}
                     toggle={this.toggleColeta2}
@@ -524,20 +531,44 @@ export default class TabelaEntrada extends Component{
                     </MDBModalHeader>
 
                     <MDBModalBody>
-                        <MDBInput label="Nome Fantasia" onChange = {this.handleChangeNomeFantasia} />
-                        <MDBInput label="Razão Social"  onChange = {this.handleChangeRazaoSocial} />
-                        <MDBInput label="Endereço" onChange = {this.handleChangeEndereco}  />
-                        <MDBInput label="CNPJ"  onChange = {this.handleChangeCnpj} />
+
+                        <MDBRow>
+                            <MDBCol>
+                                <label>Fornecedor: {this.state.dadosAnalise.fornecedor}</label>
+                            </MDBCol>
+                            <MDBCol>
+                                <label>Laudo: {this.state.dadosAnalise.laudo}</label>
+                            </MDBCol>
+                        </MDBRow>
+
+                        <MDBRow>
+                            <MDBCol>
+                                <label>Produto: {this.state.dadosAnalise.produto}</label>
+                            </MDBCol>
+                            <MDBCol>
+                                <label>Codigo: {this.state.dadosAnalise.codigo}</label>
+                            </MDBCol>
+                        </MDBRow>
+
+                        <MDBRow>
+                            <MDBCol>
+                                <label>Entrada: {this.state.dadosAnalise.dataEntrada}</label>
+                            </MDBCol>
+                            <MDBCol>
+                                <label>Validade: {this.state.dadosAnalise.dataValidade}</label>
+                            </MDBCol>
+                        </MDBRow>
+
                         <div className="text-center mt-1-half">
                             <MDBBtn
-                                color="info"
+                                color="danger"
                                 className="mb-2"
-                                onClick={this.cadastrar}
+                                onClick={this.toggleFinalizado}
                             >
-                                Cadastrar
-                            <MDBIcon icon="plus" className="ml-1" />
+                                Sair
                             </MDBBtn>
                         </div>
+
                     </MDBModalBody>
                 </MDBModal>
 

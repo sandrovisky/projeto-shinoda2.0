@@ -9,7 +9,7 @@ export default class TabelaEntrada extends Component{
     }
 
     //deletar da table list
-    deletarProduto = async (id) => {
+    deletar = async (id) => {
         await axios.delete('http://localhost:3333/move-itens/:',{
             data : {id: id}
         })
@@ -63,7 +63,18 @@ export default class TabelaEntrada extends Component{
     render(){
         return (
             <div>
-                    
+                    <MDBTable>
+                        <MDBTableHead>
+                            <tr>
+                                <th>id</th>
+                                <th>produto</th>
+                                <th></th>
+                            </tr>
+                        </MDBTableHead>
+                        <MDBTableBody>
+                            {this.state.tabela}
+                        </MDBTableBody>
+                    </MDBTable>
             </div>                     
         )
     }
