@@ -69,6 +69,7 @@ class NovaEntrada extends React.Component {
         
     }
 
+    //Funcao q cadastra cada item adicionado ao movimento
     onSubmitCadastraMoveItens = async (e) => {
         e.preventDefault()
 
@@ -134,14 +135,110 @@ class NovaEntrada extends React.Component {
             ))                
             this.setState({tabela: tableData})
         }
-        
     }
 
-    cadastrarItemVolume = async () => {
+    deletarMoveItensVolume = async(idLoteitens, idMoveitensvolumes) => {
+
+        await axios.delete('http://localhost:3333/move-itens-volumes/:',{
+            data : {id: idMoveitensvolumes}
+        })
+        .then(() => {
+            console.log("Lote excluido com sucesso")
+        })
+        .catch(function (error) {            
+            alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
+            console.log(error.response);
+        })
+        const cadastros = axios.create({
+            baseURL: 'http://localhost:3333/lotes/moveitensvolume/'
+        }); 
+
         
-            this.setState({click: this.state.click+1})
-            
+        await axios.delete('http://localhost:3333/lotes/:',{
+            data : {id: idLoteitens}
+        })
+        .then(() => {
+            console.log("Lote excluido com sucesso")
+        })
+        .catch(function (error) {            
+            alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
+            console.log(error.response);
+        })
+
+        const response1 =  await cadastros.get(`${this.state.idMove}`);
+        console.log(response1.data)
+         //manipulando os dados que preencherão a tabela
+         let tableData = []
+         if (response1 !== null){
+             response1.data.map(dados => tableData.push(
+                 <tr key = {dados.id}>
+                     <td>{dados.moveitensvolume.quantidadePaletes}</td>
+                     <td>{dados.moveitens.product.nome}</td>
+                     <td>{dados.dataValidade}</td>
+                     <td>{dados.codigo}</td>
+                     <td>{dados.moveitensvolume.quantidadeTotal}</td>
+                     <td>
+                         <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(dados.id, dados.moveitensvolume.id)} >
+                             <MDBIcon icon="trash-alt"  size = "1x" />
+                         </MDBBtn>
+                     </td>
+                 </tr>
+            ))}           
+            this.setState({tabelaMoveItensVolume: tableData})
+    }
+
+    onSubmitCadastraMoveItensVolume = async (e) => {
+        e.preventDefault()
+
+        await axios.post('http://localhost:3333/lotes', {
+            numLaudo: this.state.numLaudo,
+            dataValidade: this.state.dataValidade,
+            idMoveitens: this.state.idMoveitens,
+            quantidadeTotal: this.state.quantidadeProduto,
+            createdBy: 1,
+            updatedBy: 1
+        })
+        .then((response) => {
+            this.setState({idLoteitens: response.data.id})
+            console.log(response.data)
+        })
+        .catch((err) => console.log(err))
         
+        await axios.post('http://localhost:3333/move-itens-volumes', {
+            idMoveitens: this.state.idMoveitens,
+            idLoteitens: this.state.idLoteitens,
+            quantidadePaletes: this.state.quantidadePalete,
+            quantidadeTotal: this.state.quantidadeProduto,
+            createdBy: 1,
+            updatedBy: 1
+        })
+        .then((response) => this.setState({idMoveitensvolumes: response.data.id}))
+        .catch((err) => console.log(err))
+
+        const cadastros = axios.create({
+            baseURL: 'http://localhost:3333/lotes/moveitensvolume/'
+        }); 
+
+        const response1 =  await cadastros.get(`${this.state.idMove}`);
+        console.log(response1.data)
+         //manipulando os dados que preencherão a tabela
+         let tableData = []
+         if (response1 !== null){
+             response1.data.map(dados => tableData.push(
+                 <tr key = {dados.id}>
+                     <td>{dados.moveitensvolume.quantidadePaletes}</td>
+                     <td>{dados.moveitens.product.nome}</td>
+                     <td>{dados.dataValidade}</td>
+                     <td>{dados.codigo}</td>
+                     <td>{dados.moveitensvolume.quantidadeTotal}</td>
+                     <td>
+                         <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(dados.id, dados.moveitensvolume.id)} >
+                             <MDBIcon icon="trash-alt"  size = "1x" />
+                         </MDBBtn>
+                     </td>
+                 </tr>
+            ))}           
+            this.setState({tabelaMoveItensVolume: tableData})                                
     }
 
     swapFormActive = (a) => (param) => (e) => {
@@ -171,12 +268,12 @@ class NovaEntrada extends React.Component {
     }
     }
 
-    getSelectProduct = (childData) => {
-        this.setState({selectProduct: childData})
-    }
-
     getIdSupplier = (childData) => {
         this.setState({idSupplier: childData})
+    }
+
+    getIdMoveitens = (childData) => {
+        this.setState({idMoveitens: childData})
     }
 
     getIdProduct = (childData) => {
@@ -193,10 +290,7 @@ class NovaEntrada extends React.Component {
 
     onHandleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value })
-    }
-
-
-    
+    }    
 
     render() {
     return (
@@ -222,12 +316,12 @@ class NovaEntrada extends React.Component {
                             
                             <MDBRow>
                                 <MDBCol >
-                                    <MDBInput required label="Nº da NF" value = {this.state.nf} name = "nf" onChange = {this.onHandleChange} className="mt-4"   />
+                                    <MDBInput onFocus = {(e) => e.target.autocomplete = "off"} success="Yeah!" required label="Nº da NF" value = {this.state.nf} name = "nf" onChange = {this.onHandleChange} className="mt-4"   />
                                     
                                 </MDBCol>
 
                                 <MDBCol>
-                                    <MDBInput required label="Nº do Pedido" value = {this.state.pedido} name = "pedido" onChange = {this.onHandleChange} className="mt-4" />
+                                    <MDBInput onFocus = {(e) => e.target.autocomplete = "off"} required label="Nº do Pedido" value = {this.state.pedido} name = "pedido" onChange = {this.onHandleChange} className="mt-4" />
                                 </MDBCol>
                             </MDBRow>
 
@@ -250,20 +344,19 @@ class NovaEntrada extends React.Component {
                         </MDBContainer>
                         <MDBContainer style = {{padding: "1em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black", marginTop: "0.5em" }}>
 
+                            <MDBTable>
+                                <MDBTableHead>
+                                    <tr>
+                                        <th>id</th>
+                                        <th>produto</th>
+                                        <th></th>
+                                    </tr>
+                                </MDBTableHead>
+                                <MDBTableBody>
+                                    {this.state.tabela}
+                                </MDBTableBody>
+                            </MDBTable>
 
-
-                        <MDBTable>
-                            <MDBTableHead>
-                                <tr>
-                                    <th>id</th>
-                                    <th>produto</th>
-                                    <th></th>
-                                </tr>
-                            </MDBTableHead>
-                            <MDBTableBody>
-                                {this.state.tabela}
-                            </MDBTableBody>
-                        </MDBTable>
                         </MDBContainer>
                     </form>
                     <MDBBtn color="danger" rounded className="float-left" onClick = {() => window.history.back()}>cancelar</MDBBtn>
@@ -277,54 +370,69 @@ class NovaEntrada extends React.Component {
                 (<MDBCol md="12">
                 <h3 className="text-center font-weight-bold pt-4 pb-5 mb-2">Entrada - Lotes</h3>
                 <h6 className="font-weight-bold pl-0 my-4">
-                    <strong>ID: 321312331-24124</strong>
+                    <strong>ID: {this.state.idMove}</strong>
                 </h6>
                 <MDBContainer style = {{padding: "1em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black" }}>
-                    
-                    <MDBRow>
-                        <MDBCol>
-                            <MDBInput id="lote" value = {this.state.nLote} name = "nLote" label="Laudo" onChange = {this.onHandleChange} className="mt-4" autoFocus={this.calculateAutofocus(1)}  />                        
-                        </MDBCol>
-
-                        <MDBCol>
-                            <MDBInput name = "dataValidade" value = {this.state.dataValidade} type = "text" label = "Data de Validade" onChange = {this.onHandleChange} className="mt-4" min={dataHoje} onBlur= {(e) => {e.target.value !== "" ? e.target.type = "date" : e.target.type = "text" }} onFocus = {(e) => e.target.type = "date"} />
-                        </MDBCol>
-                    </MDBRow>
-
-                    <MDBRow>
+                    <form onSubmit = {this.onSubmitCadastraMoveItensVolume}>
+                        <MDBRow>
+                            <MDBCol>
+                                <MDBInput required onFocus = {(e) => e.target.autocomplete = "off"} autoComplete="new-password" id="laudo" value = {this.state.numLaudo} name = "numLaudo" label="Laudo" onChange = {this.onHandleChange} className="mt-4" autoFocus={this.calculateAutofocus(1)}  />                        
+                            </MDBCol>
 
                             <MDBCol>
-                                <MDBInput name = "quantidadePalete" value = {this.state.quantidadePalete} max = "10" type = "number" label="Nº de Paletes" onChange = {this.onHandleChange} className="mt-4"    />
+                                <MDBInput required onFocus = {(e) => e.target.autocomplete = "off"} autoComplete="off" name = "dataValidade" value = {this.state.dataValidade} type = "text" label = "Data de Validade" onChange = {this.onHandleChange} className="mt-4" min={dataHoje} onBlur= {(e) => {e.target.value !== "" ? e.target.type = "date" : e.target.type = "text" }} onFocus = {(e) => e.target.type = "date"} />
+                            </MDBCol>
+                        </MDBRow>
+
+                        <MDBRow>
+
+                                <MDBCol>
+                                    <MDBInput required onFocus = {(e) => e.target.autocomplete = "off"} name = "quantidadePalete" value = {this.state.quantidadePalete} type = "number" label="Nº de Paletes" onChange = {this.onHandleChange} className="mt-4"    />
+                                    
+                                </MDBCol>
+
+                                <MDBCol>
+                                    <MDBInput required onFocus = {(e) => e.target.autocomplete = "off"} onChange = {this.onHandleChange} value = {this.state.quantidadeProduto} name = "quantidadeProduto" type = "number" label="Quantidade do Produto" className="mt-4"  />
+
+                                </MDBCol>
+                        </MDBRow>          
+
+                        <MDBRow >
+
+                            <MDBCol >
+                                <SelectItensVolumes click = {this.state.click} idMove = {this.state.idMove} getIdMoveitens = {this.getIdMoveitens}/>
                                 
-                            </MDBCol>
+                            </MDBCol >
 
+                        </MDBRow>   
+
+                        <MDBRow>
                             <MDBCol>
-                                <MDBInput onChange = {this.onHandleChange} value = {this.state.quantidadeProduto} name = "quantidadeProduto" type = "number" label="Quantidade do Produto" className="mt-4"  />
-
+                                <MDBBtn type = "submit" color="primary" size="sm" rounded style = {{width: "100%", margin: "1em 0 0 0"}}  >Adicionar</MDBBtn>
                             </MDBCol>
-                    </MDBRow>          
-
-                    <MDBRow >
-
-                        <MDBCol >
-                            
-                            <SelectItensVolumes idMove = {this.idMove} getIdProductVolume = {this.getIdProductVolume}/>
-                            
-                        </MDBCol >
-
-                    </MDBRow>   
-
-                    <MDBRow>
-                        <MDBCol>
-                            <MDBBtn type = "submit" color="primary" size="sm" rounded style = {{width: "100%", margin: "1em 0 0 0"}}  >Adicionar</MDBBtn>
-                        </MDBCol>
-                    </MDBRow>      
+                        </MDBRow>
+                    </form>      
                     
                 </MDBContainer>
 
                 <MDBContainer style = {{padding: "1em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black", marginTop: "0.5em" }}>
                     
-                    <TableDataMoveItensVolume click = {this.state.click} idMove = {this.state.idMove} getDelete = {this.getDelete}/>
+                    <MDBTable>
+                        <MDBTableHead>
+                            <tr>
+                                <th>Paletes</th>
+                                <th>Produto</th>
+                                <th>Validade</th>
+                                <th>Lote</th>
+                                <th>Quantidade</th>
+                                <th></th>
+                            </tr>
+                        </MDBTableHead>
+
+                        <MDBTableBody>
+                                {this.state.tabelaMoveItensVolume}
+                        </MDBTableBody>
+                    </MDBTable>
 
                 </MDBContainer>
 
@@ -333,7 +441,7 @@ class NovaEntrada extends React.Component {
             </MDBCol>)}
                 
                 {/* 
-                    Entrada Volumes
+                    FIM
                 */}
                 {this.state.formActivePanel1 === 3 &&
                 (<MDBCol md="12">

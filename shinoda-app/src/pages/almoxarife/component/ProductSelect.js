@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import axios from 'axios'
 
-export default class TabelaEntrada extends Component{   
+export default class ProductSelect extends Component{   
     
     state = {
 

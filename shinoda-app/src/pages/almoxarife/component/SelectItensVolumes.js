@@ -7,46 +7,42 @@ export default class SelectItensVolumes extends Component{
     state = {
 
     }
-
-    //fazendo uma requisição para API e manipulando os dados para serem preenchidos na tabela
-    async componentDidUpdate(prevProps) {
-
-
-        if(this.props.idSupplier !== prevProps.idSupplier) {
-
-            //obtendo os dados da rota
-            const cadastros = axios.create({
-                baseURL: 'http://localhost:3333/suppliers-products/products'
-            }); 
-
-            const response =  await cadastros.get('');
-            let produtos = []
-
-            //crias os options de acordo com a idSupplier fornecida
-            response.data.map(dados => {
-                if(dados.idSupplier === parseInt(this.props.idSupplier)) {                    
-                    produtos.push(<option key = {dados.product.id} value = {dados.product.id}>{dados.product.nome}</option>)
-                }
-            })
-            //criando os options
-            this.setState({option: produtos})
+    
+    async shouldComponentUpdate(prevProps){
+        if(prevProps.click !== this.props.click){
+            return true
         }
-        
     }
     
-    handleChange = (event) => {
-        this.setState({idProduct: event.target.value});
-        this.props.getIdProduct(event.target.value)
+    async componentDidUpdate(prevProps){
+        if(prevProps.click !== this.props.click){
+            return true
+        }
+    }
+    async componentDidMount(){
+        //obtendo os dados da rota
+        const cadastros2 = axios.create({
+        baseURL: 'http://localhost:3333/move-itens/'
+            }); 
+
+        const response2 =  await cadastros2.get(`${this.props.idMove}`);
+        this.setState({option: response2.data.map(data => <option key = {data.id} value = {data.id}>{data.product.nome}</option>)})
+        console.log(response2.data)
+    }
+    
+    handleChange = (e) => {
+        this.setState({[e.target.name]: e.target.value})
+        this.props.getIdMoveitens(e.target.value)
     }
 
     render(){
         
         return (
-            <div>
-                    <select onChange = {this.handleChange} className="browser-default custom-select" >
-                        <option value = "">Selecione o Produto</option>
-                        {this.state.option}
-                    </select>
+            <div>   
+                <select name = "select" required onChange = {this.handleChange} className="browser-default custom-select" >
+                    <option value = ""></option>
+                    {this.state.option}
+                </select>
             </div>                     
         )
     }
