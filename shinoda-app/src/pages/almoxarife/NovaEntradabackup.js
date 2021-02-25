@@ -5,7 +5,7 @@ import axios from 'axios'
 import SelectSupplier from './component/SupplierSelect'
 import SelectProduct from './component/ProductSelect'
 import TableDataMoveItens from './component/TableDataMoveItens'
-import TableDataMoveItensVolume from './component/TableDataMoveItensVolume'
+import TableDataMoveItensVolume from './component/TableDataFim'
 import SelectItensVolumes from './component/SelectItensVolumes'
 
 var dataAtual = new Date();

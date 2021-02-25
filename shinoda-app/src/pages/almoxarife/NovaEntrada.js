@@ -4,8 +4,7 @@ import axios from 'axios'
 
 import SelectSupplier from './component/SupplierSelect'
 import SelectProduct from './component/ProductSelect'
-import TableDataMoveItens from './component/TableDataMoveItens'
-import TableDataMoveItensVolume from './component/TableDataMoveItensVolume'
+import TableDataFim from './component/TableDataFim'
 import SelectItensVolumes from './component/SelectItensVolumes'
 
 var dataAtual = new Date();
@@ -37,7 +36,6 @@ class NovaEntrada extends React.Component {
             data : {id: id}
         })
         .then(async function () {
-            console.log("ok")
         })
         .catch(function (error) {
             
@@ -101,6 +99,7 @@ class NovaEntrada extends React.Component {
             })
             if (result.data.id !== null){
                 this.setState({idMove: result.data.id})
+                this.setState({dataEntrada: result.data.createdAt})
             }        
 
             //adicionar produto a tabela move-itens
@@ -200,7 +199,6 @@ class NovaEntrada extends React.Component {
         })
         .then((response) => {
             this.setState({idLoteitens: response.data.id})
-            console.log(response.data)
         })
         .catch((err) => console.log(err))
         
@@ -268,8 +266,9 @@ class NovaEntrada extends React.Component {
     }
     }
 
-    getIdSupplier = (childData) => {
-        this.setState({idSupplier: childData})
+    getIdSupplier = async (childData) => {
+
+        await this.setState({idSupplier: childData})
     }
 
     getIdMoveitens = (childData) => {
@@ -284,13 +283,22 @@ class NovaEntrada extends React.Component {
         this.setState({idProductVolume: childData})
     }
 
-    getDelete = (childData) => {
-        this.setState({delete: childData})
-    }
-
     onHandleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value })
-    }    
+    }
+
+    async componentDidUpdate (prevPros,prevState) {
+        if(this.state.idSupplier !== prevState.idSupplier){
+            const cadastros = axios.create({
+                baseURL: 'http://localhost:3333/suppliers/'
+            }); 
+    
+            const response =  await cadastros.get(`${this.state.idSupplier}`);
+            console.log(response.data)
+            this.setState({fornecedorNome: response.data.nomeFantasia})
+            return false
+        }
+    }
 
     render() {
     return (
@@ -452,14 +460,14 @@ class NovaEntrada extends React.Component {
 
                             <MDBCol md = "6">
                                 <h5>
-                                    id:1111
+                                    <strong>id:</strong> {this.state.idMove}
                                 </h5>
 
                             </MDBCol>
 
                             <MDBCol md = "6">
                                 <h5 className = "float right">
-                                    Data de Entrada: 11/11/1111
+                                    <strong>Data de Entrada:</strong>  {this.state.dataEntrada}
                                 </h5>
 
                             </MDBCol>   
@@ -469,7 +477,7 @@ class NovaEntrada extends React.Component {
 
                             <MDBCol>
                                 <h5>
-                                    Fornecedor: Lula
+                                    <strong>Fornecedor:</strong> {this.state.fornecedorNome}
                                 </h5>
 
                             </MDBCol>                          
@@ -479,14 +487,14 @@ class NovaEntrada extends React.Component {
 
                             <MDBCol md = "6">
                                 <h5>
-                                    NF:1111
+                                    <strong>NF:</strong> {this.state.nf}
                                 </h5>
 
                             </MDBCol>
 
                             <MDBCol md = "6">
                                 <h5 className = "float right">
-                                    Status: Emitido
+                                    <strong>Status:</strong> Emitido
                                 </h5>
 
                             </MDBCol>   
@@ -495,7 +503,7 @@ class NovaEntrada extends React.Component {
 
                     <MDBContainer style = {{padding: "1em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black", marginTop: "0.5em" }}> 
                     
-                        <TableDataMoveItensVolume />
+                        <TableDataFim idMove = {this.state.idMove} />
                         
                     </MDBContainer>
                     <MDBBtn color="mdb-color" rounded className="float-left" onClick={this.handleNextPrevClick(1)(2)}>previous</MDBBtn>
