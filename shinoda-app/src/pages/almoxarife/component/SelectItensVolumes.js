@@ -27,7 +27,6 @@ export default class SelectItensVolumes extends Component{
 
         const response2 =  await cadastros2.get(`${this.props.idMove}`);
         this.setState({option: response2.data.map(data => <option key = {data.id} value = {data.id}>{data.product.nome}</option>)})
-        console.log(response2.data)
     }
     
     handleChange = (e) => {

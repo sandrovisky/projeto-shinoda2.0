@@ -10,6 +10,7 @@ import Usuario from '../cadastros/usuario/Usuario'
 import Equipamento from '../cadastros/equipamento/Equipamento'
 
 import Entrada from '../almoxarife/Entrada'
+import Print from '../almoxarife/component/Print'
 import EntradaNovo from '../almoxarife/NovaEntrada'
 
 import Laboratorio from '../lab/Index'
@@ -34,7 +35,9 @@ export default class Routes extends Component {
 
                     <Route exact path = '/entrada' component = {Entrada} />
 
-                    <Route exact path = '/entrada/novo' component = {EntradaNovo} />
+                    <Route exact path = '/entrada/novo/:idMove' component = {EntradaNovo} />
+
+                    <Route exact path = '/entrada/impressao/:idMove' component = {Print} />
 
                     <Route path = '/cadastros/fornecedor' component = {Fornecedor} />
 

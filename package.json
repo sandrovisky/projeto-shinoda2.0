@@ -1,6 +1,8 @@
 {
   "dependencies": {
+    "react-barcode": "^1.4.0",
     "react-select": "^4.1.0",
-    "react-select-search": "^3.0.2"
+    "react-select-search": "^3.0.2",
+    "react-to-print": "^2.12.3"
   }
 }

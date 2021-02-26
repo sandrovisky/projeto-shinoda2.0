@@ -14,23 +14,23 @@ export default class TabelaEntrada extends Component{
                 sort: 'asc',
               },
               {
-                label: 'Tipo',
-                field: 'tipo',
+                label: 'Data de Entrada',
+                field: 'entrada',
                 sort: 'asc',
               },
               {
-                label: 'Tag',
-                field: 'tag',
+                label: 'Fornecedor',
+                field: 'supplier',
                 sort: 'asc',
               },
               {
-                label: 'Nome',
-                field: 'nome',
+                label: 'NF',
+                field: 'nf',
                 sort: 'asc',
               },
               {
-                label: 'Capacidade',
-                field: 'capacidade',
+                label: 'Status',
+                field: 'status',
                 sort: 'asc',
               }
               ,
@@ -51,7 +51,7 @@ export default class TabelaEntrada extends Component{
 
         //obtendo os dados da rota
         const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/suppliers-products'
+            baseURL: 'http://localhost:3333/moves'
         }); 
 
         const response =  await cadastros.get('');
@@ -61,47 +61,14 @@ export default class TabelaEntrada extends Component{
         //manipulando os dados que preencherão a tabela
         response.data.map(dados => rows.push({
             id: dados.id,
-            tipo: dados.tipo,
-            tag: dados.tag,
-            nome: dados.nome,
-            capacidade: dados.capacidade,
-            action: <div>
-
-                {/* popover de exclusão do cadastro */}
-                <MDBPopover
-                    placement="left"
-                    popover
-                    clickable 
-                    id="popper1"
-                >
-                    
-                    {/* botao de exclusão */}
-                    <MDBBtn color = "danger" >
-                        <MDBIcon icon="trash-alt" size = "1x" />
-                    </MDBBtn>
-                    <div>
-                        <MDBPopoverHeader><strong>Confirmar exclusão</strong></MDBPopoverHeader>
-                        <MDBPopoverBody>
-
-                            {/* botao de confirmação da exclusão */}
-                            <MDBBtn color = "success" onClick={(e) => this.deletar(dados.id)}>
-                                <MDBIcon icon="check" size = "1x" />
-                            </MDBBtn>
-
-                            {/* botao de cancelar a exclusão */}
-                            <MDBBtn color = "danger" onClick={() => window.location.reload()} >
-                                <MDBIcon icon="times" size = "1x" />
-                            </MDBBtn>
-
-                        </MDBPopoverBody>
-                    </div>
-                </MDBPopover>
-                
-                {/* botao que abre modal preenchido com os dados do cadastro */}
-                <MDBBtn color = "warning" onClick={(e) => this.editar(dados.id)}>
-                    <MDBIcon icon="pencil-alt" size = "1x" />
-                </MDBBtn>
-            </div>
+            entrada: dados.createdAt,
+            supplier: dados.supplier.razaoSocial,
+            nf: dados.nf,
+            status: dados.status === "1" ? "Em Digitação" : dados.status === "2" ? "Aguardando Coleta" : "Finalizado",
+            action: dados.status === "1" ?  
+            <Link to = {`/entrada/novo/${dados.id}`} >
+                 <MDBBtn color = "warning" > Continuar </MDBBtn>
+            </Link>: 0,
         }))
 
         this.setState(prevState => {
@@ -122,7 +89,7 @@ export default class TabelaEntrada extends Component{
             style = {{fontSize: "20px", textAlign: "center"}}
             />
 
-            <Link to = "/entrada/novo" >
+            <Link to = "/entrada/novo/0" >
                 <MDBBtn color = "primary" >
                     
                     <><MDBIcon icon="plus" size = "1x" /> Novo</>

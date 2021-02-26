@@ -6,6 +6,7 @@ import SelectSupplier from './component/SupplierSelect'
 import SelectProduct from './component/ProductSelect'
 import TableDataFim from './component/TableDataFim'
 import SelectItensVolumes from './component/SelectItensVolumes'
+import Print from './component/Print'
 
 var dataAtual = new Date();
 var dia = dataAtual.getDate();
@@ -28,7 +29,10 @@ class NovaEntrada extends React.Component {
         tableDataMoveItens: [],
         click: 0,
         delete: 0,
-        selectProduct: []
+        selectProduct: [],
+        tabelaMoveItensVolume: [],
+        pedido: "",
+        nf: ""
     }
 
     deletarProduto = async (id) => {
@@ -86,7 +90,7 @@ class NovaEntrada extends React.Component {
             const result = await axios.post('http://localhost:3333/moves', {
                 nf: this.state.nf.toString(),
                 pedido: this.state.pedido.toString(),
-                status: 0,
+                status: 1,
                 createdBy: 1,
                 updatedBy: 1,
                 idSupplier: this.state.idSupplier
@@ -120,6 +124,7 @@ class NovaEntrada extends React.Component {
     
         //manipulando os dados que preencherão a tabela
         let tableData = []
+        
         if (response !== null){
             response.data.map(dados => tableData.push(
                 <tr key = {dados.id}>
@@ -136,25 +141,54 @@ class NovaEntrada extends React.Component {
         }
     }
 
-    deletarMoveItensVolume = async(idLoteitens, idMoveitensvolumes) => {
+    deletarMoveItensVolume = async(last, range, idLoteitens, idTable ) => {
+        console.log(last)
+        console.log(range)
+        function frange(last, end){
+            last-= end -1
+            end = last+end
+            console.log(last + "-" + end)
+            let x = []
+            for(last;last < end;last++){
+                x.push(last)
+            }
+            return x
+        }
+
+        const deleteIds = frange( last, range )
+        console.log("deletes ids vol")
+        console.log(deleteIds)
 
         await axios.delete('http://localhost:3333/move-itens-volumes/:',{
-            data : {id: idMoveitensvolumes}
+            data: {
+                id: deleteIds
+            }
         })
         .then(() => {
-            console.log("Lote excluido com sucesso")
+            console.log("MoveItensVolume excluido com sucesso")
         })
         .catch(function (error) {            
             alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
             console.log(error.response);
         })
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/lotes/moveitensvolume/'
-        }); 
 
+        await axios.delete('http://localhost:3333/move-itens-volumes-tables/:',{
+           data: {
+               id: idTable
+           }
+        })
+        .then(() => {
+            console.log("Item da tabela excluido com sucesso")
+        })
+        .catch(function (error) {            
+            alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
+            console.log(error.response);
+        })         
         
         await axios.delete('http://localhost:3333/lotes/:',{
-            data : {id: idLoteitens}
+           data: {
+               id: idLoteitens
+           }
         })
         .then(() => {
             console.log("Lote excluido com sucesso")
@@ -163,32 +197,38 @@ class NovaEntrada extends React.Component {
             alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
             console.log(error.response);
         })
+        
+        const cadastros1 = axios.create({
+            baseURL: 'http://localhost:3333/move-itens-volumes-tables/'
+        });
 
-        const response1 =  await cadastros.get(`${this.state.idMove}`);
+        const response1 =  await cadastros1.get(`${this.state.idMove}`);
         console.log(response1.data)
-         //manipulando os dados que preencherão a tabela
-         let tableData = []
-         if (response1 !== null){
-             response1.data.map(dados => tableData.push(
-                 <tr key = {dados.id}>
-                     <td>{dados.moveitensvolume.quantidadePaletes}</td>
-                     <td>{dados.moveitens.product.nome}</td>
-                     <td>{dados.dataValidade}</td>
-                     <td>{dados.codigo}</td>
-                     <td>{dados.moveitensvolume.quantidadeTotal}</td>
-                     <td>
-                         <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(dados.id, dados.moveitensvolume.id)} >
-                             <MDBIcon icon="trash-alt"  size = "1x" />
-                         </MDBBtn>
-                     </td>
-                 </tr>
-            ))}           
-            this.setState({tabelaMoveItensVolume: tableData})
+        
+        //manipulando os dados que preencherão a tabela
+        let tableData = []
+        console.log([response1.data])
+        response1.data.map(dados => tableData.push(
+            <tr key = {dados.id}>
+                <td>{dados.quantidadePaletes}</td>
+                <td>{dados.produto}</td>
+                <td>{dados.validade}</td>
+                <td>{dados.codigoLote}</td>
+                <td>{dados.quantidadeTotal}</td>
+                <td>
+                    <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(parseInt(dados.lastId), parseInt(dados.quantidadePaletes), dados.idLoteitens, dados.id )} >
+                        <MDBIcon icon="trash-alt"  size = "1x" />
+                    </MDBBtn>
+                </td>
+            </tr>
+        ))          
+            this.setState({ tabelaMoveItensVolume: tableData }) 
+
     }
 
     onSubmitCadastraMoveItensVolume = async (e) => {
         e.preventDefault()
-
+        
         await axios.post('http://localhost:3333/lotes', {
             numLaudo: this.state.numLaudo,
             dataValidade: this.state.dataValidade,
@@ -199,44 +239,73 @@ class NovaEntrada extends React.Component {
         })
         .then((response) => {
             this.setState({idLoteitens: response.data.id})
+            this.setState({codigo: response.data.codigo})
         })
         .catch((err) => console.log(err))
         
-        await axios.post('http://localhost:3333/move-itens-volumes', {
+        for(let i = 0;i < parseInt(this.state.quantidadePalete); i++){
+            await axios.post('http://localhost:3333/move-itens-volumes', {
             idMoveitens: this.state.idMoveitens,
             idLoteitens: this.state.idLoteitens,
             quantidadePaletes: this.state.quantidadePalete,
             quantidadeTotal: this.state.quantidadeProduto,
             createdBy: 1,
             updatedBy: 1
-        })
-        .then((response) => this.setState({idMoveitensvolumes: response.data.id}))
-        .catch((err) => console.log(err))
-
+            })
+            .then((response) => {
+                this.setState({idMoveitensvolumesLast: response.data.id})
+                console.log(response.data.id)
+            })
+            .catch((err) => console.log(err))
+        }
         const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/lotes/moveitensvolume/'
+            baseURL: 'http://localhost:3333/products/'
         }); 
 
-        const response1 =  await cadastros.get(`${this.state.idMove}`);
+        const resProduct =  await cadastros.get(`${this.state.idProduct}`);
+        
+        await axios.post('http://localhost:3333/move-itens-volumes-tables', {
+            quantidadePaletes: this.state.quantidadePalete,
+            validade: this.state.dataValidade,
+            idMove: this.state.idMove,
+            quantidadeTotal: this.state.quantidadeProduto,
+            produto: resProduct.data.codigo + " - " + resProduct.data.nome,
+            codigoLote: this.state.codigo,
+            idLoteitens: this.state.idLoteitens,
+            lastId: this.state.idMoveitensvolumesLast,
+            createdBy: 1,
+            updatedBy: 1
+        })
+        .then((response) => {
+            this.setState({ idTable: response.data.id })
+            console.log(response)
+        })
+        .catch((err) => console.log(err))
+
+        const cadastros1 = axios.create({
+            baseURL: 'http://localhost:3333/move-itens-volumes-tables/'
+        }); 
+
+        const response1 =  await cadastros1.get(`${this.state.idMove}`);
         console.log(response1.data)
-         //manipulando os dados que preencherão a tabela
-         let tableData = []
-         if (response1 !== null){
-             response1.data.map(dados => tableData.push(
-                 <tr key = {dados.id}>
-                     <td>{dados.moveitensvolume.quantidadePaletes}</td>
-                     <td>{dados.moveitens.product.nome}</td>
-                     <td>{dados.dataValidade}</td>
-                     <td>{dados.codigo}</td>
-                     <td>{dados.moveitensvolume.quantidadeTotal}</td>
-                     <td>
-                         <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(dados.id, dados.moveitensvolume.id)} >
-                             <MDBIcon icon="trash-alt"  size = "1x" />
-                         </MDBBtn>
-                     </td>
-                 </tr>
-            ))}           
-            this.setState({tabelaMoveItensVolume: tableData})                                
+        
+        //manipulando os dados que preencherão a tabela
+        let tableData = []
+        response1.data.map(dados => tableData.push(
+            <tr key = {dados.id}>
+                <td>{dados.quantidadePaletes}</td>
+                <td>{dados.produto}</td>
+                <td>{dados.validade}</td>
+                <td>{dados.codigoLote}</td>
+                <td>{dados.quantidadeTotal}</td>
+                <td>
+                    <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(parseInt(dados.lastId), parseInt(dados.quantidadePaletes), dados.idLoteitens, dados.id )} >
+                        <MDBIcon icon="trash-alt"  size = "1x" />
+                    </MDBBtn>
+                </td>
+            </tr>
+        ))          
+            this.setState({ tabelaMoveItensVolume: tableData })                                
     }
 
     swapFormActive = (a) => (param) => (e) => {
@@ -256,8 +325,15 @@ class NovaEntrada extends React.Component {
     this.setState({click: this.state.click+1})
     }
 
-    handleSubmission = () => {
-    alert('Form submitted!');
+    handleSubmission = async () => {
+        
+        var printWindow = window.open("", "Print Window","height=30cm,width=30cm")
+        printWindow.document.write("<div style = 'width: 15cm;height:10cm;border-style: solid; border-width: 1px;'>");
+        printWindow.document.write("<MDBRow><MDBCol>blablabla</MDBCol></MDBRow>");
+        printWindow.document.write("<MDBRow><MDBCol>lote</MDBCol><MDBCol>validade</MDBCol></MDBRow>");
+        printWindow.document.write("<MDBRow><MDBCol>num palete</MDBCol><MDBCol>peso total</MDBCol></MDBRow>");
+        printWindow.document.write("</div>");
+        printWindow.document.close();
     }
 
     calculateAutofocus = (a) => {
@@ -283,8 +359,18 @@ class NovaEntrada extends React.Component {
         this.setState({idProductVolume: childData})
     }
 
+    imprimir = () => {
+        
+        if (this.state.nf === '' || this.state.pedido === ""){
+            alert("Verifique os campos da primeira tela")
+        } else {
+            window.open(`/entrada/impressao/${this.state.idMove}`, '_blank')
+        }
+       
+    }
+
     onHandleChange = (e) => {
-        this.setState({ [e.target.name]: e.target.value })
+        this.setState({ [e.target.name]: e.target.value })  
     }
 
     async componentDidUpdate (prevPros,prevState) {
@@ -294,7 +380,6 @@ class NovaEntrada extends React.Component {
             }); 
     
             const response =  await cadastros.get(`${this.state.idSupplier}`);
-            console.log(response.data)
             this.setState({fornecedorNome: response.data.nomeFantasia})
             return false
         }
@@ -302,7 +387,7 @@ class NovaEntrada extends React.Component {
 
     render() {
     return (
-        <div style = {{padding: "0em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black", margin: "5em 1em 0 1em"}}>
+        <div id = "divPrincipal" style = {{padding: "0em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black", margin: "5em 1em 0 1em"}}>
     {}
             <MDBContainer >
                 <h3 className="text-center font-weight-bold pt-4 pb-5 mb-2"><strong>Formulario de nova entrada</strong></h3>
@@ -317,13 +402,14 @@ class NovaEntrada extends React.Component {
                     <h6 className="font-weight-bold pl-0 my-4">
                         <strong>ID:{this.state.idMove}</strong>
                     </h6>
+                    <MDBBtn color="danger" rounded className="float-left" >imprimir</MDBBtn>
                     <form onSubmit = {this.onSubmitCadastraMoveItens}>
                         <MDBContainer style = {{padding: "1em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black" }}>
                             <label for="selectSupplier">Selecione o fornecedor</label>
                             <SelectSupplier required id = "selectSupplier" idSupplier = {this.state.idSupplier} getIdSupplier = {this.getIdSupplier} autoFocus={this.calculateAutofocus(1)} />
                             
                             <MDBRow>
-                                <MDBCol >
+                                <MDBCol >   
                                     <MDBInput onFocus = {(e) => e.target.autocomplete = "off"} success="Yeah!" required label="Nº da NF" value = {this.state.nf} name = "nf" onChange = {this.onHandleChange} className="mt-4"   />
                                     
                                 </MDBCol>
@@ -368,7 +454,7 @@ class NovaEntrada extends React.Component {
                         </MDBContainer>
                     </form>
                     <MDBBtn color="danger" rounded className="float-left" onClick = {() => window.history.back()}>cancelar</MDBBtn>
-                    <MDBBtn color="mdb-color" rounded className="float-right" onClick={this.handleNextPrevClick(1)(2)}>next</MDBBtn>
+                    <MDBBtn color="mdb-color" rounded className="float-right" onClick={this.handleNextPrevClick(1)(2)} >next</MDBBtn>
                 </MDBCol>)}
 
                 {/* 
@@ -395,7 +481,7 @@ class NovaEntrada extends React.Component {
                         <MDBRow>
 
                                 <MDBCol>
-                                    <MDBInput required onFocus = {(e) => e.target.autocomplete = "off"} name = "quantidadePalete" value = {this.state.quantidadePalete} type = "number" label="Nº de Paletes" onChange = {this.onHandleChange} className="mt-4"    />
+                                    <MDBInput required onFocus = {(e) => e.target.autocomplete = "off"} name = "quantidadePalete" value = {this.state.quantidadePalete} min = "1" max = "50" type = "number" label="Nº de Paletes" onChange = {this.onHandleChange} className="mt-4"    />
                                     
                                 </MDBCol>
 
@@ -507,7 +593,7 @@ class NovaEntrada extends React.Component {
                         
                     </MDBContainer>
                     <MDBBtn color="mdb-color" rounded className="float-left" onClick={this.handleNextPrevClick(1)(2)}>previous</MDBBtn>
-                    <MDBBtn color="success" rounded className="float-right" onClick={this.handleSubmission}>submit</MDBBtn>
+                    <MDBBtn color="success" rounded className="float-right" onClick = {() => this.imprimir}>Imprimir</MDBBtn>
                 </MDBCol>)}
                 </MDBRow>
                 

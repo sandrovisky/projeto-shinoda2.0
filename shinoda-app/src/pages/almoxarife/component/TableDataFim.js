@@ -1,4 +1,4 @@
-import { MDBTable, MDBTableHead, MDBTableBody, MDBBtn, MDBIcon } from 'mdbreact'
+import { MDBTable, MDBTableHead, MDBTableBody } from 'mdbreact'
 import React, { Component } from 'react';
 
 import axios from 'axios'
@@ -23,28 +23,30 @@ export default class TabelaEntradaVolumes extends Component{
         })
         
     }
-    componentDidMount  = async () => {
+    componentDidMount  = async () => {               
+
         const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/lotes/moveitensvolume/'
+            baseURL: 'http://localhost:3333/move-itens-volumes-tables/'
         }); 
+     
 
         const response1 =  await cadastros.get(`${this.props.idMove}`);
         console.log(response1.data)
-         //manipulando os dados que preencherão a tabela
-         let tableData = []
-         if (response1 !== null){
-             response1.data.map(dados => tableData.push(
-                 <tr key = {dados.id}>
-                     
-                     <td>{dados.moveitens.product.nome}</td>
-                     <td>{dados.dataValidade}</td>
-                     <td>{dados.codigo}</td>
-                     <td>{dados.moveitensvolume.quantidadePaletes}</td>
-                     <td>{dados.moveitensvolume.quantidadeTotal}</td>
-                     <td>{parseInt(dados.moveitensvolume.quantidadePaletes) * parseInt(dados.moveitensvolume.quantidadeTotal)}</td>
-                 </tr>
-            ))}           
-            this.setState({tabela: tableData})
+        //manipulando os dados que preencherão a tabela
+        let tableData = []
+        if (response1 !== null){
+            response1.data.map(dados => tableData.push(
+                <tr key = {dados.id}>                    
+                    <td>{dados.produto}</td>
+                    <td>{dados.validade}</td>
+                    <td>{dados.codigoLote}</td>
+                    <td>{dados.quantidadePaletes}</td>
+                    <td>{dados.quantidadeTotal}</td>
+                    <td>{parseInt(dados.quantidadePaletes) * parseInt(dados.quantidadeTotal)}</td>
+                </tr>
+            ))
+        }           
+        this.setState({tabela: tableData})
     }
 
     render(){
@@ -53,8 +55,7 @@ export default class TabelaEntradaVolumes extends Component{
                 {this.props.click}
                     <MDBTable>
                         <MDBTableHead>
-                            <tr>
-                                
+                            <tr>                                
                                 <th>Produto</th>
                                 <th>Validade</th>
                                 <th>Lote</th>
