@@ -21,7 +21,7 @@ export default class SupplierSelect extends Component{
         this.setState({option: response.data.map(data => <option key = {data.id} value = {data.id}>{data.nomeFantasia}</option>)})
     }
     
-    handleChange = (event) => {
+    handleChange = async (event) => {
         this.setState({idSupplier: event.target.value});
         this.props.getIdSupplier(event.target.value)
     }

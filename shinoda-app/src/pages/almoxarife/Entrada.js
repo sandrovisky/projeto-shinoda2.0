@@ -68,7 +68,11 @@ export default class TabelaEntrada extends Component{
             action: dados.status === "1" ?  
             <Link to = {`/entrada/novo/${dados.id}`} >
                  <MDBBtn color = "warning" > Continuar </MDBBtn>
-            </Link>: 0,
+            </Link>: 
+            dados.status === "2" ?  
+            <Link to = {`/entrada/novo/${dados.id}`} >
+                 <MDBBtn color = "primary" onClick = {() => window.open(`/entrada/impressao/${dados.id}`, '_blank')} > Imprimir </MDBBtn>
+            </Link>:0
         }))
 
         this.setState(prevState => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MDBDataTable, MDBBtn, MDBIcon, MDBPopoverHeader, MDBPopoverBody, MDBPopover, MDBModal, MDBModalBody, MDBInput, MDBModalHeader } from 'mdbreact';
+import { MDBDataTable, MDBBtn, MDBIcon, MDBPopoverHeader, MDBPopoverBody, MDBPopover, MDBModal, MDBModalBody, MDBInput, MDBModalHeader, MDBTable, MDBTableHead, MDBTableBody } from 'mdbreact';
 
 import axios from 'axios'
 
@@ -134,6 +134,46 @@ export default class DatatablePage extends Component{
         console.log(this.state.dataInputs)
     }
 
+    vincular = async (id) => {
+        this.setState({tabela: []})
+        
+        const cadastros = axios.create({
+            baseURL: 'http://localhost:3333/suppliers-products/products/'
+        }); 
+     
+
+        const response1 =  await cadastros.get(`${id}`);
+        console.log(response1.data)
+        //manipulando os dados que preencherão a tabela
+        let tableData = []
+        if (response1 !== null){
+            response1.data.map(dados => tableData.push(
+                <tr key = {dados.id}>                    
+                    <td>{dados.supplier.nomeFantasia}</td>
+                    <td>
+                        <MDBBtn color = "danger" onClick={() => this.desvincular(dados.id)} >
+                            <MDBIcon icon="times" size = "1x" />
+                        </MDBBtn>
+                    </td>
+                </tr>
+            ))
+            this.setState({tabela: tableData})
+        }        
+        this.setState({ id: id });
+        this.toggle2()
+    }
+    
+    desvincular = async (id) => {
+        await axios.delete('http://localhost:3333/suppliers-products',{
+            data : {id: id}
+        })
+        .then((response) => {
+            console.log("Desvinculado com sucesso")
+            alert("Desvinculado com sucesso")
+        })
+        this.toggle2()
+    }
+
     //função de abertura e fechamento do modal
     toggle = () => {
         this.setState({
@@ -144,7 +184,7 @@ export default class DatatablePage extends Component{
     //função de abertura e fechamento do modal de vincular produto a forncedor
     toggle2 = async (id) => {
         this.setState({ modal2: !this.state.modal2 });
-        this.setState({ id: id });
+        
     };
 
     //função que vincula fornecedor ao produto no banco de dados
@@ -221,7 +261,7 @@ export default class DatatablePage extends Component{
                 </MDBBtn>
 
                 {/* botao que abre modal onde sera selecionado o fornecedor para o produto */}
-                <MDBBtn color = "primary" onClick={(e) => this.toggle2(dados.id)}>
+                <MDBBtn color = "primary" onClick={(e) => this.vincular(dados.id)}>
                     <MDBIcon icon="edit" size = "1x" />
                 </MDBBtn>
             </div>
@@ -329,6 +369,17 @@ export default class DatatablePage extends Component{
                                 <MDBIcon icon="plus" className="ml-1" />
                             </MDBBtn>
                         </div>
+                        <MDBTable>
+                        <MDBTableHead>
+                            <tr>                                
+                                <th>Fornecedor</th>
+                                <th></th>
+                            </tr>
+                        </MDBTableHead>
+                        <MDBTableBody>                            
+                            {this.state.tabela}
+                        </MDBTableBody>
+                    </MDBTable>
                     </MDBModalBody>
 
                 </MDBModal>

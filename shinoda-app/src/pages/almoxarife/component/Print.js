@@ -13,11 +13,9 @@ class PrintThisComponent extends Component {
     async componentDidMount () {
         const cadastros = axios.create({
             baseURL: 'http://localhost:3333/move-itens-volumes/'
-        }); 
-     
+        });      
 
         const response1 =  await cadastros.get(`${this.props.match.params.idMove}`);
-        console.log(response1.data)
         //manipulando os dados que preencherão a tabela
         let tableData = []
         response1.data.map(dados => tableData.push(

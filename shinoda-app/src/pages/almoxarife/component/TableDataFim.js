@@ -52,7 +52,7 @@ export default class TabelaEntradaVolumes extends Component{
     render(){
         return (
             <div>
-                {this.props.click}
+                {this.props.idMove}
                     <MDBTable>
                         <MDBTableHead>
                             <tr>                                
