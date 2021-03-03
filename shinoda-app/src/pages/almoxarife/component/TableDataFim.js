@@ -34,12 +34,11 @@ export default class TabelaEntradaVolumes extends Component{
         console.log(response1.data)
         //manipulando os dados que preencherão a tabela
         let tableData = []
-        if (response1 !== null){
+        if (response1.data !== null){
             response1.data.map(dados => tableData.push(
                 <tr key = {dados.id}>                    
                     <td>{dados.produto}</td>
                     <td>{dados.validade}</td>
-                    <td>{dados.codigoLote}</td>
                     <td>{dados.quantidadePaletes}</td>
                     <td>{dados.quantidadeTotal}</td>
                     <td>{parseInt(dados.quantidadePaletes) * parseInt(dados.quantidadeTotal)}</td>
@@ -58,7 +57,6 @@ export default class TabelaEntradaVolumes extends Component{
                             <tr>                                
                                 <th>Produto</th>
                                 <th>Validade</th>
-                                <th>Lote</th>
                                 <th>Paletes</th>
                                 <th>Quantidade</th>
                                 <th>Total</th>

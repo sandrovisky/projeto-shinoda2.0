@@ -28,7 +28,7 @@ class PrintThisComponent extends Component {
 
                 <MDBRow>
                     <MDBCol>
-                        <strong>Lote:</strong> {dados.lote.codigo}
+                        <strong>Lote:</strong> {dados.lote.lote}
                     </MDBCol>
                     <MDBCol>
                     <strong>Validade:</strong> {dados.lote.dataValidade}
@@ -37,7 +37,7 @@ class PrintThisComponent extends Component {
 
                 <MDBRow>
                     <MDBCol>
-                        <strong>Palete:</strong> {dados.id}
+                        <strong>Palete:</strong> {dados.id} - {"ENT"+dados.id}
                     </MDBCol>
                     <MDBCol>
                         <strong>Peso:</strong> {dados.quantidadeTotal}
@@ -45,7 +45,9 @@ class PrintThisComponent extends Component {
                 </MDBRow>
                 <MDBRow  >
                     <MDBCol >
+                        <div style = {{textAlign: 'center'}}>
                         <Barcode value = {`ENT${dados.id}`} width = "3" height = "70" />
+                        </div>                        
                     </MDBCol>
                 </MDBRow>
             </div>            

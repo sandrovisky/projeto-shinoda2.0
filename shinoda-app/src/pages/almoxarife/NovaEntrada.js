@@ -29,10 +29,12 @@ class NovaEntrada extends React.Component {
         tableDataMoveItens: [],
         click: 0,
         delete: 0,
+        status: 0,
         selectProduct: [],
         tabelaMoveItensVolume: []
     }
 
+    //Deleta um produto no datatable de move, assim como os registros no banco
     deletarProduto = async (id) => {
         console.log(id)
         await axios.delete('http://localhost:3333/move-itens/:',{
@@ -52,7 +54,7 @@ class NovaEntrada extends React.Component {
 
         const response =  await cadastros.get(`${this.state.idMove}`);
     
-        //manipulando os dados que preencherão a tabela
+        //manipulando os dados que preencherão o datatable
         let tableData = []
         if (response !== null){
             response.data.map(dados => tableData.push(
@@ -75,6 +77,7 @@ class NovaEntrada extends React.Component {
     onSubmitCadastraMoveItens = async (e) => {
         e.preventDefault()
 
+        //cria um movimentação
         if (this.state.idMove){
             await axios.post('http://localhost:3333/move-itens', {
                 idMove: this.state.idMove,
@@ -122,7 +125,7 @@ class NovaEntrada extends React.Component {
 
         const response =  await cadastros.get(`${this.state.idMove}`);
     
-        //manipulando os dados que preencherão a tabela
+        //manipulando os dados que preencherão o datatable
         let tableData = []
         
         if (response !== null){
@@ -141,13 +144,12 @@ class NovaEntrada extends React.Component {
         }
     }
 
+    //função q deleta um item na datable de volumes, e tambem as IDs relacionadas a ela no banco de dados
     deletarMoveItensVolume = async(last, range, idLoteitens, idTable ) => {
-        console.log(last)
-        console.log(range)
+        
         function frange(last, end){
             last-= end -1
             end = last+end
-            console.log(last + "-" + end)
             let x = []
             for(last;last < end;last++){
                 x.push(last)
@@ -155,6 +157,7 @@ class NovaEntrada extends React.Component {
             return x
         }
 
+        //pega as IDs q serão deletadas no banco
         const deleteIds = frange( last, range )
         console.log("deletes ids vol")
         console.log(deleteIds)
@@ -200,40 +203,44 @@ class NovaEntrada extends React.Component {
         
         const cadastros1 = axios.create({
             baseURL: 'http://localhost:3333/move-itens-volumes-tables/'
-        });
+        }); 
 
         const response1 =  await cadastros1.get(`${this.state.idMove}`);
         console.log(response1.data)
         
-        //manipulando os dados que preencherão a tabela
+        //manipulando os dados que preencherão o datatable de volume itens
         let tableData = []
-        console.log([response1.data])
-        response1.data.map(dados => tableData.push(
-            <tr key = {dados.id}>
-                <td>{dados.quantidadePaletes}</td>
-                <td>{dados.produto}</td>
-                <td>{dados.validade}</td>
-                <td>{dados.codigoLote}</td>
-                <td>{dados.quantidadeTotal}</td>
-                <td>
-                    <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(parseInt(dados.lastId), parseInt(dados.quantidadePaletes), dados.idLoteitens, dados.id )} >
-                        <MDBIcon icon="trash-alt"  size = "1x" />
-                    </MDBBtn>
-                </td>
-            </tr>
-        ))          
-            this.setState({ tabelaMoveItensVolume: tableData }) 
+        if(response1.data !== null){
+            response1.data.map(dados => tableData.push(
+                <tr key = {dados.id}>
+                    <td>{dados.quantidadePaletes}</td>
+                    <td>{dados.produto}</td>
+                    <td>{dados.validade}</td>
+                    <td>{dados.loteitens.lote}</td>
+                    <td>{dados.quantidadeTotal}</td>
+                    <td>
+                        <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(parseInt(dados.lastId), parseInt(dados.quantidadePaletes), dados.idLoteitens, dados.id )} >
+                            <MDBIcon icon="trash-alt"  size = "1x" />
+                        </MDBBtn>
+                    </td>
+                </tr>
+            ))          
+            this.setState({ tabelaMoveItensVolume: tableData })
+        }
+        
 
     }
 
+    //cria registros no banco relacionadas a tela de move itens volumes
     onSubmitCadastraMoveItensVolume = async (e) => {
         e.preventDefault()
         
         await axios.post('http://localhost:3333/lotes', {
-            numLaudo: this.state.numLaudo,
+            laudo: this.state.laudo,
             dataValidade: this.state.dataValidade,
             idMoveitens: this.state.idMoveitens,
             quantidadeTotal: this.state.quantidadeProduto,
+            lote: this.state.lote,
             createdBy: 1,
             updatedBy: 1
         })
@@ -268,6 +275,7 @@ class NovaEntrada extends React.Component {
             quantidadePaletes: this.state.quantidadePalete,
             validade: this.state.dataValidade,
             idMove: this.state.idMove,
+            lote: this.state.lote,
             quantidadeTotal: this.state.quantidadeProduto,
             produto: resProduct.data.codigo + " - " + resProduct.data.nome,
             codigoLote: this.state.codigo,
@@ -289,23 +297,26 @@ class NovaEntrada extends React.Component {
         const response1 =  await cadastros1.get(`${this.state.idMove}`);
         console.log(response1.data)
         
-        //manipulando os dados que preencherão a tabela
+        //manipulando os dados que preencherão o datatable de volume itens
         let tableData = []
-        response1.data.map(dados => tableData.push(
-            <tr key = {dados.id}>
-                <td>{dados.quantidadePaletes}</td>
-                <td>{dados.produto}</td>
-                <td>{dados.validade}</td>
-                <td>{dados.codigoLote}</td>
-                <td>{dados.quantidadeTotal}</td>
-                <td>
-                    <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(parseInt(dados.lastId), parseInt(dados.quantidadePaletes), dados.idLoteitens, dados.id )} >
-                        <MDBIcon icon="trash-alt"  size = "1x" />
-                    </MDBBtn>
-                </td>
-            </tr>
-        ))          
-            this.setState({ tabelaMoveItensVolume: tableData })                                
+        if(response1.data !== null){
+            response1.data.map(dados => tableData.push(
+                <tr key = {dados.id}>
+                    <td>{dados.quantidadePaletes}</td>
+                    <td>{dados.produto}</td>
+                    <td>{dados.validade}</td>
+                    <td>{dados.loteitens.lote}</td>
+                    <td>{dados.quantidadeTotal}</td>
+                    <td>
+                        <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(parseInt(dados.lastId), parseInt(dados.quantidadePaletes), dados.idLoteitens, dados.id )} >
+                            <MDBIcon icon="trash-alt"  size = "1x" />
+                        </MDBBtn>
+                    </td>
+                </tr>
+            ))          
+            this.setState({ tabelaMoveItensVolume: tableData }) 
+        }
+                                       
     }
 
     swapFormActive = (a) => (param) => (e) => {
@@ -325,23 +336,13 @@ class NovaEntrada extends React.Component {
     this.setState({click: this.state.click+1})
     }
 
-    handleSubmission = async () => {
-        
-        var printWindow = window.open("", "Print Window","height=30cm,width=30cm")
-        printWindow.document.write("<div style = 'width: 15cm;height:10cm;border-style: solid; border-width: 1px;'>");
-        printWindow.document.write("<MDBRow><MDBCol>blablabla</MDBCol></MDBRow>");
-        printWindow.document.write("<MDBRow><MDBCol>lote</MDBCol><MDBCol>validade</MDBCol></MDBRow>");
-        printWindow.document.write("<MDBRow><MDBCol>num palete</MDBCol><MDBCol>peso total</MDBCol></MDBRow>");
-        printWindow.document.write("</div>");
-        printWindow.document.close();
-    }
-
     calculateAutofocus = (a) => {
     if (this.state['formActivePanel' + a + 'Changed']) {
         return true
     }
     }
 
+    //função q é passada ao componente filho, q recebe a idSupplier
     getIdSupplier = async (childData) => {
 
         const cadastros1 = axios.create({
@@ -361,18 +362,22 @@ class NovaEntrada extends React.Component {
         
     }
 
+    //função q é passada ao componente filho, q recebe a idMoveitens
     getIdMoveitens = (childData) => {
         this.setState({idMoveitens: childData})
     }
 
+    //função q é passada ao componente filho, q recebe a idProduct
     getIdProduct = (childData) => {
         this.setState({idProduct: childData})
     }
 
+    //função q é passada ao componente filho, q recebe a idProductVolumes
     getIdProductVolume = (childData) => {
         this.setState({idProductVolume: childData})
     }
 
+    //função q abre uma nova guia passando a id que sera usada para gerar as impressões, verifica se há produtos cadastrados e atualiza o status da move no banco
     imprimir = async () => {
         const cadastros = axios.create({
             baseURL: 'http://localhost:3333/move-itens-volumes/'
@@ -380,6 +385,7 @@ class NovaEntrada extends React.Component {
 
         const response =  await cadastros.get(`${this.state.idMove}`);
 
+        //verifica se há produtos cadastrados naquela movimentação
         if(response.data.length !== 0){
             if (this.state.nf === '' || this.state.pedido === ""){
                 alert("Verifique os campos da primeira tela")
@@ -389,17 +395,19 @@ class NovaEntrada extends React.Component {
 
                     status: 2,        
                 })
-                window.open(`/entrada/impressao/${this.state.idMove}`, '_blank')
+                window.open(`/entrada/impressao/${this.state.idMove}`, '_self')
             }
         } else{
             alert("Nenhum produto cadastrado")
         }     
     }
 
+    //função q recebe os valores inseridos nos inputs
     onHandleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value })  
     }
 
+    //verifica se o id do fornecedor mudou para renderizar o componente
     async componentDidUpdate (prevPros,prevState) {
 
         if(this.state.idSupplier !== prevState.idSupplier){
@@ -416,8 +424,7 @@ class NovaEntrada extends React.Component {
         }        
     }
 
-    async componentDidMount () {
-        
+    async componentDidMount () {        
         
         const cadastros = axios.create({
             baseURL: 'http://localhost:3333/moves/'
@@ -426,15 +433,17 @@ class NovaEntrada extends React.Component {
         await cadastros.get(`${this.props.match.params.idMove}`)
         .then((response) => {
             console.log(response.data)
-            if(response.data[0].status !== "1"){
-                window.location.href = '/entrada';
-            }
+            
             if(response.data[0]){
                 console.log() 
+                this.setState({dataEntrada: response.data[0].createdAt}) 
                 this.setState({idMove: response.data[0].id}) 
                 this.setState({nf: response.data[0].nf})     
                 this.setState({pedido: response.data[0].pedido})           
                 this.setState({idSupplier: response.data[0].idSupplier})
+                if(response.data[0].status !== "1"){
+                    window.location.href = '/entrada';
+                }
             }             
         })
         const cadastros1 = axios.create({
@@ -443,7 +452,7 @@ class NovaEntrada extends React.Component {
 
         const response =  await cadastros1.get(`${this.state.idMove}`);
     
-        //manipulando os dados que preencherão a tabela
+        //manipulando os dados que preencherão o tabledata
         let tableData = []
         
         if (response !== null){
@@ -460,30 +469,32 @@ class NovaEntrada extends React.Component {
             ))                
             this.setState({tabela: tableData})
         }
-        const cadastros2 = axios.create({
+        const cadastros3 = axios.create({
             baseURL: 'http://localhost:3333/move-itens-volumes-tables/'
         }); 
 
-        const response1 =  await cadastros2.get(`${this.state.idMove}`);
-        console.log(response1.data)
+        const response3 =  await cadastros3.get(`${this.state.idMove}`);
         
-        //manipulando os dados que preencherão a tabela
-        let tableData1 = []
-        response1.data.map(dados => tableData1.push(
-            <tr key = {dados.id}>
-                <td>{dados.quantidadePaletes}</td>
-                <td>{dados.produto}</td>
-                <td>{dados.validade}</td>
-                <td>{dados.codigoLote}</td>
-                <td>{dados.quantidadeTotal}</td>
-                <td>
-                    <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(parseInt(dados.lastId), parseInt(dados.quantidadePaletes), dados.idLoteitens, dados.id )} >
-                        <MDBIcon icon="trash-alt"  size = "1x" />
-                    </MDBBtn>
-                </td>
-            </tr>
-        ))          
-            this.setState({ tabelaMoveItensVolume: tableData1 })
+        //manipulando os dados que preencherão o datatable de volume itens
+        let tableDataf = []
+        if(response3.data !== null){
+            response3.data.map(dados => tableDataf.push(
+                <tr key = {dados.id}>
+                    <td>{dados.quantidadePaletes}</td>
+                    <td>{dados.produto}</td>
+                    <td>{dados.validade}</td>
+                    <td>{dados.loteitens.lote}</td>
+                    <td>{dados.quantidadeTotal}</td>
+                    <td>
+                        <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(parseInt(dados.lastId), parseInt(dados.quantidadePaletes), dados.idLoteitens, dados.id )} >
+                            <MDBIcon icon="trash-alt"  size = "1x" />
+                        </MDBBtn>
+                    </td>
+                </tr>
+            ))          
+            this.setState({ tabelaMoveItensVolume: tableDataf }) 
+        }
+        
                    
     }
 
@@ -571,7 +582,7 @@ class NovaEntrada extends React.Component {
                     <form onSubmit = {this.onSubmitCadastraMoveItensVolume}>
                         <MDBRow>
                             <MDBCol>
-                                <MDBInput required onFocus = {(e) => e.target.autocomplete = "off"} autoComplete="new-password" id="laudo" value = {this.state.numLaudo} name = "numLaudo" label="Laudo" onChange = {this.onHandleChange} className="mt-4" autoFocus={this.calculateAutofocus(1)}  />                        
+                                <MDBInput onFocus = {(e) => e.target.autocomplete = "off"} autoComplete="new-password" id="laudo" value = {this.state.laudo} name = "laudo" label="Laudo" onChange = {this.onHandleChange} className="mt-4" autoFocus={this.calculateAutofocus(1)}  />                        
                             </MDBCol>
 
                             <MDBCol>
@@ -594,7 +605,11 @@ class NovaEntrada extends React.Component {
 
                         <MDBRow >
 
-                            <MDBCol >
+                            <MDBCol>
+                                    <MDBInput required onFocus = {(e) => e.target.autocomplete = "off"} onChange = {this.onHandleChange} value = {this.state.lote} name = "lote" label="Lote do fornecedor" className="mt-4"  />
+
+                            </MDBCol>
+                            <MDBCol style = {{marginTop: "1.5em"}} >
                                 <SelectItensVolumes click = {this.state.click} idMove = {this.state.idMove} getIdProduct = {this.getIdProduct} getIdMoveitens = {this.getIdMoveitens}/>
                                 
                             </MDBCol >
@@ -618,9 +633,9 @@ class NovaEntrada extends React.Component {
                                 <th>Paletes</th>
                                 <th>Produto</th>
                                 <th>Validade</th>
-                                <th>Lote</th>
-                                <th>Quantidade</th>
-                                <th></th>
+                                <th>lote</th>
+                                <th>Quantidade </th>
+                                <th> </th>
                             </tr>
                         </MDBTableHead>
 

@@ -8,12 +8,14 @@ import Fornecedor from '../cadastros/fornecedor/Fornecedor'
 import Produto from '../cadastros/produto/Produto'
 import Usuario from '../cadastros/usuario/Usuario'
 import Equipamento from '../cadastros/equipamento/Equipamento'
+import Coletar from '../lab/Coletar'
+import Finalizado from '../lab/Finalizado'
 
 import Entrada from '../almoxarife/Entrada'
 import Print from '../almoxarife/component/Print'
 import EntradaNovo from '../almoxarife/NovaEntrada'
 
-import Laboratorio from '../lab/Index'
+import Laboratorio from '../lab/Laboratorio'
 
 
 
@@ -23,7 +25,6 @@ export default class Routes extends Component {
 
       return (
         <div >
-
             
             <Router>
 
@@ -47,8 +48,11 @@ export default class Routes extends Component {
 
                     <Route path = '/cadastros/equipamento' component = {Equipamento} />
 
-                    <Route path = '/laboratorio' component = {Laboratorio} />
+                    <Route exact path = '/laboratorio' component = {Laboratorio} />
 
+                    <Route path = '/laboratorio/coletar/:id' component = {Coletar} />
+
+                    <Route path = '/laboratorio/finalizado/:id' component = {Finalizado} />
                         
                 </Switch>
 

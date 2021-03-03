@@ -129,7 +129,6 @@ export default class DatatablePage extends Component{
                 if (error.response) {
                   alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
                   console.log(error.response);
-                  console.log(error.response);
                 }})
             window.location.reload();
         }
