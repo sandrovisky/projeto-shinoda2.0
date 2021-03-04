@@ -44,9 +44,8 @@ export default class Modal extends Component {
     cadastrar = async () => {
 
         //constante que sera usada para verificar se ja existe um mesmo usuario cadastrado
-        const response = await api.get('http://localhost:3333/users/:',{
+        const response = await api.get('/users/:',{
             params : {usuario: this.state.usuario}
-
         })
         console.log(response.data)
         
@@ -69,7 +68,7 @@ export default class Modal extends Component {
         } else if (this.state.senha !== this.state.senha2){
             alert("As senhas não coincidem")
         }else {
-            await api.post('http://localhost:3333/users', {
+            await api.post('/users', {
                 usuario: this.state.usuario,
                 senha: this.state.senha
             })

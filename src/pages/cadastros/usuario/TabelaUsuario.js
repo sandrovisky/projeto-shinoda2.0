@@ -3,6 +3,7 @@ import { MDBDataTable, MDBBtn, MDBIcon, MDBModal, MDBModalBody, MDBInput, MDBMod
 
 import api from '../../../services/api'
 
+
 export default class DatatablePage extends Component{
 
     state = {
@@ -67,7 +68,7 @@ export default class DatatablePage extends Component{
         } else if (this.state.dataInputs.senha !== this.state.dataInputs.senha2 || this.state.dataInputs.senha2 === ""){
             alert("As senhas não coincidem")
         }else {
-            await api.put(`http://localhost:3333/users/${this.state.dataInputs.id}`,{ 
+            await api.put(`/users/${this.state.dataInputs.id}`,{ 
                 senha: this.state.dataInputs.senha,          
             })
             .then(async function () {
