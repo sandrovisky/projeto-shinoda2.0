@@ -58,7 +58,7 @@ export default class Modal extends Component {
             alert(aviso)
         //--------------------------------------------   
         } else {
-            api.post('http://localhost:3333/products', {
+            api.post('/products', {
                 codigo: this.state.codigo,
                 nome: this.state.nome,
                 medida: this.state.medida
