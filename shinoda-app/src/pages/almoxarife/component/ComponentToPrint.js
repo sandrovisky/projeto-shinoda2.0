@@ -1,5 +1,6 @@
 import React from 'react';
-import axios from 'axios'
+
+import api from '../../../services/api'
 
 export class ComponentToPrint extends React.PureComponent {
 
@@ -8,13 +9,8 @@ export class ComponentToPrint extends React.PureComponent {
     }
     componentDidMount  = async () => {               
 
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumes-tables/'
-        }); 
-     
-
-        const response1 =  await cadastros.get(`${this.props.idMove}`);
-        console.log(response1.data)
+        const response1 =  await api.get(`/move-itens-volumes-tables/${this.props.idMove}`)
+        
         //manipulando os dados que preencherão a tabela
         let tableData = []
         if (response1 !== null){

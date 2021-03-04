@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { MDBRow, MDBCol } from 'mdbreact'
-import axios from 'axios'
+
+import api from '../../../services/api'
 
 var Barcode = require('react-barcode');
 
@@ -10,12 +11,9 @@ class PrintThisComponent extends Component {
         tabela: []
     }
 
-    async componentDidMount () {
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumes/'
-        });      
+    async componentDidMount () {     
 
-        const response1 =  await cadastros.get(`${this.props.match.params.idMove}`);
+        const response1 =  await api.get(`/move-itens-volumes/${this.props.match.params.idMove}`);
         //manipulando os dados que preencherão a tabela
         let tableData = []
         response1.data.map(dados => tableData.push(

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { MDBDataTable, MDBBtn, MDBIcon, MDBPopoverHeader, MDBPopoverBody, MDBPopover, MDBModal, MDBModalBody, MDBInput, MDBModalHeader, MDBTable, MDBTableHead, MDBTableBody } from 'mdbreact';
 
-import axios from 'axios'
+import api from '../../../services/api'
 
 export default class DatatablePage extends Component{
 
@@ -81,7 +81,7 @@ export default class DatatablePage extends Component{
     //Função que deleta o produto no banco de dados
     deletar = async (id) => {
 
-        await axios.delete('http://localhost:3333/products/:',{ //rota na api
+        await api.delete('/products/:',{ //rota na api
             data : {id: id}
         })
         window.location.reload()
@@ -104,7 +104,7 @@ export default class DatatablePage extends Component{
             alert(aviso)
         //------------------------------------------
         } else {
-            await axios.put('http://localhost:3333/products/:',{ //rota da atualização
+            await api.put('/products/:',{ //rota da atualização
                 id: this.state.dataInputs.id, 
                 codigo: this.state.dataInputs.codigo, 
                 nome: this.state.dataInputs.nome, 
@@ -135,15 +135,9 @@ export default class DatatablePage extends Component{
     }
 
     vincular = async (id) => {
-        this.setState({tabela: []})
-        
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/suppliers-products/products/'
-        }); 
-     
+        this.setState({tabela: []})     
 
-        const response1 =  await cadastros.get(`${id}`);
-        console.log(response1.data)
+        const response1 =  await api.get(`/suppliers-products/products/${id}`);
         //manipulando os dados que preencherão a tabela
         let tableData = []
         if (response1 !== null){
@@ -164,7 +158,7 @@ export default class DatatablePage extends Component{
     }
     
     desvincular = async (id) => {
-        await axios.delete('http://localhost:3333/suppliers-products',{
+        await api.delete('/suppliers-products',{
             data : {id: id}
         })
         .then((response) => {
@@ -189,7 +183,7 @@ export default class DatatablePage extends Component{
 
     //função que vincula fornecedor ao produto no banco de dados
     vinculaProdutoFornecedor = async (id) => {
-        await axios.post('http://localhost:3333/suppliers-products', {
+        await api.post('/suppliers-products', {
             idSupplier: this.state.escolhaSelect,
             idProduct: this.state.id
         })
@@ -208,13 +202,9 @@ export default class DatatablePage extends Component{
     //fazendo uma requisição para API e manipulando os dados para serem preenchidos na tabela
     async componentDidMount() {
 
-        
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/'
-        })
 
-        //obtendo os dados dos produtos da rota
-        const products =  await cadastros.get('products');
+        //obtendo os dados dos produtos
+        const products =  await api.get('/products');
 
         let rows = []
 
@@ -274,7 +264,7 @@ export default class DatatablePage extends Component{
         })
 
         //obtendo os dados dos fornecedores da rota
-        const fornecedores =  await cadastros.get('suppliers');
+        const fornecedores =  await api.get('/suppliers');
 
         //manipulando os dados que preencherão o select
         this.setState({option: fornecedores.data.map(data => <option key = {data.id} value = {data.id}>{data.nomeFantasia}</option>)})

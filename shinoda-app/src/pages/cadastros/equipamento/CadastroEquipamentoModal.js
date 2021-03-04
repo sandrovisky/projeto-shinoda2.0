@@ -1,5 +1,6 @@
 import {Component} from 'react'
-import axios from 'axios'
+
+import api from '../../../services/api'
 
 import { MDBInput, MDBBtn, MDBModal, MDBModalHeader, MDBModalBody, MDBIcon } from "mdbreact";
 
@@ -62,7 +63,7 @@ export default class Modal extends Component {
             alert(aviso)
         //--------------------------------------------    
         } else {
-            await axios.post('http://localhost:3333/equipment', {
+            await api.post('/equipment', {
                 tipo: this.state.tipo,
                 tag: this.state.tag,
                 nome: this.state.nome,

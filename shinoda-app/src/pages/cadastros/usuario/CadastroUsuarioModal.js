@@ -1,5 +1,6 @@
 import {Component} from 'react'
-import axios from 'axios'
+
+import api from '../../../services/api'
 
 import { MDBInput, MDBBtn, MDBModal, MDBModalHeader, MDBModalBody, MDBIcon } from "mdbreact";
 
@@ -43,7 +44,7 @@ export default class Modal extends Component {
     cadastrar = async () => {
 
         //constante que sera usada para verificar se ja existe um mesmo usuario cadastrado
-        const response = await axios.get('http://localhost:3333/users/:',{
+        const response = await api.get('http://localhost:3333/users/:',{
             params : {usuario: this.state.usuario}
 
         })
@@ -68,7 +69,7 @@ export default class Modal extends Component {
         } else if (this.state.senha !== this.state.senha2){
             alert("As senhas não coincidem")
         }else {
-            await axios.post('http://localhost:3333/users', {
+            await api.post('http://localhost:3333/users', {
                 usuario: this.state.usuario,
                 senha: this.state.senha
             })

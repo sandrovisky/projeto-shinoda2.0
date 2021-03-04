@@ -28,7 +28,10 @@ class PrintThisComponent extends Component {
                 dataEntrada: response1.data.move.createdAt,
                 dataValidade: response1.data.loteitens.dataValidade,
                 lastId: response1.data.lastId,
-                quantidadePaletes: response1.data.quantidadePaletes
+                quantidadePaletes: response1.data.quantidadePaletes,
+                idLoteitens: response1.data.idLoteitens,
+                idProduct: response1.data.loteitens.moveitens.idProduct,
+                idAnalysis: response1.data.idAnalysis === null ? 0 : response1.data.idAnalysis,
             })
         })
         this.geraTabelaItens()
@@ -47,7 +50,6 @@ class PrintThisComponent extends Component {
             <tr key = {dados.id}>                    
                 <td>{dados.id}</td>
                 <td>{dados.codigo}</td>
-                <td>{dados.moveitens.product.nome}</td>
                 <td>{dados.leitura === true ? 
                     <MDBBtn color = "success" >
                         <MDBIcon icon="check" size = "1x" /> Lida
@@ -61,6 +63,10 @@ class PrintThisComponent extends Component {
             </tr>
         ))
         this.setState({tabela: tableData})
+
+        window.onload = function() {
+            document.getElementById("leitura").focus();
+          };
     }
 
     lerRegistro = async (event) => {
@@ -87,6 +93,59 @@ class PrintThisComponent extends Component {
 
     handleChange = (event) => {
         this.setState({[event.target.name]: event.target.value})
+    }
+
+    handleSubmit = async (event) => {
+
+        event.preventDefault()
+        if(this.state.idAnalysis === 0){
+            await axios.post('http://localhost:3333/analyses', {
+            idProduct: this.state.idProduct,
+            idLoteitens: this.state.idLoteitens,
+            status: 2,
+            createdBy: 1,
+            })
+            .then(async (response) => {
+                this.setState({idAnalysis: response.data.id})
+
+                await axios.put(`http://localhost:3333/move-itens-volumes-tables/${this.props.match.params.id}`,{
+                idAnalysis: response.data.id,
+                })
+                .then((response1) => {
+                    console.log(response1.data)
+                })
+                .catch(function (error) {
+                    if (error.response) {
+                        alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
+                        console.log(error.response);
+                    }
+                })
+            })
+            .catch((err) => console.log(err))
+        } else {
+            console.log("aqui")
+            await axios.put(`http://localhost:3333/analyses/${this.state.idAnalysis}`,{
+                status: 2,
+            })
+            .then((response) => {
+                console.log(response.data)
+            })
+        }        
+
+        await axios.post('http://localhost:3333/analysis-data', {
+            idProduct: this.state.idProduct,
+            idAnalysis: this.state.idAnalysis,
+            quantidadeIntegral: this.state.pesoIntegral,
+            quantidadeGema: this.state.pesoGema,
+            quantidadeCasca: this.state.pesoCasca,
+            quantidadeClara: this.state.pesoClara,
+            createdBy: 1,
+        })
+        .then((response) => {
+            console.log(response.data)
+        })
+        .catch((err) => console.log(err))
+        window.open(`/laboratorio`, '_self')
     }
 
     render() {   
@@ -120,22 +179,22 @@ class PrintThisComponent extends Component {
                 <MDBRow>
 
                     <MDBCol>
-                        <MDBInput name = "pesoIntegral" label="Peso Integral" required onChange = {this.handleChange} />
+                        <MDBInput onFocus = {(e) => e.target.autocomplete = "off"} name = "pesoIntegral" label="Peso Integral" required onChange = {this.handleChange} />
                     </MDBCol>
 
                     <MDBCol>
-                        <MDBInput name = "pesoGema" label="Peso da Gema" required onChange = {this.handleChange} />
+                        <MDBInput onFocus = {(e) => e.target.autocomplete = "off"} name = "pesoGema" label="Peso da Gema" required onChange = {this.handleChange} />
                     </MDBCol>
 
                 </MDBRow>
                 <MDBRow>
 
                     <MDBCol>
-                        <MDBInput name = "pesoClara" label="Peso da Clara do ovo" required onChange = {this.handleChange} />
+                        <MDBInput onFocus = {(e) => e.target.autocomplete = "off"} name = "pesoClara" label="Peso da Clara do ovo" required onChange = {this.handleChange} />
                     </MDBCol>
 
                     <MDBCol>
-                        <MDBInput name = "pesoCasca" label="Peso da Casca do ovo" required onChange = {this.handleChange} />
+                        <MDBInput onFocus = {(e) => e.target.autocomplete = "off"} name = "pesoCasca" label="Peso da Casca do ovo" required onChange = {this.handleChange} />
                     </MDBCol>
 
                 </MDBRow>                         
@@ -148,7 +207,7 @@ class PrintThisComponent extends Component {
 
                         {/* botao de salvamento com popover */}
                         <MDBBtn color = "primary" >
-                            Salvar
+                            Finalizar Análise
                         </MDBBtn>
                         <div>
                             <MDBPopoverHeader><strong>Confirmar Lançamento</strong></MDBPopoverHeader>
@@ -176,7 +235,7 @@ class PrintThisComponent extends Component {
                     <MDBRow className = "mt-3">
 
                         <MDBCol  >
-                            <MDBInput required name = "leitura" label="Leitura" onChange = {this.handleChange} />
+                            <MDBInput id = "leitura" onFocus = {(e) => e.target.autocomplete = "off"} required name = "leitura" label="Leitura" onChange = {this.handleChange} />
                         </MDBCol>
 
                     </MDBRow>
@@ -198,7 +257,6 @@ class PrintThisComponent extends Component {
                         <tr>
                         <th scope="col">#id</th>
                         <th scope="col">Codigo</th>
-                        <th scope="col">Produto</th>
                         <th scope="col">Status</th>
                         </tr>
                     </thead>

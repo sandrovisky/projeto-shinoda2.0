@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { MDBDataTable, MDBBtn, MDBIcon, MDBPopoverHeader, MDBPopoverBody, MDBPopover, MDBModal, MDBModalBody, MDBInput, MDBModalHeader } from 'mdbreact';
 
-import axios from 'axios'
+import api from '../../../services/api'
 
 export default class DatatablePage extends Component{
 
@@ -88,11 +88,11 @@ export default class DatatablePage extends Component{
 
     //Função que deleta o fornecedor no banco de dados
     deletar = async (id) => {
-        const response = await axios.delete('http://localhost:3333/suppliers/:',{
+        const response = await api.delete('/suppliers/:',{
             data : {id: id}
         })
         .then(async function () {
-            alert('Vinculado com sucesso');
+            alert('Deletado com sucesso');
         })
         .catch(function (error) {
             if (error.response) {
@@ -122,7 +122,7 @@ export default class DatatablePage extends Component{
             alert(aviso)
         //--------------------------------------------   
         } else {
-            await axios.put('http://localhost:3333/suppliers/:',{
+            await api.put('/suppliers/:',{
                 id: this.state.dataInputs.id, 
                 nomeFantasia: this.state.dataInputs.nomeFantasia, 
                 razaoSocial: this.state.dataInputs.razaoSocial, 
@@ -174,11 +174,7 @@ export default class DatatablePage extends Component{
     async componentDidMount() {
 
         //obtendo os dados da rota
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/suppliers'
-        }); 
-
-        const response =  await cadastros.get('');
+        const response =  await api.get('/suppliers');
 
         let rows = []
 

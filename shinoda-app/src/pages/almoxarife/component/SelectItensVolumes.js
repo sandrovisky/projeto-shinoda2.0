@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import axios from 'axios'
+import api from '../../../services/api'
 
 export default class SelectItensVolumes extends Component{   
     
@@ -20,12 +20,9 @@ export default class SelectItensVolumes extends Component{
         }
     }
     async componentDidMount(){
-        //obtendo os dados da rota
-        const cadastros2 = axios.create({
-        baseURL: 'http://localhost:3333/move-itens/'
-            }); 
 
-        const response2 =  await cadastros2.get(`${this.props.idMove}`);
+        //obtendo os dados da rota
+        const response2 =  await api.get(`/move-itens/${this.props.idMove}`);
         this.setState({option: response2.data.map(data => <option key = {data.id} value = {data.id}>{data.product.nome}</option>)})
     }
     
@@ -35,13 +32,9 @@ export default class SelectItensVolumes extends Component{
 
         console.log(this.state.select)
 
-        if(this.state.select !== ""){
-            
-            const cadastros2 = axios.create({
-            baseURL: 'http://localhost:3333/move-itens/move/'
-                }); 
+        if(this.state.select !== ""){ 
     
-            await cadastros2.get(`${this.state.select}`)
+            await api.get(`/move-itens/move/${this.state.select}`)
             .then((response =>{
                 console.log(response.data)
                 console.log(response.data[0].product.nome)

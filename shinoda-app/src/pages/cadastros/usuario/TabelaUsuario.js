@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { MDBDataTable, MDBBtn, MDBIcon, MDBModal, MDBModalBody, MDBInput, MDBModalHeader } from 'mdbreact';
 
-import axios from 'axios'
+import api from '../../../services/api'
 
 export default class DatatablePage extends Component{
 
@@ -67,11 +67,11 @@ export default class DatatablePage extends Component{
         } else if (this.state.dataInputs.senha !== this.state.dataInputs.senha2 || this.state.dataInputs.senha2 === ""){
             alert("As senhas não coincidem")
         }else {
-            await axios.put(`http://localhost:3333/users/${this.state.dataInputs.id}`,{ 
+            await api.put(`http://localhost:3333/users/${this.state.dataInputs.id}`,{ 
                 senha: this.state.dataInputs.senha,          
             })
             .then(async function () {
-                alert('Vinculado com sucesso');
+                alert('Senha atualizada com sucesso');
             })
             .catch(function (error) {
                 if (error.response) {
@@ -112,11 +112,7 @@ export default class DatatablePage extends Component{
     async componentDidMount() {
 
         //obtendo os dados da rota
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/users'
-        }); 
-
-        const response =  await cadastros.get('');
+        const response =  await api.get('/users');
 
         let rows = []
 

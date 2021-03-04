@@ -1,6 +1,5 @@
 import React, { Component, } from 'react';
-import ReactDOM from 'react-dom';
-import { MDBDataTable, MDBBtn, MDBIcon, MDBInput, MDBModal, MDBModalHeader, MDBModalBody, MDBRow, MDBCol, MDBPopoverHeader, MDBPopover, MDBPopoverBody } from 'mdbreact';
+import { MDBDataTable, MDBBtn, MDBIcon, MDBInput, MDBModal, MDBModalHeader, MDBModalBody } from 'mdbreact';
 
 import axios from 'axios'
 
@@ -76,7 +75,7 @@ export default class TabelaEntrada extends Component{
             lote: dados.loteitens.lote,
             quantidadePaletes: dados.quantidadePaletes,
             action:  (dados.idAnalysis === null) ? (<MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="primary">Coletar</MDBBtn>) : 
-                (parseInt(dados.analysis.status) === 1 ? <MDBBtn onClick={() =>this.toggleNovaAnalise(dados.codigo)} color="warning">Lançar</MDBBtn> : <MDBBtn onClick={() => window.open(`/laboratorio/finalizado/${dados.id}`, '_self')} color="success">Finalizado</MDBBtn> )        
+                (parseInt(dados.analysis.status) === 1 ? <MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="warning">Lançar</MDBBtn> : <MDBBtn onClick={() => window.open(`/laboratorio/finalizado/${dados.id}`, '_self')} color="success">Finalizado</MDBBtn> )        
         }))
 
         this.setState(prevState => {
@@ -89,8 +88,61 @@ export default class TabelaEntrada extends Component{
     handleSubmit = async (event) => {
         event.preventDefault()
 
-        this.setState({ x: this.state.x+1 })
-        console.log(this.state.x)
+        const cadastros2 = axios.create({
+            baseURL: 'http://localhost:3333/lotes/table/'
+        });
+
+        const response =  await cadastros2.get(`${this.state.codigo}`)
+        if(response.data !== null){
+            
+            await axios.put('http://localhost:3333/move-itens-volumes',{
+                leitura: true,       
+                id: response.data.moveitensvolume.id 
+            })
+
+            const cadastros2 = axios.create({
+                baseURL: 'http://localhost:3333/move-itens-volumes-tables/table/'
+            });      
+    
+            await cadastros2.get(`${response.data.id}`)
+            .then(async response1 => {
+                this.setState({
+                    idLoteitens: response1.data.idLoteitens,
+                    idProduct: response1.data.loteitens.moveitens.idProduct,
+                })
+            })
+
+            await axios.post('http://localhost:3333/analyses', {
+            idProduct: this.state.idProduct,
+            idLoteitens: this.state.idLoteitens,
+            status: 1,
+            createdBy: 1,
+            })
+            .then((response1) => {
+                this.setState({idAnalysis: response1.data.id})
+            })
+            .catch((err) => console.log(err))
+
+            await axios.put(`http://localhost:3333/move-itens-volumes-tables/${response.data.id}`,{
+                idAnalysis: this.state.idAnalysis,
+            })
+            .then((response1) => {
+            })
+            .catch(function (error) {
+                if (error.response) {
+                    alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
+                    console.log(error.response);
+                }
+            })
+
+            window.open(`/laboratorio/coletar/${response.data.id}`, '_self')
+        } else {
+            alert("Codigo inválido")
+        }
+    }
+
+    handleChange = (event) => {
+        this.setState({[event.target.name]: event.target.value})
     }
     
     render(){
@@ -127,7 +179,7 @@ export default class TabelaEntrada extends Component{
 
                     <MDBModalBody>
                         <form action="" method="post" onSubmit = {this.handleSubmit} >
-                            <MDBInput label="INSIRA O CODIGO DO LOTE" required size = "lg" onChange = {this.handleChangeCodigoLote} />
+                            <MDBInput label="INSIRA O CODIGO" required size = "lg" onChange = {this.handleChange} name = "codigo" />
                             <div className="text-center mt-1-half">
                                 <MDBBtn
                                     type = "submit"

@@ -1,7 +1,7 @@
 import React from "react";
-import { useHistory } from 'react-router-dom'
 import { MDBContainer, MDBRow, MDBCol, MDBIcon, MDBBtn, MDBInput, MDBTable, MDBTableHead, MDBTableBody } from "mdbreact";
-import axios from 'axios'
+
+import api from '../../services/api'
 
 import SelectSupplier from './component/SupplierSelect'
 import SelectProduct from './component/ProductSelect'
@@ -16,6 +16,11 @@ var ano = dataAtual.getFullYear();
 if (mes < 10) {
     mes = "0" + mes
 }
+
+if(dia < 10) {
+    dia = "0"+dia
+}
+
 var dataHoje = `${ano}-${mes}-${dia}`
 
 class NovaEntrada extends React.Component {
@@ -36,8 +41,7 @@ class NovaEntrada extends React.Component {
 
     //Deleta um produto no datatable de move, assim como os registros no banco
     deletarProduto = async (id) => {
-        console.log(id)
-        await axios.delete('http://localhost:3333/move-itens/:',{
+        await api.delete('/move-itens/:',{
             data : {id: id}
         })
         .then(async function () {
@@ -48,11 +52,7 @@ class NovaEntrada extends React.Component {
             console.log(error.response);
         })
 
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/move-itens/'
-        }); 
-
-        const response =  await cadastros.get(`${this.state.idMove}`);
+        const response =  await api.get(`/move-itens/${this.state.idMove}`);
     
         //manipulando os dados que preencherão o datatable
         let tableData = []
@@ -79,7 +79,7 @@ class NovaEntrada extends React.Component {
 
         //cria um movimentação
         if (this.state.idMove){
-            await axios.post('http://localhost:3333/move-itens', {
+            await api.post('/move-itens', {
                 idMove: this.state.idMove,
                 idProduct: this.state.idProduct,
                 createdBy: 1,
@@ -90,7 +90,7 @@ class NovaEntrada extends React.Component {
         }else{
 
             //funcao q cria registro na tabela MOVE
-            const result = await axios.post('http://localhost:3333/moves', {
+            const result = await api.post('/moves', {
                 nf: this.state.nf.toString(),
                 pedido: this.state.pedido.toString(),
                 status: 1,
@@ -110,7 +110,7 @@ class NovaEntrada extends React.Component {
             }        
 
             //adicionar produto a tabela move-itens
-            await axios.post('http://localhost:3333/move-itens', {
+            await api.post('/move-itens', {
                 idMove: this.state.idMove,
                 idProduct: this.state.idProduct,
                 createdBy: 1,
@@ -119,11 +119,8 @@ class NovaEntrada extends React.Component {
             this.setState({click: this.state.click+1})
             
         }
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/move-itens/'
-        }); 
 
-        const response =  await cadastros.get(`${this.state.idMove}`);
+        const response =  await api.get(`/move-itens/${this.state.idMove}`);
     
         //manipulando os dados que preencherão o datatable
         let tableData = []
@@ -159,10 +156,8 @@ class NovaEntrada extends React.Component {
 
         //pega as IDs q serão deletadas no banco
         const deleteIds = frange( last, range )
-        console.log("deletes ids vol")
-        console.log(deleteIds)
 
-        await axios.delete('http://localhost:3333/move-itens-volumes/:',{
+        await api.delete('/move-itens-volumes/:',{
             data: {
                 id: deleteIds
             }
@@ -175,7 +170,7 @@ class NovaEntrada extends React.Component {
             console.log(error.response);
         })
 
-        await axios.delete('http://localhost:3333/move-itens-volumes-tables/:',{
+        await api.delete('/move-itens-volumes-tables/:',{
            data: {
                id: idTable
            }
@@ -188,7 +183,7 @@ class NovaEntrada extends React.Component {
             console.log(error.response);
         })         
         
-        await axios.delete('http://localhost:3333/lotes/:',{
+        await api.delete('/lotes/:',{
            data: {
                id: idLoteitens
            }
@@ -200,13 +195,8 @@ class NovaEntrada extends React.Component {
             alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
             console.log(error.response);
         })
-        
-        const cadastros1 = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumes-tables/'
-        }); 
 
-        const response1 =  await cadastros1.get(`${this.state.idMove}`);
-        console.log(response1.data)
+        const response1 =  await api.get(`/move-itens-volumes-tables/${this.state.idMove}`);
         
         //manipulando os dados que preencherão o datatable de volume itens
         let tableData = []
@@ -235,7 +225,7 @@ class NovaEntrada extends React.Component {
     onSubmitCadastraMoveItensVolume = async (e) => {
         e.preventDefault()
         
-        await axios.post('http://localhost:3333/lotes', {
+        await api.post('/lotes', {
             laudo: this.state.laudo,
             dataValidade: this.state.dataValidade,
             idMoveitens: this.state.idMoveitens,
@@ -251,7 +241,7 @@ class NovaEntrada extends React.Component {
         .catch((err) => console.log(err))
         
         for(let i = 0;i < parseInt(this.state.quantidadePalete); i++){
-            await axios.post('http://localhost:3333/move-itens-volumes', {
+            await api.post('/move-itens-volumes', {
             idMoveitens: this.state.idMoveitens,
             idLoteitens: this.state.idLoteitens,
             quantidadePaletes: this.state.quantidadePalete,
@@ -261,17 +251,13 @@ class NovaEntrada extends React.Component {
             })
             .then((response) => {
                 this.setState({idMoveitensvolumesLast: response.data.id})
-                console.log(response.data.id)
             })
             .catch((err) => console.log(err))
         }
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/products/'
-        }); 
 
-        const resProduct =  await cadastros.get(`${this.state.idProduct}`);
+        const resProduct =  await api.get(`/products/${this.state.idProduct}`);
         
-        await axios.post('http://localhost:3333/move-itens-volumes-tables', {
+        await api.post('/move-itens-volumes-tables', {
             quantidadePaletes: this.state.quantidadePalete,
             validade: this.state.dataValidade,
             idMove: this.state.idMove,
@@ -286,16 +272,10 @@ class NovaEntrada extends React.Component {
         })
         .then((response) => {
             this.setState({ idTable: response.data.id })
-            console.log(response)
         })
         .catch((err) => console.log(err))
 
-        const cadastros1 = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumes-tables/'
-        }); 
-
-        const response1 =  await cadastros1.get(`${this.state.idMove}`);
-        console.log(response1.data)
+        const response1 =  await api.get(`/move-itens-volumes-tables/${this.state.idMove}`);
         
         //manipulando os dados que preencherão o datatable de volume itens
         let tableData = []
@@ -345,11 +325,7 @@ class NovaEntrada extends React.Component {
     //função q é passada ao componente filho, q recebe a idSupplier
     getIdSupplier = async (childData) => {
 
-        const cadastros1 = axios.create({
-            baseURL: 'http://localhost:3333/move-itens/'
-        }); 
-
-        await cadastros1.get(`${this.state.idMove}`)  
+        await api.get(`/move-itens/${this.state.idMove}`)  
         .then((response) => {
             if(response.data.length > 0){
                 alert("Delete os produtos primeiro")
@@ -357,9 +333,7 @@ class NovaEntrada extends React.Component {
                 this.setState({idSupplier: childData})
             }
         })
-        .catch((err)=>{})
-
-        
+        .catch((err)=>{})        
     }
 
     //função q é passada ao componente filho, q recebe a idMoveitens
@@ -378,19 +352,16 @@ class NovaEntrada extends React.Component {
     }
 
     //função q abre uma nova guia passando a id que sera usada para gerar as impressões, verifica se há produtos cadastrados e atualiza o status da move no banco
-    imprimir = async () => {
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumes/'
-        });      
+    imprimir = async () => {     
 
-        const response =  await cadastros.get(`${this.state.idMove}`);
+        const response =  await api.get(`/move-itens-volumes/${this.state.idMove}`);
 
         //verifica se há produtos cadastrados naquela movimentação
         if(response.data.length !== 0){
             if (this.state.nf === '' || this.state.pedido === ""){
                 alert("Verifique os campos da primeira tela")
             } else {
-                await axios.put('http://localhost:3333/moves/:',{ //rota da atualização
+                await api.put('/moves/:',{ //rota da atualização
                     id: this.state.idMove,
 
                     status: 2,        
@@ -411,31 +382,22 @@ class NovaEntrada extends React.Component {
     async componentDidUpdate (prevPros,prevState) {
 
         if(this.state.idSupplier !== prevState.idSupplier){
-            const cadastros = axios.create({
-                baseURL: 'http://localhost:3333/suppliers/'
-            }); 
     
-            await cadastros.get(`${this.state.idSupplier}`)
+            await api.get(`/suppliers/${this.state.idSupplier}`)
             .then((response) => {                
                 this.setState({fornecedorNome: response.data.nomeFantasia})
-            })         
+            })
 
             return false
         }        
     }
 
     async componentDidMount () {        
-        
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/moves/'
-        }); 
 
-        await cadastros.get(`${this.props.match.params.idMove}`)
+        await api.get(`/moves/${this.props.match.params.idMove}`)
         .then((response) => {
-            console.log(response.data)
             
             if(response.data[0]){
-                console.log() 
                 this.setState({dataEntrada: response.data[0].createdAt}) 
                 this.setState({idMove: response.data[0].id}) 
                 this.setState({nf: response.data[0].nf})     
@@ -445,12 +407,9 @@ class NovaEntrada extends React.Component {
                     window.location.href = '/entrada';
                 }
             }             
-        })
-        const cadastros1 = axios.create({
-            baseURL: 'http://localhost:3333/move-itens/'
-        }); 
+        }) 
 
-        const response =  await cadastros1.get(`${this.state.idMove}`);
+        const response =  await api.get(`/move-itens/${this.state.idMove}`);
     
         //manipulando os dados que preencherão o tabledata
         let tableData = []
@@ -469,11 +428,8 @@ class NovaEntrada extends React.Component {
             ))                
             this.setState({tabela: tableData})
         }
-        const cadastros3 = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumes-tables/'
-        }); 
 
-        const response3 =  await cadastros3.get(`${this.state.idMove}`);
+        const response3 =  await api.get(`/move-itens-volumes-tables/${this.state.idMove}`);
         
         //manipulando os dados que preencherão o datatable de volume itens
         let tableDataf = []
@@ -586,7 +542,7 @@ class NovaEntrada extends React.Component {
                             </MDBCol>
 
                             <MDBCol>
-                                <MDBInput required onFocus = {(e) => e.target.autocomplete = "off"} autoComplete="off" name = "dataValidade" value = {this.state.dataValidade} type = "text" label = "Data de Validade" onChange = {this.onHandleChange} className="mt-4" min={dataHoje} onBlur= {(e) => {e.target.value !== "" ? e.target.type = "date" : e.target.type = "text" }} onFocus = {(e) => e.target.type = "date"} />
+                                <MDBInput required autoComplete="off" name = "dataValidade" value = {this.state.dataValidade} type = "text" label = "Data de Validade" onChange = {this.onHandleChange} className="mt-4" min={dataHoje} onBlur= {(e) => {e.target.value !== "" ? e.target.type = "date" : e.target.type = "text" }} onFocus = {(e) => e.target.type = "date"} />
                             </MDBCol>
                         </MDBRow>
 

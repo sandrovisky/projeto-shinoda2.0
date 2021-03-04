@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { MDBDataTable, MDBBtn, MDBIcon, MDBPopoverHeader, MDBPopoverBody, MDBPopover, MDBModal, MDBModalBody, MDBInput, MDBModalHeader } from 'mdbreact';
 
+import api from '../../../services/api'
+
 import axios from 'axios'
 
 export default class DatatablePage extends Component{
@@ -83,8 +85,8 @@ export default class DatatablePage extends Component{
 
     //Função que deleta o equipamentos no banco de dados
     deletar = async (id) => {
-        await axios.delete('http://localhost:3333/equipment/:',{
-            data : {id: id}
+        await api.delete('/equipment/:',{
+            data : {id}
         })
         .then(async function () {
             alert('Deletado com sucesso');
@@ -100,7 +102,6 @@ export default class DatatablePage extends Component{
 
     //Função que vai atualizar o equipamentos cadastrado no banco de dados
     atualizar = async (id) => {
-
         //verifica se os campos estao preenchidos
         let aviso = 'Favor verificar os campos:'
         let obj = Object.entries(this.state.dataInputs)        
@@ -115,24 +116,21 @@ export default class DatatablePage extends Component{
             alert(aviso)
         //--------------------------------------------   
         } else {
-            await axios.put('http://localhost:3333/equipment/:',{
+            await api.put("/equipment/:", {
                 id: this.state.dataInputs.id, 
                 tipo: this.state.dataInputs.tipo, 
                 tag: this.state.dataInputs.tag,  
                 nome: this.state.dataInputs.nome, 
                 capacidade: this.state.dataInputs.capacidade,        
             })
-            .then(async function () {
-                alert('Vinculado com sucesso');
+            .then(async (response) => {
+                alert("Atualizado com sucesso")
             })
-            .catch(function (error) {
-                if (error.response) {
-                  alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
-                  console.log(error.response);
-                }})
-            window.location.reload();
+            .catch(async (err) => {
+                console.log(err)
+            })
         }
-    
+    window.location.reload()
     }
 
     //funcao que abre o modal preenchidos com os campos de acordo com a id do cadastro
@@ -163,14 +161,9 @@ export default class DatatablePage extends Component{
     };
     
     //fazendo uma requisição para API e manipulando os dados para serem preenchidos na tabela
-    async componentDidMount() {
+    async componentDidMount() { 
 
-        //obtendo os dados da rota
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/equipment'
-        }); 
-
-        const response =  await cadastros.get('');
+        const response =  await api.get('/equipment');
 
         let rows = []
 

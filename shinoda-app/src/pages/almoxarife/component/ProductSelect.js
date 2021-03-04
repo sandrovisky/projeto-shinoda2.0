@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import axios from 'axios'
+import api from '../../../services/api'
 
 export default class ProductSelect extends Component{   
     
@@ -15,11 +15,8 @@ export default class ProductSelect extends Component{
         if(this.props.idSupplier !== prevProps.idSupplier) {
 
             //obtendo os dados da rota
-            const cadastros = axios.create({
-                baseURL: 'http://localhost:3333/suppliers-products/products'
-            }); 
+            const response =  await api.get('/suppliers-products/products');
 
-            const response =  await cadastros.get('');
             let produtos = []
 
             //crias os options de acordo com a idSupplier fornecida
@@ -34,12 +31,10 @@ export default class ProductSelect extends Component{
         
     }
     async componentDidMount(){
-        //obtendo os dados da rota
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/suppliers-products/products'
-        }); 
 
-        const response =  await cadastros.get('');
+        //obtendo os dados da rota
+        const response =  await api.get('/suppliers-products/products');
+        
         let produtos = []
 
         //crias os options de acordo com a idSupplier fornecida

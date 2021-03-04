@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import axios from 'axios'
+import api from '../../../services/api'
 
 export default class SupplierSelect extends Component{   
     
@@ -11,11 +11,7 @@ export default class SupplierSelect extends Component{
     async componentDidMount() {
 
         //obtendo os dados da rota
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/suppliers/'
-        }); 
-
-        const response =  await cadastros.get(``);
+        const response =  await api.get(`/suppliers/`);
 
         //criando os options
         this.setState({option: response.data.map(data => <option key = {data.id} value = {data.id}>{data.nomeFantasia}</option>)})

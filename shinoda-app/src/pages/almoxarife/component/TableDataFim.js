@@ -1,7 +1,7 @@
 import { MDBTable, MDBTableHead, MDBTableBody } from 'mdbreact'
 import React, { Component } from 'react';
 
-import axios from 'axios'
+import api from '../../../services/api'
 
 export default class TabelaEntradaVolumes extends Component{   
     
@@ -10,14 +10,13 @@ export default class TabelaEntradaVolumes extends Component{
 
     //deletar da table list
     deletar = async (id) => {
-        await axios.delete('http://localhost:3333/move-itens/:',{
+        await api.delete('/move-itens/:',{
             data : {id: id}
         })
-        .then(async function () {
-            console.log("ok")
+        .then(async(response) => {
+            console.log("Deletado com sucesso")
         })
-        .catch(function (error) {
-            
+        .catch(function (error) {            
             alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
             console.log(error.response);
         })
@@ -25,13 +24,8 @@ export default class TabelaEntradaVolumes extends Component{
     }
     componentDidMount  = async () => {               
 
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumes-tables/'
-        }); 
-     
+        const response1 =  await api.get(`/move-itens-volumes-tables/${this.props.idMove}`);
 
-        const response1 =  await cadastros.get(`${this.props.idMove}`);
-        console.log(response1.data)
         //manipulando os dados que preencherão a tabela
         let tableData = []
         if (response1.data !== null){

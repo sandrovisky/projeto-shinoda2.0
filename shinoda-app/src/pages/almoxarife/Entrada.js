@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { MDBDataTable, MDBBtn, MDBIcon, MDBPopoverHeader, MDBPopoverBody, MDBPopover } from 'mdbreact';
 import { Link } from 'react-router-dom'
 
-import axios from 'axios'
+import api from '../../services/api'
 
 export default class TabelaEntrada extends Component{
 
@@ -50,11 +50,7 @@ export default class TabelaEntrada extends Component{
     async componentDidMount() {
 
         //obtendo os dados da rota
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/moves'
-        }); 
-
-        const response =  await cadastros.get('');
+        const response =  await api.get('/moves');
 
         let rows = []
 
@@ -86,6 +82,13 @@ export default class TabelaEntrada extends Component{
         
         return (
         <div style = {{padding: "0em 2em 2em 2em", borderRadius: "10px", border: "2px solid", borderColor: "black", margin: "5em 1em 0 1em"}}>
+            
+            <Link to = "/entrada/novo/0" >
+                <MDBBtn color = "primary" >
+                    
+                    <><MDBIcon icon="plus" size = "1x" /> Novo</>
+                </MDBBtn> 
+            </Link>
             <MDBDataTable responsive
             striped
             bordered
@@ -93,12 +96,7 @@ export default class TabelaEntrada extends Component{
             style = {{fontSize: "20px", textAlign: "center"}}
             />
 
-            <Link to = "/entrada/novo/0" >
-                <MDBBtn color = "primary" >
-                    
-                    <><MDBIcon icon="plus" size = "1x" /> Novo</>
-                </MDBBtn> 
-            </Link>
+            
         </div>
                      
         )
