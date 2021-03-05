@@ -29,6 +29,7 @@ class PrintThisComponent extends Component {
                 idLoteitens: response1.data.idLoteitens,
                 idProduct: response1.data.loteitens.moveitens.idProduct,
                 idAnalysis: response1.data.idAnalysis === null ? 0 : response1.data.idAnalysis,
+                idMove: response1.data.idMove,
             })
         })
         this.geraTabelaItens()
@@ -135,6 +136,12 @@ class PrintThisComponent extends Component {
             console.log(response.data)
         })
         .catch((err) => console.log(err))
+
+        await api.put('/moves',{
+            status: 3,       
+            id: this.state.idMove 
+        })
+        
         window.open(`/laboratorio`, '_self')
     }
 
