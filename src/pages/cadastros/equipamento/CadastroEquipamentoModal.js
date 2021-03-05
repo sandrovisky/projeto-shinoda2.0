@@ -71,6 +71,7 @@ export default class Modal extends Component {
             })
             .then(async function () {
                 alert('Cadastrado com sucesso');
+                window.location.reload();
             })
             .catch(function (error) {
                 if (error.response) {
@@ -78,7 +79,7 @@ export default class Modal extends Component {
                     console.log(error.response);
                     console.log(error.response);
                 }})
-            window.location.reload();
+            
         }
     }
 
