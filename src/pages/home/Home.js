@@ -18,17 +18,8 @@ export default class Home extends Component {
     render () {
 
         return (
-            <div style = {{position: "relative", marginLeft: "20px", marginTop: "50px" }}>
-            {logo}
-
-                <h4>{this.state.texto}</h4>
-                <input onChange = {this.onHandleChangetexto} type="text" />
-            
-                <Teste texto = {this.state.texto} />
-
-                 <a href="www.facebook.com" onclick="console.log('O link foi clicado.'); return false"><MDBBtn value = "Clique Aqui" />
-                    
-                </a>
+            <div style = {{padding: "0em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black", margin: "5em 1em 0 1em", textAlign: "center"}}>
+                {logo}
              </div>
             
       )
