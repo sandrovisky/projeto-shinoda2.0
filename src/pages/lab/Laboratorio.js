@@ -1,7 +1,7 @@
 import React, { Component, } from 'react';
 import { MDBDataTable, MDBBtn, MDBIcon, MDBInput, MDBModal, MDBModalHeader, MDBModalBody } from 'mdbreact';
 
-import axios from 'axios'
+import api from '../../services/api'
 
 export default class TabelaEntrada extends Component{
 
@@ -60,11 +60,7 @@ export default class TabelaEntrada extends Component{
     async componentDidMount() {
 
         //obtendo os dados da rota
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumes-tables'
-        }); 
-
-        const response =  await cadastros.get('');
+        const response =  await api.get('/move-itens-volumes-tables');
         let rows = []
 
         //manipulando os dados que preencherão a tabela
@@ -88,24 +84,15 @@ export default class TabelaEntrada extends Component{
 
     handleSubmit = async (event) => {
         event.preventDefault()
-
-        const cadastros2 = axios.create({
-            baseURL: 'http://localhost:3333/lotes/table/'
-        });
-
-        const response =  await cadastros2.get(`${this.state.codigo}`)
+        const response =  await api.get(`/lotes/table/${this.state.codigo}`)
         if(response.data !== null){
             
-            await axios.put('http://localhost:3333/move-itens-volumes',{
+            await api.put('http://localhost:3333/move-itens-volumes',{
                 leitura: true,       
                 id: response.data.moveitensvolume.id 
-            })
-
-            const cadastros2 = axios.create({
-                baseURL: 'http://localhost:3333/move-itens-volumes-tables/table/'
-            });      
+            })   
     
-            await cadastros2.get(`${response.data.id}`)
+            await api.get(`/move-itens-volumes-tables/table/${response.data.id}`)
             .then(async response1 => {
                 this.setState({
                     idLoteitens: response1.data.idLoteitens,
@@ -113,7 +100,7 @@ export default class TabelaEntrada extends Component{
                 })
             })
 
-            await axios.post('http://localhost:3333/analyses', {
+            await api.post('/analyses', {
             idProduct: this.state.idProduct,
             idLoteitens: this.state.idLoteitens,
             status: 1,
@@ -124,7 +111,7 @@ export default class TabelaEntrada extends Component{
             })
             .catch((err) => console.log(err))
 
-            await axios.put(`http://localhost:3333/move-itens-volumes-tables/${response.data.id}`,{
+            await api.put(`/move-itens-volumes-tables/${response.data.id}`,{
                 idAnalysis: this.state.idAnalysis,
             })
             .then((response1) => {

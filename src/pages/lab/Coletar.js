@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { MDBRow, MDBCol, MDBPopover, MDBInput, MDBBtn, MDBPopoverHeader, MDBPopoverBody, MDBIcon, MDBContainer } from 'mdbreact'
-import axios from 'axios'
+
+import api from '../../services/api'
 
 class PrintThisComponent extends Component {
 
@@ -14,11 +15,7 @@ class PrintThisComponent extends Component {
     }
 
     async componentDidMount () {
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumes-tables/table/'
-        });      
-
-        await cadastros.get(`${this.props.match.params.id}`)
+        await api.get(`/move-itens-volumes-tables/table/${this.props.match.params.id}`)
         .then(async response1 => {
             this.setState({
                 fornecedor: response1.data.move.supplier.nomeFantasia,
@@ -39,11 +36,8 @@ class PrintThisComponent extends Component {
     }
 
     geraTabelaItens = async () => {
-        const cadastros2 = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumess/'
-        });
-
-        const response =  await cadastros2.get(`${this.state.lastId}/${this.state.quantidadePaletes}`)
+        
+        const response =  api.get(`/move-itens-volumess/${this.state.lastId}/${this.state.quantidadePaletes}`)
 
         let tableData = []
         response.data.map(dados => tableData.push(
@@ -73,15 +67,12 @@ class PrintThisComponent extends Component {
 
         event.preventDefault()
         console.log(this.state.lastId)
-        console.log(this.state.quantidadePaletes)
-        const cadastros2 = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumes/entrada/'
-        });      
+        console.log(this.state.quantidadePaletes)      
 
-        const response =  await cadastros2.get(`${this.state.lastId}/${this.state.quantidadePaletes}/${this.state.leitura}`)
+        const response =  await api.get(`/move-itens-volumes/entrada/${this.state.lastId}/${this.state.quantidadePaletes}/${this.state.leitura}`)
         
         if(response.data){
-            await axios.put('http://localhost:3333/move-itens-volumes',{
+            await api.put('/move-itens-volumes',{
                 leitura: true,       
                 id: response.data.id 
             })
@@ -99,7 +90,7 @@ class PrintThisComponent extends Component {
 
         event.preventDefault()
         if(this.state.idAnalysis === 0){
-            await axios.post('http://localhost:3333/analyses', {
+            await api.post('/analyses', {
             idProduct: this.state.idProduct,
             idLoteitens: this.state.idLoteitens,
             status: 2,
@@ -108,7 +99,7 @@ class PrintThisComponent extends Component {
             .then(async (response) => {
                 this.setState({idAnalysis: response.data.id})
 
-                await axios.put(`http://localhost:3333/move-itens-volumes-tables/${this.props.match.params.id}`,{
+                await api.put(`/move-itens-volumes-tables/${this.props.match.params.id}`,{
                 idAnalysis: response.data.id,
                 })
                 .then((response1) => {
@@ -123,8 +114,7 @@ class PrintThisComponent extends Component {
             })
             .catch((err) => console.log(err))
         } else {
-            console.log("aqui")
-            await axios.put(`http://localhost:3333/analyses/${this.state.idAnalysis}`,{
+            await api.put(`/analyses/${this.state.idAnalysis}`,{
                 status: 2,
             })
             .then((response) => {
@@ -132,7 +122,7 @@ class PrintThisComponent extends Component {
             })
         }        
 
-        await axios.post('http://localhost:3333/analysis-data', {
+        await api.post('/analysis-data', {
             idProduct: this.state.idProduct,
             idAnalysis: this.state.idAnalysis,
             quantidadeIntegral: this.state.pesoIntegral,
@@ -252,7 +242,7 @@ class PrintThisComponent extends Component {
             </form>     
             
             <div className = "border p-4 mb-4 mt-4 overflow-auto">
-                <table class="table responsive align-middle">
+                <table className="table responsive align-middle">
                     <thead>
                         <tr>
                         <th scope="col">#id</th>

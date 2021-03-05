@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { MDBRow, MDBCol, MDBInput, MDBBtn, MDBIcon } from 'mdbreact'
-import axios from 'axios'
+
+import api from '../../services/api'
 
 class PrintThisComponent extends Component {
 
@@ -14,11 +15,8 @@ class PrintThisComponent extends Component {
     }
 
     geraTabelaItens = async () => {
-        const cadastros2 = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumess/'
-        });
 
-        const response =  await cadastros2.get(`${this.state.lastId}/${this.state.quantidadePaletes}`)
+        const response =  await api.get(`/move-itens-volumess/${this.state.lastId}/${this.state.quantidadePaletes}`)
 
         let tableData = []
         response.data.map(dados => tableData.push(
@@ -41,11 +39,8 @@ class PrintThisComponent extends Component {
     }
 
     async componentDidMount () {
-        const cadastros = axios.create({
-            baseURL: 'http://localhost:3333/move-itens-volumes-tables/table/'
-        });      
 
-        await cadastros.get(`${this.props.match.params.id}`)
+        await api.get(`/move-itens-volumes-tables/table/${this.props.match.params.id}`)
         .then(async response1 => {
             if(response1.data.idAnalysis === null){
                 alert("erro")
@@ -61,11 +56,7 @@ class PrintThisComponent extends Component {
                     quantidadePaletes: response1.data.quantidadePaletes,
                     idAnalysis: response1.data.idAnalysis
                 })
-                const cadastros1 = axios.create({
-                    baseURL: 'http://localhost:3333/analysis-data/'
-                });      
-                console.log(this.state.idAnalysis)
-                await cadastros1.get(`${this.state.idAnalysis}`)
+                await api.get(`/analysis-data/${this.state.idAnalysis}`)
                 .then((response) => {
                     console.log(response.data)
                     this.setState({
