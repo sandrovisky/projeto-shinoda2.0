@@ -48,7 +48,6 @@ export default class TabelaEntrada extends Component{
     }
 
     gerarDados = async (e) => {
-        alert(!e)
 
         const response =  await api.get('/moves');
 
