@@ -228,7 +228,7 @@ export default class DatatablePage extends Component{
               striped
               bordered
               data={this.state.data}
-              style = {{fontSize: "20px", textAlign: "center"}}
+              style = {{fontSize: "20px", textAlign: "right"}}
             />
                 <MDBModal
                 isOpen={this.state.modal}

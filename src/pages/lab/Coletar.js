@@ -50,7 +50,7 @@ class PrintThisComponent extends Component {
             <tr key = {dados.id}>                    
                 <td>{dados.id}</td>
                 <td>{dados.codigo}</td>
-                <td>{dados.leitura === true ? 
+                <td  style = {{textAlign: "right"}} >{dados.leitura === true ? 
                     <MDBBtn color = "success" >
                         <MDBIcon icon="check" size = "1x" /> Lida
                     </MDBBtn>
@@ -257,7 +257,7 @@ class PrintThisComponent extends Component {
                         <tr>
                         <th scope="col">#id</th>
                         <th scope="col">Codigo</th>
-                        <th scope="col">Status</th>
+                        <th scope="col" style = {{textAlign: "right"}}>Status</th>
                         </tr>
                     </thead>
                     <tbody>

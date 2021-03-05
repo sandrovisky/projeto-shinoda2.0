@@ -42,6 +42,7 @@ export default class TabelaEntrada extends Component{
                 label: 'Ações',
                 field: 'action',
                 sort: 'asc',
+                
               }
             ],
             data: [],

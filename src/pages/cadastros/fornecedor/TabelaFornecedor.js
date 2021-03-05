@@ -41,7 +41,7 @@ export default class DatatablePage extends Component{
                 label: 'Ações',
                 field: 'action',
                 sort: 'asc',
-                width: 150
+                width: 150,
               }
             ],
             data: []
@@ -239,7 +239,7 @@ export default class DatatablePage extends Component{
               striped
               bordered
               data={this.state.data}
-              style = {{fontSize: "20px"}}
+              style = {{fontSize: "20px", textAlign: "right"}}
             />
             <MDBModal
                 isOpen={this.state.modal}

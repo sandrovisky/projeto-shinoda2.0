@@ -65,7 +65,7 @@ export default class TabelaEntrada extends Component{
             tag: dados.tag,
             nome: dados.nome,
             capacidade: dados.capacidade,
-            action: <div>
+            action: <div >
 
                 {/* popover de exclusão do cadastro */}
                 <MDBPopover
@@ -119,7 +119,7 @@ export default class TabelaEntrada extends Component{
             striped
             bordered
             data={this.state.data}
-            style = {{fontSize: "20px", textAlign: "center"}}
+            style = {{fontSize: "20px", textAlign: "right"}}
             />
             
         </div>

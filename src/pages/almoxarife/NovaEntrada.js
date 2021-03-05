@@ -419,7 +419,7 @@ class NovaEntrada extends React.Component {
                 <tr key = {dados.id}>
                     <td>{dados.product.id}</td>
                     <td>{dados.product.nome}</td>
-                    <td>
+                    <td style = {{textAlign: "right"}}>
                         <MDBBtn size="sm" color = "danger" onClick={() => this.deletarProduto(dados.id)} >
                             <MDBIcon icon="trash-alt"  size = "1x" />
                         </MDBBtn>
@@ -441,7 +441,7 @@ class NovaEntrada extends React.Component {
                     <td>{dados.validade}</td>
                     <td>{dados.loteitens.lote}</td>
                     <td>{dados.quantidadeTotal}</td>
-                    <td>
+                    <td style = {{textAlign: "right"}}>
                         <MDBBtn size="sm" color = "danger" onClick={() => this.deletarMoveItensVolume(parseInt(dados.lastId), parseInt(dados.quantidadePaletes), dados.idLoteitens, dados.id )} >
                             <MDBIcon icon="trash-alt"  size = "1x" />
                         </MDBBtn>

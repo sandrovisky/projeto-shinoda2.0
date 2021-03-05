@@ -25,7 +25,7 @@ class PrintThisComponent extends Component {
             <tr key = {dados.id}>                    
                 <td>{dados.id}</td>
                 <td>{dados.codigo}</td>
-                <td>{dados.leitura === true ? 
+                <td style = {{textAlign: "right"}}>{dados.leitura === true ? 
                     <MDBBtn color = "success" >
                         <MDBIcon icon="check" size = "1x" /> Lida
                     </MDBBtn>
