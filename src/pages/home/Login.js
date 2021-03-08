@@ -72,9 +72,6 @@ export default class Login extends  Component{
                     <MDBBtn type = "submit" color="elegant">Logar</MDBBtn>
 
                 </form>
-                {this.state.usuario}
-                {this.state.senha}
-
             </div>
         )
     }
