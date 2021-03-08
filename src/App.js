@@ -6,9 +6,29 @@ import React from 'react';
 
 import Navbar from './pages/nav/Navbar'
 import Routes from './pages/root/routes'
+import Login from './pages/home/Login'
 
 class App extends React.Component {
+
+    state = {
+        logged: localStorage.getItem('log')
+    }
+
+    getLogged = (childData) => {
+        this.setState({logged: childData})
+    }
     render(){
+        
+        if(this.state.logged === "false") {
+            return (
+                <div>
+                        <Navbar />
+                     <Login getLogged = {this.getLogged} />)
+
+                </div>
+            )
+        }
+        
         return(
             <div>
                 <Navbar />

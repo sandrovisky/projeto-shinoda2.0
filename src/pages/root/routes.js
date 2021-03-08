@@ -20,46 +20,45 @@ import Laboratorio from '../lab/Laboratorio'
 
 
 export default class Routes extends Component {
-
+    
     render () {
+        return (
+            <div >
+                
+                <Router>
 
-      return (
-        <div >
+                    <Switch>  
+
+                        <Route exact path = '/Home' component = {Home} />
+
+                        <Route exact path = '/cadastros' component = {Cadastros} />
+
+                        <Route exact path = '/entrada' component = {Entrada} />
+
+                        <Route exact path = '/entrada/novo/:idMove' component = {EntradaNovo} />
+
+                        <Route exact path = '/entrada/impressao/:idMove' component = {Print} />
+
+                        <Route path = '/cadastros/fornecedor' component = {Fornecedor} />
+
+                        <Route path = '/cadastros/produto' component = {Produto} />
+
+                        <Route path = '/cadastros/usuario' component = {Usuario} />
+
+                        <Route path = '/cadastros/equipamento' component = {Equipamento} />
+
+                        <Route exact path = '/laboratorio' component = {Laboratorio} />
+
+                        <Route path = '/laboratorio/coletar/:id' component = {Coletar} />
+
+                        <Route path = '/laboratorio/finalizado/:id' component = {Finalizado} />
+                            
+                    </Switch>
+
+                </Router>
+                
             
-            <Router>
-
-                <Switch>
-
-                    <Route exact path = '/Home' component = {Home} />
-
-                    <Route exact path = '/cadastros' component = {Cadastros} />
-
-                    <Route exact path = '/entrada' component = {Entrada} />
-
-                    <Route exact path = '/entrada/novo/:idMove' component = {EntradaNovo} />
-
-                    <Route exact path = '/entrada/impressao/:idMove' component = {Print} />
-
-                    <Route path = '/cadastros/fornecedor' component = {Fornecedor} />
-
-                    <Route path = '/cadastros/produto' component = {Produto} />
-
-                    <Route path = '/cadastros/usuario' component = {Usuario} />
-
-                    <Route path = '/cadastros/equipamento' component = {Equipamento} />
-
-                    <Route exact path = '/laboratorio' component = {Laboratorio} />
-
-                    <Route path = '/laboratorio/coletar/:id' component = {Coletar} />
-
-                    <Route path = '/laboratorio/finalizado/:id' component = {Finalizado} />
-                        
-                </Switch>
-
-            </Router>
-            
-           
-        </div>
-      )
+            </div>
+        )
     }
 }

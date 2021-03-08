@@ -36,6 +36,31 @@ export default class Navbar extends Component {
         });
     }
 
+    onClickLogout = () => {
+        localStorage.setItem('log', false)
+        localStorage.setItem('usuario', "")
+        window.location.reload()
+    }
+
+    async componentDidMount () {
+
+        if (localStorage.getItem('usuario')) {
+            let linkto = [
+                <MDBNavLink  key = "1" to="">
+                    Usuario: {localStorage.getItem('usuario')}
+                    {" "}<MDBIcon onClick = {this.onClickLogout} icon="sign-in-alt" />
+                </MDBNavLink>
+            ]
+            this.setState({logged: linkto})
+        }else {
+            let linkto = [
+                <MDBNavLink key = "2" to="">
+                </MDBNavLink>
+            ]
+            this.setState({logged: linkto})
+        }
+    }
+
     render() {
         return(
             <div>
@@ -81,10 +106,7 @@ export default class Navbar extends Component {
                                     </MDBNavbarNav>
                                     
                                 <MDBNavbarNav right>
-                                    <MDBNavLink to="#">
-                                        <MDBIcon icon="sign-in-alt" />
-                                        Login
-                                    </MDBNavLink>
+                                    {this.state.logged}
                                 </MDBNavbarNav>
 
                             </MDBCollapse>
