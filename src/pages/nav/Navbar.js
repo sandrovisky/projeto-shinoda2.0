@@ -2,6 +2,8 @@ import {Component} from 'react';
 import { MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavbarToggler, MDBCollapse, MDBNavItem, MDBNavLink, MDBIcon} from 'mdbreact';
 import { BrowserRouter as Router} from 'react-router-dom';
 
+import api from '../../services/api'
+
 import history from '../../func'
 
 export default class Navbar extends Component {
@@ -36,29 +38,31 @@ export default class Navbar extends Component {
         });
     }
 
-    onClickLogout = () => {
-        localStorage.setItem('log', false)
-        localStorage.setItem('usuario', "")
+    onClickLogout = async  () => {
+        await api.put('/storages', {
+            log: "false"
+        })
+        
         window.location.reload()
     }
 
     async componentDidMount () {
 
-        if (localStorage.getItem('usuario')) {
-            let linkto = [
-                <MDBNavLink  key = "1" to="">
-                    Usuario: {localStorage.getItem('usuario')}
-                    {" "}<MDBIcon onClick = {this.onClickLogout} icon="sign-in-alt" />
-                </MDBNavLink>
-            ]
-            this.setState({logged: linkto})
-        }else {
-            let linkto = [
-                <MDBNavLink key = "2" to="">
-                </MDBNavLink>
-            ]
-            this.setState({logged: linkto})
-        }
+        await api.get('/storages')
+        .then(async response => {
+            if(response.data.log !== "false"){
+                let linkto = [
+                    <MDBNavLink  key = "1" to="">
+                        Usuario: {response.data.usuario}
+                        {" "}<MDBIcon onClick = {this.onClickLogout} icon="sign-in-alt" />
+                    </MDBNavLink>
+                ]
+                this.setState({logged: linkto}) 
+            } else {
+                let linkto = []
+                this.setState({logged: linkto}) 
+            }            
+        })        
     }
 
     render() {

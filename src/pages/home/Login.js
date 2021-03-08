@@ -8,30 +8,38 @@ export default class Login extends  Component{
         usuario: "",
         senha: ""
     }
+    
+    atualizarDados = async (ver, usuario) => {
+        if (ver) {
+            await api.put('/storages', {
+                usuario: usuario,
+                log: "true"
+            })
+            .then(async response => {
+                console.log(response.data)
+            })
+            window.location.reload()
+        }
+    }
 
     onSubmit= async (e) => {
 
         e.preventDefault()
+        this.setState({ver: false})
         
         await api.get(`/users/login/${this.state.usuario}/${this.state.senha}`)
         .then(async response => {
-            console.log(response.data)
             if (response.data) {
-                localStorage.setItem('log', true);
-                localStorage.setItem('usuario', response.data.usuario);
-                this.props.getLogged(localStorage.getItem('log')) 
-                
-                window.location.reload()
-            } else if(this.state.usuario === "admin" && this.state.senha === "admin") { 
-                localStorage.setItem('log', true);
-                localStorage.setItem('usuario', "admin");
-                this.props.getLogged(localStorage.getItem('log')) 
-
-                window.location.reload()
+                this.setState({ver: true})
+                this.setState({usuario: response.data.usuario})
+            } else if (this.state.usuario === "admin" && this.state.senha === "admin") {
+                this.setState({ver: true})
+                this.setState({usuario: "admin"})
             } else {
                 alert("Usuario ou senha invalidos")
             }
-        })        
+        })  
+        this.atualizarDados(this.state.ver, this.state.usuario) 
     }
 
     onHandleChange = (e) => {
