@@ -55,7 +55,7 @@ export default class Login extends  Component{
                     <MDBContainer >
                         <MDBRow className = "justify-content-center">
                             <MDBCol xl = "4" lg = "4" md = "6" sm = "6">
-                                <MDBInput  label = "Username" value = {this.state.usuario} onChange = {this.onHandleChange} name = "usuario" type="text" />      
+                                <MDBInput onFocus = {(e) => e.target.autocomplete = "off"} label = "Username" value = {this.state.usuario} onChange = {this.onHandleChange} name = "usuario" type="text" />      
                             </MDBCol>
                         </MDBRow>
                             
@@ -64,7 +64,7 @@ export default class Login extends  Component{
                     <MDBContainer >
                         <MDBRow className = "justify-content-center">
                             <MDBCol  xl = "4" lg = "4" md = "6" sm = "6">
-                                <MDBInput label = "Senha" value = {this.state.senha} onChange = {this.onHandleChange} name = "senha" type="password" />
+                                <MDBInput onFocus = {(e) => e.target.autocomplete = "off"} label = "Senha" value = {this.state.senha} onChange = {this.onHandleChange} name = "senha" type="password" />
                             </MDBCol>
                         </MDBRow>
                     </MDBContainer>
