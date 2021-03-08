@@ -42,7 +42,7 @@ export default class TabelaEntrada extends Component{
             ],
             data: []
         },
-        dataInputs: {
+        dataInputs: {  
         },
         checkbox: false
     }
