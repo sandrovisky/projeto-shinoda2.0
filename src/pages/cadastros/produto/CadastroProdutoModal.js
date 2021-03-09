@@ -63,16 +63,19 @@ export default class Modal extends Component {
                 nome: this.state.nome,
                 medida: this.state.medida
             })
-            .then(async function () {
-                alert('Cadastrado com sucesso');
+            .then(async (response) => {
+                alert(response.data.nome + ' cadastrado com sucesso');
+
+                window.location.reload();
             })
-            .catch(function (error) {
+            .catch(async (error) => {
                 if (error.response) {
                   alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
                   console.log(error.response);
-                  console.log(error.response);
-                }})
-            window.location.reload();
+
+                  window.location.reload();
+                }
+            })            
         }
     }
 
