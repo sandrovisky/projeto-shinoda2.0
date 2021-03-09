@@ -155,15 +155,19 @@ class NovaEntrada extends React.Component {
 
         //cria um movimentação
         if (this.state.idMove !== 0){
-            await api.post('/move-itens', {
-                idMove: this.state.idMove,
-                idProduct: this.state.idProduct,
-                createdBy: 1,
-                updatedBy: 1
-            })
+            await api.get(`/moves/product/${this.state.idProduct}`)
             .then(async response => {
-            })
-            
+                if ( response.data ) {
+                    alert("Item ja vinculado a essa movimentação")
+                } else {
+                    await api.post('/move-itens', {
+                        idMove: this.state.idMove,
+                        idProduct: this.state.idProduct,
+                        createdBy: 1,
+                        updatedBy: 1
+                    })
+                }
+            })            
         }else{
 
             //funcao q cria registro na tabela MOVE
@@ -190,26 +194,6 @@ class NovaEntrada extends React.Component {
                 createdBy: 1,
             })
             
-        }
-
-        const response =  await api.get(`/move-itens/${this.state.idMove}`);
-    
-        //manipulando os dados que preencherão o datatable
-        let tableData = []
-        
-        if (response !== null){
-            response.data.map(dados => tableData.push(
-                <tr key = {dados.id}>
-                    <td>{dados.product.id}</td>
-                    <td>{dados.product.nome}</td>
-                    <td>
-                        <MDBBtn size="sm" color = "danger" onClick={() => this.deletarProduto(dados.id)} >
-                            <MDBIcon icon="trash-alt"  size = "1x" />
-                        </MDBBtn>
-                    </td>
-                </tr>
-            ))                
-            this.setState({tabela: tableData})
         }
          
         this.gerarDadosMoveItens() 

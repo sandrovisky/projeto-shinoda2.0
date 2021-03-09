@@ -62,7 +62,7 @@ export default class TabelaEntrada extends Component{
         await api.get(`/lotes`)
         .then(async response => {await response.data.map(dados => {
             rows.push({
-            id: dados.idAnalysis === null ? "" : dados.idAnalysis,
+            id: dados.analysis === null ? "" : dados.analysis.id,
             nf: dados.moveitens.move.nf,
             dataEntrada: dados.moveitens.move.createdAt,
             fornecedor: dados.moveitens.move.supplier.nomeFantasia,

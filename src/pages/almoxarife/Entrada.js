@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { MDBDataTable, MDBBtn, MDBIcon, MDBInput, MDBRow, MDBCol } from 'mdbreact';
+import { MDBDataTable, MDBBtn, MDBIcon, MDBRow, MDBCol } from 'mdbreact';
 import { Link } from 'react-router-dom'
 
 import api from '../../services/api'
