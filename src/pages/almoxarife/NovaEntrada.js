@@ -354,7 +354,7 @@ class NovaEntrada extends React.Component {
 
                     status: 2,        
                 })
-                window.open(`/entrada/impressao/${this.state.idMove}`, '_self')
+                window.open(`/entrada/impressao/${this.state.idMove}`, '_blank')
             }
         } else{
             alert("Nenhum produto cadastrado")
