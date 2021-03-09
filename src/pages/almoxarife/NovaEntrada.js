@@ -126,23 +126,24 @@ class NovaEntrada extends React.Component {
 
     gerarDadosFim = async () => {
         
-        await api.get(`/lotes/moves/${this.props.idMove}`)
+        await api.get(`/lotes/move/${this.state.idMove}`)
         .then(async response => {
             console.log(response.data)
             let tableData = []
             await response.data.map(dados => {
                 let peso = 0
-                dados.loteitens.moveitensvolume.map( volumes => {
-                    peso += volumes.quantidadeTotal
+                dados.moveitensvolume.map( volumes => {
+                    peso += parseInt(volumes.quantidadeTotal)                
                 })
                 tableData.push(
-                    <tr>                                
-                        <td>{dados.loteitens.moveitens.product.nome}</td>
-                        <td>{dados.loteitens.dataValidade}</td>
-                        <td>{dados.loteitens.moveitensvolume.length}</td>
+                    <tr key = {dados.id}>
+                        <td>{dados.moveitens.product.nome}</td>
+                        <td>{dados.dataValidade}</td>
+                        <td>{dados.moveitensvolume.length}</td>
                         <td>{peso}</td>
                     </tr>
                 )
+                console.log(peso)
             })
             this.setState({ tabelaFim: tableData }) 
         })
@@ -348,7 +349,7 @@ class NovaEntrada extends React.Component {
             if (this.state.nf === '' || this.state.pedido === ""){
                 alert("Verifique os campos da primeira tela")
             } else {
-                await api.put('/moves/:',{ //rota da atualização
+                await api.put('/moves',{ //rota da atualização
                     id: this.state.idMove,
 
                     status: 2,        
@@ -619,7 +620,7 @@ class NovaEntrada extends React.Component {
                             </MDBTableHead>
 
                             <MDBTableBody>
-                                {this.state.tabela}
+                                {this.state.tabelaFim}
                             </MDBTableBody>
                         </MDBTable>
                         

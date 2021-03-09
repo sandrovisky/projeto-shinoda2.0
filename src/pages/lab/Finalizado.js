@@ -16,58 +16,46 @@ class PrintThisComponent extends Component {
 
     geraTabelaItens = async () => {
 
-        const response =  await api.get(`/move-itens-volumess/${this.state.lastId}/${this.state.quantidadePaletes}`)
-
-        let tableData = []
-        response.data.map(dados => tableData.push(
-            <tr key = {dados.id}>                    
-                <td>{dados.id}</td>
-                <td>{dados.codigo}</td>
-                <td style = {{textAlign: "right"}}>{dados.leitura === true ? 
-                    <MDBBtn color = "success" >
-                        <MDBIcon icon="check" size = "1x" /> Lida
-                    </MDBBtn>
-                    : 
-                    <MDBBtn color = "danger" >
-                        <MDBIcon icon="times" size = "1x" /> Não Lida
-                    </MDBBtn>}
-                    
-                </td>
-            </tr>
-        ))
-        this.setState({tabela: tableData})
+        api.get(`/move-itens-volumes/loteitens/${this.props.match.params.id}`)
+        .then(async response => {
+            let tableData = []
+            response.data.map(dados => tableData.push(
+                <tr key = {dados.id}>                    
+                    <td>{dados.id}</td>
+                    <td>{dados.codigo}</td>
+                    <td  style = {{textAlign: "right"}} >{dados.leitura === true ? 
+                        <MDBBtn color = "success" >
+                            <MDBIcon icon="check" size = "1x" /> Lida
+                        </MDBBtn>
+                        : 
+                        <MDBBtn color = "danger" >
+                            <MDBIcon icon="times" size = "1x" /> Não Lida
+                        </MDBBtn>}                        
+                    </td>
+                </tr>
+            ))
+             this.setState({tabela: tableData})
+        })    
     }
 
     async componentDidMount () {
 
-        await api.get(`/move-itens-volumes-tables/table/${this.props.match.params.id}`)
-        .then(async response1 => {
-            if(response1.data.idAnalysis === null){
-                alert("erro")
-            } else {
-                this.setState({
-                    fornecedor: response1.data.move.supplier.nomeFantasia,
-                    laudo: response1.data.loteitens.laudo,
-                    produto: response1.data.produto ,
-                    lote: response1.data.loteitens.lote,
-                    dataEntrada: response1.data.move.createdAt,
-                    dataValidade: response1.data.loteitens.dataValidade,
-                    lastId: response1.data.lastId,
-                    quantidadePaletes: response1.data.quantidadePaletes,
-                    idAnalysis: response1.data.idAnalysis
-                })
-                await api.get(`/analysis-data/${this.state.idAnalysis}`)
-                .then((response) => {
-                    console.log(response.data)
-                    this.setState({
-                    pesoIntegral: response.data.quantidadeIntegral,
-                    pesoGema: response.data.quantidadeGema,
-                    pesoClara: response.data.quantidadeClara,
-                    pesoCasca: response.data.quantidadeCasca,
-                    })
-                })
-            }           
+        await api.get(`/lotes/${this.props.match.params.id}`)
+        .then(async response => {
+            this.setState({
+                fornecedor: response.data.moveitens.move.supplier.nomeFantasia,
+                laudo: response.data.laudo,
+                produto: response.data.moveitens.product.nome,
+                lote: response.data.lote,
+                dataEntrada: response.data.createdAt,
+                dataValidade: response.data.dataValidade,
+                pesoIntegral: response.data.analysis.analysisdata.quantidadeIntegral,
+                pesoGema: response.data.analysis.analysisdata.quantidadeGema,
+                pesoClara: response.data.analysis.analysisdata.quantidadeClara,
+                pesoCasca: response.data.analysis.analysisdata.quantidadeCasca
+            })
         })
+
         this.geraTabelaItens()
     }
 
@@ -123,13 +111,12 @@ class PrintThisComponent extends Component {
                     </MDBRow>                         
                 </form>
                 
-                <div className = "border p-4 mb-4 mt-4 overflow-auto">
-                    <table class="table responsive align-middle">
+                <div className = "border p-4 mb-4 mt-4 overflow-auto" style = {{ height: "500px", borderRadius: "10px", border: "2px solid", borderColor: "black" }}>
+                    <table className="table responsive align-right">
                         <thead>
                             <tr>
                             <th scope="col">#id</th>
                             <th scope="col">Codigo</th>
-                            <th scope="col">Status</th>
                             </tr>
                         </thead>
                         <tbody>

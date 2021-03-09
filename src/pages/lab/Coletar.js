@@ -15,21 +15,27 @@ class PrintThisComponent extends Component {
     }
 
     async componentDidMount () {
-        await api.get(`/move-itens-volumes-tables/table/${this.props.match.params.id}`)
-        .then(async response1 => {
+        await api.get(`/lotes/${this.props.match.params.id}`)
+        .then(async response => {
+            console.log(response.data)
+            if ( response.data.analysis) {
+                if ( response.data.analysis.status === "2" ) {
+                    window.location.href = '/laboratorio'
+                }
+            }
+            
             this.setState({
-                fornecedor: response1.data.move.supplier.nomeFantasia,
-                laudo: response1.data.loteitens.laudo,
-                produto: response1.data.produto ,
-                lote: response1.data.loteitens.lote,
-                dataEntrada: response1.data.move.createdAt,
-                dataValidade: response1.data.loteitens.dataValidade,
-                lastId: response1.data.lastId,
-                quantidadePaletes: response1.data.quantidadePaletes,
-                idLoteitens: response1.data.idLoteitens,
-                idProduct: response1.data.loteitens.moveitens.idProduct,
-                idAnalysis: response1.data.idAnalysis === null ? 0 : response1.data.idAnalysis,
-                idMove: response1.data.idMove,
+                fornecedor: response.data.moveitens.move.supplier.nomeFantasia,
+                laudo: response.data.laudo,
+                produto: response.data.moveitens.product.nome,
+                lote: response.data.lote,
+                dataEntrada: response.data.createdAt,
+                dataValidade: response.data.dataValidade,
+                quantidadePaletes: response.data.moveitensvolume.length,
+                idLoteitens: response.data.id,
+                idProduct: response.data.moveitens.idProduct,
+                idAnalysis: response.data.analysis === null ? 0 : response.data.analysis.id,
+                idMove: response.data.moveitens.idMove,
             })
         })
         this.geraTabelaItens()
@@ -38,49 +44,47 @@ class PrintThisComponent extends Component {
 
     geraTabelaItens = async () => {
         
-        const response =  api.get(`/move-itens-volumess/${this.state.lastId}/${this.state.quantidadePaletes}`)
-
-        let tableData = []
-        response.data.map(dados => tableData.push(
-            <tr key = {dados.id}>                    
-                <td>{dados.id}</td>
-                <td>{dados.codigo}</td>
-                <td  style = {{textAlign: "right"}} >{dados.leitura === true ? 
-                    <MDBBtn color = "success" >
-                        <MDBIcon icon="check" size = "1x" /> Lida
-                    </MDBBtn>
-                    : 
-                    <MDBBtn color = "danger" >
-                        <MDBIcon icon="times" size = "1x" /> Não Lida
-                    </MDBBtn>}
-                    
-                </td>
-            </tr>
-        ))
-        this.setState({tabela: tableData})
-
+        api.get(`/move-itens-volumes/loteitens/${this.props.match.params.id}`)
+        .then(async response => {
+            let tableData = []
+            response.data.map(dados => tableData.push(
+                <tr key = {dados.id}>                    
+                    <td>{dados.id}</td>
+                    <td>{dados.codigo}</td>
+                    <td  style = {{textAlign: "right"}} >{dados.leitura === true ? 
+                        <MDBBtn color = "success" >
+                            <MDBIcon icon="check" size = "1x" /> Lida
+                        </MDBBtn>
+                        : 
+                        <MDBBtn color = "danger" >
+                            <MDBIcon icon="times" size = "1x" /> Não Lida
+                        </MDBBtn>}                        
+                    </td>
+                </tr>
+            ))
+             this.setState({tabela: tableData})
+        })
         window.onload = function() {
             document.getElementById("leitura").focus();
-          };
+        };
     }
 
     lerRegistro = async (event) => {
 
-        event.preventDefault()
-        console.log(this.state.lastId)
-        console.log(this.state.quantidadePaletes)      
+        event.preventDefault()  
 
-        const response =  await api.get(`/move-itens-volumes/entrada/${this.state.lastId}/${this.state.quantidadePaletes}/${this.state.leitura}`)
-        
-        if(response.data){
-            await api.put('/move-itens-volumes',{
-                leitura: true,       
-                id: response.data.id 
-            })
-            this.geraTabelaItens()
-        } else {
-            alert("Palete não cadastrado ou não pertence a esse lote")
-        }
+        await api.get(`/move-itens-volumes/codigo/${this.state.leitura}`)
+        .then(async response => {
+            if(response.data){
+                await api.put('/move-itens-volumes',{
+                    leitura: true,       
+                    id: response.data.id 
+                })
+                this.geraTabelaItens()
+            } else {
+                alert("Palete não cadastrado ou não pertence a esse lote")
+            }
+        })
     }
 
     handleChange = (event) => {
@@ -90,6 +94,9 @@ class PrintThisComponent extends Component {
     handleSubmit = async (event) => {
 
         event.preventDefault()
+        console.log(this.state.idAnalysis)
+        console.log(this.state.idMove)
+
         if(this.state.idAnalysis === 0){
             await api.post('/analyses', {
             idProduct: this.state.idProduct,
@@ -100,31 +107,18 @@ class PrintThisComponent extends Component {
             .then(async (response) => {
                 this.setState({idAnalysis: response.data.id})
 
-                await api.put(`/move-itens-volumes-tables/${this.props.match.params.id}`,{
-                idAnalysis: response.data.id,
-                })
-                .then((response1) => {
-                    console.log(response1.data)
-                })
-                .catch(function (error) {
-                    if (error.response) {
-                        alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
-                        console.log(error.response);
-                    }
-                })
             })
             .catch((err) => console.log(err))
         } else {
-            await api.put(`/analyses/${this.state.idAnalysis}`,{
+            await api.put(`/analyses`,{
+                id: this.state.idAnalysis,
                 status: 2,
             })
             .then((response) => {
-                console.log(response.data)
             })
         }        
 
         await api.post('/analysis-data', {
-            idProduct: this.state.idProduct,
             idAnalysis: this.state.idAnalysis,
             quantidadeIntegral: this.state.pesoIntegral,
             quantidadeGema: this.state.pesoGema,
@@ -140,8 +134,7 @@ class PrintThisComponent extends Component {
         await api.put('/moves',{
             status: 3,       
             id: this.state.idMove 
-        })
-        
+        })        
         window.open(`/laboratorio`, '_self')
     }
 
@@ -195,7 +188,7 @@ class PrintThisComponent extends Component {
                     </MDBCol>
 
                 </MDBRow>                         
-                <div className="text-center mt-1-half">
+                <div className="text-center mt-1-half"  >
                     <MDBPopover
                         placement="left"
                         popover
@@ -248,7 +241,7 @@ class PrintThisComponent extends Component {
                 </MDBContainer>
             </form>     
             
-            <div className = "border p-4 mb-4 mt-4 overflow-auto">
+            <div className = "border p-4 mb-4 mt-4 overflow-auto" style = {{ height: "500px", borderRadius: "10px", border: "2px solid", borderColor: "black" }}>
                 <table className="table responsive align-middle">
                     <thead>
                         <tr>

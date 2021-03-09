@@ -44,7 +44,7 @@ class PrintThisComponent extends Component {
                 <MDBRow  >
                     <MDBCol >
                         <div style = {{textAlign: 'center'}}>
-                        <Barcode value = {`ENT${dados.id}`} width = "3" height = "70" />
+                        <Barcode value = {`ENT${dados.id}`} width = {3} height = {70} />
                         </div>                        
                     </MDBCol>
                 </MDBRow>

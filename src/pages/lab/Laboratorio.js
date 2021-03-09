@@ -58,75 +58,63 @@ export default class TabelaEntrada extends Component{
 
     //fazendo uma requisição para API e manipulando os dados para serem preenchidos na tabela
     async componentDidMount() {
-
-        //obtendo os dados da rota
-        const response =  await api.get('/move-itens-volumes-tables');
         let rows = []
-
-        //manipulando os dados que preencherão a tabela
-        response.data.map(dados => rows.push({
+        await api.get(`/lotes`)
+        .then(async response => {await response.data.map(dados => {
+            rows.push({
             id: dados.idAnalysis === null ? "" : dados.idAnalysis,
-            nf: dados.move.nf,
-            dataEntrada: dados.move.createdAt,
-            fornecedor: dados.move.supplier.nomeFantasia,
-            lote: dados.loteitens.lote,
-            quantidadePaletes: dados.quantidadePaletes,
-            action:  (dados.idAnalysis === null) ? (<MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="primary">Coletar</MDBBtn>) : 
-                (parseInt(dados.analysis.status) === 1 ? <MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="warning">Lançar</MDBBtn> : <MDBBtn onClick={() => window.open(`/laboratorio/finalizado/${dados.id}`, '_self')} color="success">Finalizado</MDBBtn> )        
-        }))
-
+            nf: dados.moveitens.move.nf,
+            dataEntrada: dados.moveitens.move.createdAt,
+            fornecedor: dados.moveitens.move.supplier.nomeFantasia,
+            lote: dados.lote,
+            quantidadePaletes: dados.moveitensvolume.length,
+            action:  (dados.analysis === null) ? 
+                (<MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="primary">Coletar</MDBBtn>) : 
+                (parseInt(dados.analysis.status) === 1 ? <MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="warning">Lançar</MDBBtn> : 
+                <MDBBtn onClick={() => window.open(`/laboratorio/finalizado/${dados.id}`, '_self')} color="success">Finalizado</MDBBtn> )        
+            })
+        })}) 
         this.setState(prevState => {
             let data = Object.assign({}, prevState.data); 
             data.rows = rows;                            
             return { data };                      
-        })    
+        })
     }
 
     handleSubmit = async (event) => {
         event.preventDefault()
-        const response =  await api.get(`/lotes/table/${this.state.codigo}`)
-        if(response.data !== null){
-            
-            await api.put('http://localhost:3333/move-itens-volumes',{
-                leitura: true,       
-                id: response.data.moveitensvolume.id 
-            })   
-    
-            await api.get(`/move-itens-volumes-tables/table/${response.data.id}`)
-            .then(async response1 => {
-                this.setState({
-                    idLoteitens: response1.data.idLoteitens,
-                    idProduct: response1.data.loteitens.moveitens.idProduct,
+        
+        await api.get(`move-itens-volumes/codigo/${this.state.codigo}`)
+        .then(async response => {
+            console.log(response.data)
+            if ( !response.data ) {
+                alert("Codigo não encontrado")
+            }else if ( response.data.lote.analysis ) {
+                if ( !response.data.lote.analysis.status === "2" ) {
+                    alert("Essa entrada ja foi finalizada")   
+                } else if ( response.data.lote.analysis.status === "1" ) {
+                    await api.put('/move-itens-volumes',{
+                        leitura: true,       
+                        id: response.data.id 
+                    })  
+                    window.open(`/laboratorio/coletar/${response.data.idLoteitens}`, '_self')                
+                }       
+            } else {
+                await api.post('/analyses', {
+                    idProduct: response.data.moveitens.idProduct,
+                    idLoteitens: response.data.lote.id,
+                    status: 1,
+                    createdBy: 1,
+                    })
+                    .then(async (responseAnalysis) => {
+                        await api.put('/move-itens-volumes',{
+                            leitura: true,       
+                            id: response.data.id 
+                        })  
+                        window.open(`/laboratorio/coletar/${response.data.idLoteitens}`, '_self')                          
                 })
-            })
-
-            await api.post('/analyses', {
-            idProduct: this.state.idProduct,
-            idLoteitens: this.state.idLoteitens,
-            status: 1,
-            createdBy: 1,
-            })
-            .then((response1) => {
-                this.setState({idAnalysis: response1.data.id})
-            })
-            .catch((err) => console.log(err))
-
-            await api.put(`/move-itens-volumes-tables/${response.data.id}`,{
-                idAnalysis: this.state.idAnalysis,
-            })
-            .then((response1) => {
-            })
-            .catch(function (error) {
-                if (error.response) {
-                    alert("ERRO: "+error.response.status+ "\n" +error.response.data.message);
-                    console.log(error.response);
-                }
-            })
-
-            window.open(`/laboratorio/coletar/${response.data.id}`, '_self')
-        } else {
-            alert("Codigo inválido")
-        }
+            }
+        })
     }
 
     handleChange = (event) => {
@@ -167,7 +155,7 @@ export default class TabelaEntrada extends Component{
 
                     <MDBModalBody>
                         <form action="" method="post" onSubmit = {this.handleSubmit} >
-                            <MDBInput label="INSIRA O CODIGO" required size = "lg" onChange = {this.handleChange} name = "codigo" />
+                            <MDBInput onFocus = {(e) => e.target.autocomplete = "off"} label="INSIRA O CODIGO" required size = "lg" onChange = {this.handleChange} name = "codigo" />
                             <div className="text-center mt-1-half">
                                 <MDBBtn
                                     type = "submit"

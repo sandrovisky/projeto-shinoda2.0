@@ -102,6 +102,8 @@ export default class TabelaEntrada extends Component{
     //fazendo uma requisição para API e manipulando os dados para serem preenchidos na tabela
     async componentDidMount() {
 
+        
+
         this.gerarDados()
          
     }
