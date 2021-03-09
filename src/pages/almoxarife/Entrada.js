@@ -121,7 +121,7 @@ export default class TabelaEntrada extends Component{
         
         return (
         <div style = {{padding: "0em 2em 2em 2em", borderRadius: "10px", border: "2px solid", borderColor: "black", margin: "5em 1em 0 1em"}}>
-            
+            <h1 style = {{textAlign: 'center'}}>Entrada</h1>
             <MDBRow>
                 <MDBCol>
                     <Link to = "/entrada/novo/0" >
