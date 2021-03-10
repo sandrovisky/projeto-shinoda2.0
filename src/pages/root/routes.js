@@ -16,6 +16,7 @@ import Print from '../almoxarife/component/Print'
 import EntradaNovo from '../almoxarife/NovaEntrada'
 import Laboratorio from '../lab/Laboratorio'
 import Login from '../home/Login'
+import Teste from '../home/teste'
 
 window.sessionStorage.setItem("auth", "false")
 export default class Routes extends Component {
@@ -51,6 +52,8 @@ export default class Routes extends Component {
                     <Switch>  
 
                         <Route exact path = '/Home' component = {Home} />
+
+                        <Route exact path = '/teste' component = {Teste} />
 
                         <Route exact path = '/cadastros' component = {Cadastros} />
 
