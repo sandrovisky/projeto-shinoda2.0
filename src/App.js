@@ -19,9 +19,11 @@ class App extends React.Component {
     
 
     handleOnIdle (event) {
-        localStorage.setItem("auth", "false")
-        alert("Sessão expirada")
-        window.location.reload()
+        if (localStorage.getItem("auth") === "true") {
+            localStorage.setItem("auth", "false")
+            alert("Sessão expirada")
+            window.location.reload()
+        }        
     }
 
     getLogged = (childData) => {
