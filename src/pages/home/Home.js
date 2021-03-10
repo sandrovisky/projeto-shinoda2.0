@@ -13,7 +13,7 @@ export default class Home extends Component {
     }
     
     render () {
-        window.sessionStorage.setItem("key", "chupa meu ovo");
+        window.sessionStorage.setItem("key", "teste");
         alert(window.sessionStorage.getItem("key"))
         return (
             <div style = {{padding: "0em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black", margin: "5em 1em 0 1em", textAlign: "center"}}>
