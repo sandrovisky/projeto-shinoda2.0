@@ -8,19 +8,6 @@ export default class Login extends  Component{
         usuario: "",
         senha: ""
     }
-    
-    atualizarDados = async (ver, usuario) => {
-        if (ver) {
-            await api.put('/storages', {
-                usuario: usuario,
-                log: "true"
-            })
-            .then(async response => {
-                console.log(response.data)
-            })
-            window.location.reload()
-        }
-    }
 
     onSubmit= async (e) => {
 
@@ -29,17 +16,15 @@ export default class Login extends  Component{
         
         await api.get(`/users/login/${this.state.usuario}/${this.state.senha}`)
         .then(async response => {
-            if (response.data) {
-                this.setState({ver: true})
-                this.setState({usuario: response.data.usuario})
-            } else if (this.state.usuario === "admin" && this.state.senha === "admin") {
-                this.setState({ver: true})
-                this.setState({usuario: "admin"})
+            if (this.state.usuario === "admin" && this.state.senha === "admin") {
+                alert('admin')
+                localStorage.setItem("auth", "true")
+            } else if ( response.data ) {
+                localStorage.setItem("auth", "true");
             } else {
-                alert("Usuario ou senha invalidos")
+                alert("Usuario ou senha invalidos") 
             }
         })  
-        this.atualizarDados(this.state.ver, this.state.usuario) 
     }
 
     onHandleChange = (e) => {
@@ -70,7 +55,8 @@ export default class Login extends  Component{
                     </MDBContainer>
 
                     <MDBBtn type = "submit" color="elegant">Logar</MDBBtn>
-
+                    {this.state.usuario}
+                    {this.state.senha}
                 </form>
             </div>
         )

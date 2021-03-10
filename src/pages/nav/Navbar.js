@@ -48,21 +48,21 @@ export default class Navbar extends Component {
 
     async componentDidMount () {
 
-        await api.get('/storages')
-        .then(async response => {
-            if(response.data.log !== "false"){
-                let linkto = [
-                    <MDBNavLink  key = "1" to="">
-                        Usuario: {response.data.usuario}
-                        {" "}<MDBIcon onClick = {this.onClickLogout} icon="sign-in-alt" />
-                    </MDBNavLink>
-                ]
-                this.setState({logged: linkto}) 
-            } else {
-                let linkto = []
-                this.setState({logged: linkto}) 
-            }            
-        })        
+        // await api.get('/storages')
+        // .then(async response => {
+        //     if(response.data.log !== "false"){
+        //         let linkto = [
+        //             <MDBNavLink  key = "1" to="">
+        //                 Usuario: {response.data.usuario}
+        //                 {" "}<MDBIcon onClick = {this.onClickLogout} icon="sign-in-alt" />
+        //             </MDBNavLink>
+        //         ]
+        //         this.setState({logged: linkto}) 
+        //     } else {
+        //         let linkto = []
+        //         this.setState({logged: linkto}) 
+        //     }            
+        // })        
     }
 
     render() {

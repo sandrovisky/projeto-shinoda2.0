@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
+import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom'
 
 import Home from '../home/Home'
 
@@ -14,14 +14,35 @@ import Finalizado from '../lab/Finalizado'
 import Entrada from '../almoxarife/Entrada'
 import Print from '../almoxarife/component/Print'
 import EntradaNovo from '../almoxarife/NovaEntrada'
-
 import Laboratorio from '../lab/Laboratorio'
+import Login from '../home/Login'
 
-
-
+window.sessionStorage.setItem("auth", "false")
 export default class Routes extends Component {
+
+    state = {
+        auth: window.sessionStorage.getItem("auth")
+    }
     
     render () {
+
+        if (this.state.auth === "false") {
+            return (
+                <div>
+                    
+                    <Router>
+                        <Redirect to = "/login" />
+                        <Switch>  
+
+                            <Route path = '/' component = {Login} />
+                                
+                        </Switch>
+
+                    </Router>
+                </div>                
+            )            
+        }
+
         return (
             <div >
                 
@@ -55,8 +76,7 @@ export default class Routes extends Component {
                             
                     </Switch>
 
-                </Router>
-                
+                </Router>                
             
             </div>
         )
