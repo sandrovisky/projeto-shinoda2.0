@@ -18,9 +18,11 @@ export default class Login extends  Component{
         .then(async response => {
             if (this.state.usuario === "admin" && this.state.senha === "admin") {
                 localStorage.setItem("auth", "true")
+                localStorage.setItem("usuario", response.data.usuario)
                 window.location.reload()
             } else if ( response.data ) {
                 localStorage.setItem("auth", "true");
+                localStorage.setItem("usuario", "admin");
                 window.location.reload()
             } else {
                 alert("Usuario ou senha invalidos") 

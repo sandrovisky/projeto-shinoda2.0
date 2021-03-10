@@ -14,9 +14,7 @@ class App extends React.Component {
         super(props)
         this.idleTimer = null
         this.handleOnIdle = this.handleOnIdle.bind(this)
-    }
-
-    
+    }    
 
     handleOnIdle (event) {
         if (localStorage.getItem("auth") === "true") {

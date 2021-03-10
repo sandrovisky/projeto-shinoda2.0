@@ -17,12 +17,10 @@ import EntradaNovo from '../almoxarife/NovaEntrada'
 import Laboratorio from '../lab/Laboratorio'
 import Login from '../home/Login'
 import Teste from '../home/teste'
-
-window.sessionStorage.setItem("auth", "false")
 export default class Routes extends Component {
 
     state = {
-        auth: localStorage.getItem("auth")
+        auth: localStorage.getItem("auth") ? localStorage.getItem("auth") : "false"
     }
     
     render () {
