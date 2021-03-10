@@ -17,10 +17,11 @@ export default class Login extends  Component{
         await api.get(`/users/login/${this.state.usuario}/${this.state.senha}`)
         .then(async response => {
             if (this.state.usuario === "admin" && this.state.senha === "admin") {
-                alert('admin')
                 localStorage.setItem("auth", "true")
+                window.location.reload()
             } else if ( response.data ) {
                 localStorage.setItem("auth", "true");
+                window.location.reload()
             } else {
                 alert("Usuario ou senha invalidos") 
             }

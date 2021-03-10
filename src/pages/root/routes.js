@@ -21,7 +21,7 @@ window.sessionStorage.setItem("auth", "false")
 export default class Routes extends Component {
 
     state = {
-        auth: window.sessionStorage.getItem("auth")
+        auth: localStorage.getItem("auth")
     }
     
     render () {
