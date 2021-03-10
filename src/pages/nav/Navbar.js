@@ -39,30 +39,28 @@ export default class Navbar extends Component {
     }
 
     onClickLogout = async  () => {
-        await api.put('/storages', {
-            log: "false"
-        })
+        localStorage.setItem("auth", "false")
+        localStorage.setItem("usuario", "")
         
         window.location.reload()
     }
 
     async componentDidMount () {
 
-        // await api.get('/storages')
-        // .then(async response => {
-        //     if(response.data.log !== "false"){
-        //         let linkto = [
-        //             <MDBNavLink  key = "1" to="">
-        //                 Usuario: {response.data.usuario}
-        //                 {" "}<MDBIcon onClick = {this.onClickLogout} icon="sign-in-alt" />
-        //             </MDBNavLink>
-        //         ]
-        //         this.setState({logged: linkto}) 
-        //     } else {
-        //         let linkto = []
-        //         this.setState({logged: linkto}) 
-        //     }            
-        // })        
+        
+            if(localStorage.getItem("auth") === "true"){
+                let linkto = [
+                    <MDBNavLink  key = "1" to="">
+                        Usuario: {localStorage.getItem("usuario")}
+                        {" "}<MDBIcon onClick = {this.onClickLogout} icon="sign-in-alt" />
+                    </MDBNavLink>
+                ]
+                this.setState({logged: linkto}) 
+            } else {
+                let linkto = []
+                this.setState({logged: linkto}) 
+            }            
+               
     }
 
     render() {

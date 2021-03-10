@@ -35,9 +35,9 @@ class App extends React.Component {
 
         <IdleTimer
           ref={ref => { this.idleTimer = ref }}
-          timeout={5000}
+          timeout={1000 * 60 * 10}
           onIdle={this.handleOnIdle}
-          debounce={250}
+          debounce={2000}
         />
                 <Navbar />
 
