@@ -6,7 +6,7 @@ import React from 'react';
 import IdleTimer from 'react-idle-timer'
 
 import Navbar from './pages/nav/Navbar'
-import Routes from './pages/root/routes'
+import Routes from './pages/routes/index'
 
 class App extends React.Component {
 

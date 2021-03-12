@@ -339,6 +339,7 @@ class NovaEntrada extends React.Component {
                     status: 2,        
                 })
                 window.open(`/entrada/impressao/${this.state.idMove}`, '_blank')
+                window.open(`/entrada`, '_self')
             }
         } else{
             alert("Nenhum produto cadastrado")
@@ -388,7 +389,6 @@ class NovaEntrada extends React.Component {
     render() {
     return (
         <div id = "divPrincipal" style = {{padding: "0em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black", margin: "5em 1em 0 1em"}}>
-    {}
             <MDBContainer >
                 <h3 className="text-center font-weight-bold pt-4 pb-5 mb-2"><strong>Formulario de nova entrada</strong></h3>
                 <MDBRow>

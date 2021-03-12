@@ -3,20 +3,25 @@ import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-d
 
 import Home from '../home/Home'
 
+import Producao from '../producao/Producao'
+import NovaProducao from '../producao/NovaProducao'
+
 import Cadastros from '../cadastros/Cadastros'
 import Fornecedor from '../cadastros/fornecedor/Fornecedor'
 import Produto from '../cadastros/produto/Produto'
 import Usuario from '../cadastros/usuario/Usuario'
 import Equipamento from '../cadastros/equipamento/Equipamento'
+
 import Coletar from '../lab/Coletar'
 import Finalizado from '../lab/Finalizado'
+import Laboratorio from '../lab/Laboratorio'
 
 import Entrada from '../almoxarife/Entrada'
 import Print from '../almoxarife/component/Print'
 import EntradaNovo from '../almoxarife/NovaEntrada'
-import Laboratorio from '../lab/Laboratorio'
+
 import Login from '../home/Login'
-import Teste from '../home/teste'
+
 export default class Routes extends Component {
 
     state = {
@@ -51,29 +56,22 @@ export default class Routes extends Component {
 
                         <Route exact path = '/Home' component = {Home} />
 
-                        <Route exact path = '/teste' component = {Teste} />
+                        <Route exact path = '/entrada' component = {Entrada} />
+                        <Route path =       '/entrada/novo/:idMove' component = {EntradaNovo} />
+                        <Route path =       '/entrada/impressao/:idMove' component = {Print} />
 
                         <Route exact path = '/cadastros' component = {Cadastros} />
-
-                        <Route exact path = '/entrada' component = {Entrada} />
-
-                        <Route exact path = '/entrada/novo/:idMove' component = {EntradaNovo} />
-
-                        <Route exact path = '/entrada/impressao/:idMove' component = {Print} />
-
-                        <Route path = '/cadastros/fornecedor' component = {Fornecedor} />
-
-                        <Route path = '/cadastros/produto' component = {Produto} />
-
-                        <Route path = '/cadastros/usuario' component = {Usuario} />
-
-                        <Route path = '/cadastros/equipamento' component = {Equipamento} />
-
+                        <Route path =       '/cadastros/fornecedor' component = {Fornecedor} />
+                        <Route path =       '/cadastros/produto' component = {Produto} />
+                        <Route path =       '/cadastros/usuario' component = {Usuario} />
+                        <Route path =       '/cadastros/equipamento' component = {Equipamento} />
                         <Route exact path = '/laboratorio' component = {Laboratorio} />
 
-                        <Route path = '/laboratorio/coletar/:id' component = {Coletar} />
+                        <Route path =       '/laboratorio/coletar/:id' component = {Coletar} />
+                        <Route path =       '/laboratorio/finalizado/:id' component = {Finalizado} />
 
-                        <Route path = '/laboratorio/finalizado/:id' component = {Finalizado} />
+                        <Route exact path = '/producao' component = {Producao} />
+                        <Route exact path = '/producao/novo/:idProducao' component = {NovaProducao} />
                             
                     </Switch>
 
