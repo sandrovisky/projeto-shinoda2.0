@@ -54,9 +54,9 @@ export default class Navbar extends Component {
         
             if(localStorage.getItem("auth") === "true"){
                 let linkto = [
-                    <MDBNavLink  key = "1" to="">
+                    <MDBNavLink onClick = {this.onClickLogout} key = "1" to="">
                         Usuario: {localStorage.getItem("usuario")}
-                        {" "}<MDBIcon onClick = {this.onClickLogout} icon="sign-in-alt" />
+                        {" "}<MDBIcon  icon="sign-in-alt" />
                     </MDBNavLink>
                 ]
                 this.setState({logged: linkto}) 

@@ -16,12 +16,6 @@ export default class DatatablePage extends Component{
                     width: 150
                 },
                 {
-                    label: 'Produto',
-                    field: 'produto',
-                    sort: 'asc',
-                    width: 270
-                },
-                {
                     label: 'Status',
                     field: 'status',
                     sort: 'asc',
@@ -46,9 +40,16 @@ export default class DatatablePage extends Component{
         //manipulando os dados que preencherão a tabela
         products.data.map(dados => rows.push({
             id: dados.id,
-            produto: "produto",
-            status: dados.status,
-            action: 1
+            status: dados.status === "1" ? "Em digitação": dados.status === "2" ? "Em produção" : "Finalizado",
+            action: dados.status === "1" ? 
+                <Link to = {`/producao/novo/${dados.id}`} >
+                    <MDBBtn color = "primary" > Continuar </MDBBtn>
+                </Link> 
+            : dados.status === "2" ?
+            <Link to = {`/producao/lancar/${dados.id}`} >
+                <MDBBtn color = "warning" > Lançar Produção </MDBBtn>
+            </Link>
+            : "Finalizado", 
         }))
 
         this.setState(prevState => {

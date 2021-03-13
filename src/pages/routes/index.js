@@ -5,6 +5,7 @@ import Home from '../home/Home'
 
 import Producao from '../producao/Producao'
 import NovaProducao from '../producao/NovaProducao'
+import LancarProducao from '../producao/LancarProducao'
 
 import Cadastros from '../cadastros/Cadastros'
 import Fornecedor from '../cadastros/fornecedor/Fornecedor'
@@ -32,8 +33,7 @@ export default class Routes extends Component {
 
         if (this.state.auth === "false") {
             return (
-                <div>
-                    
+                <div>                    
                     <Router>
                         <Redirect to = "/login" />
                         <Switch>  
@@ -71,7 +71,8 @@ export default class Routes extends Component {
                         <Route path =       '/laboratorio/finalizado/:id' component = {Finalizado} />
 
                         <Route exact path = '/producao' component = {Producao} />
-                        <Route exact path = '/producao/novo/:idProducao' component = {NovaProducao} />
+                        <Route path = '/producao/novo/:idProducao' component = {NovaProducao} />
+                        <Route path = '/producao/lancar/:idProducao' component = {LancarProducao} />
                             
                     </Switch>
 
