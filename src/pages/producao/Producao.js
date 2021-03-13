@@ -49,7 +49,10 @@ export default class DatatablePage extends Component{
             <Link to = {`/producao/lancar/${dados.id}`} >
                 <MDBBtn color = "warning" > Lançar Produção </MDBBtn>
             </Link>
-            : "Finalizado", 
+            : 
+            <Link to = {`/producao/finalizado/${dados.id}`} >
+                <MDBBtn color = "success" >Finalizado</MDBBtn>
+            </Link>, 
         }))
 
         this.setState(prevState => {

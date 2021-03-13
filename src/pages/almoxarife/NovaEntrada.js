@@ -110,7 +110,7 @@ class NovaEntrada extends React.Component {
                             <td>{dados.loteitens.moveitens.product.nome}</td>
                             <td>{dados.loteitens.dataValidade}</td>
                             <td>{dados.loteitens.lote}</td>
-                            <td>{dados.quantidadeTotal}</td>
+                            <td>{dados.quantidadeTotal * dados.quantidadePaletes}{" " + dados.loteitens.moveitens.product.medida}</td>
                             <td style = {{textAlign: "right"}}>
                                 <MDBBtn size="sm" color = "danger" onClick={() => this.deletarVolume(dados.id, dados.idLoteitens)} >
                                     <MDBIcon icon="trash-alt"  size = "1x" />
@@ -140,7 +140,7 @@ class NovaEntrada extends React.Component {
                         <td>{dados.moveitens.product.nome}</td>
                         <td>{dados.dataValidade}</td>
                         <td>{dados.moveitensvolume.length}</td>
-                        <td>{peso}</td>
+                        <td>{peso}{" " + dados.moveitens.product.medida}</td>
                     </tr>
                 )
                 console.log(peso)
@@ -496,8 +496,9 @@ class NovaEntrada extends React.Component {
                                     <MDBInput required onFocus = {(e) => e.target.autocomplete = "off"} onChange = {this.onHandleChange} value = {this.state.lote} name = "lote" label="Lote do fornecedor" className="mt-4"  />
 
                             </MDBCol>
-                            <MDBCol style = {{marginTop: "1.5em"}} >
-                                <SelectItensVolumes click = {this.state.click} idMove = {this.state.idMove} getIdProduct = {this.getIdProduct} getIdMoveitens = {this.getIdMoveitens}/>
+                            <MDBCol  className="" >
+                                <label htmlFor="volumes">Selecione o Produto</label>
+                                <SelectItensVolumes click = {this.state.click} idMove = {this.state.idMove} getIdProduct = {this.getIdProduct} getIdMoveitens = {this.getIdMoveitens} id = "volumes" />
                                 
                             </MDBCol >
 

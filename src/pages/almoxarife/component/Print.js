@@ -35,10 +35,10 @@ class PrintThisComponent extends Component {
 
                 <MDBRow>
                     <MDBCol>
-                        <strong>Palete:</strong> {dados.id} - {"ENT"+dados.id}
+                        <strong>Palete:</strong> {dados.id}
                     </MDBCol>
                     <MDBCol>
-                        <strong>Peso:</strong> {dados.quantidadeTotal}
+                        <strong>Peso:</strong> {dados.quantidadeTotal}{" "+dados.moveitens.product.medida}
                     </MDBCol>
                 </MDBRow>
                 <MDBRow  >

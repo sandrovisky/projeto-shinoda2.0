@@ -6,6 +6,7 @@ import Home from '../home/Home'
 import Producao from '../producao/Producao'
 import NovaProducao from '../producao/NovaProducao'
 import LancarProducao from '../producao/LancarProducao'
+import FinalizadoProducao from '../producao/FinalizadoProducao'
 
 import Cadastros from '../cadastros/Cadastros'
 import Fornecedor from '../cadastros/fornecedor/Fornecedor'
@@ -73,6 +74,7 @@ export default class Routes extends Component {
                         <Route exact path = '/producao' component = {Producao} />
                         <Route path = '/producao/novo/:idProducao' component = {NovaProducao} />
                         <Route path = '/producao/lancar/:idProducao' component = {LancarProducao} />
+                        <Route path = '/producao/finalizado/:idProducao' component = {FinalizadoProducao} />
                             
                     </Switch>
 

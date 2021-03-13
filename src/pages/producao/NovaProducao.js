@@ -230,7 +230,7 @@ export default class DatatablePage extends Component{
                     */}
                     {this.state.formActivePanel1 === 1 &&
                     (<MDBCol md="12">
-                    <h3 className="text-center font-weight-bold pt-4 pb-2 mb-2">Paletes</h3>
+                    <h3 className="text-center font-weight-bold pt-4 pb-2 mb-2">Etapa 1 - Leitura de Paletes</h3>
                         
                         <form onSubmit = {this.onSubmitAdicionarPalete}>
                             <MDBContainer style = {{padding: "1em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black", }}>
@@ -295,7 +295,7 @@ export default class DatatablePage extends Component{
                     */} 
                     {this.state.formActivePanel1 === 2 &&
                     (<MDBCol md="12">
-                        <h3 className="text-center font-weight-bold pt-4 pb-2 mb-2">Equipamentos</h3>
+                        <h3 className="text-center font-weight-bold pt-4 pb-2 mb-2">Etapa 2 - Equipamentos do Processo</h3>
                         <MDBContainer style = {{padding: "1em 1em 1em 1em", borderRadius: "10px", border: "2px solid", borderColor: "black", }}>
                                     
                             <MDBRow>
@@ -315,9 +315,10 @@ export default class DatatablePage extends Component{
                             </MDBRow>
                             
                             <form onSubmit = {this.onSubmitAdicionarEquipamento} >
-                                <MDBRow className="justify-content-center">
+                                <MDBRow className="justify-content-center text-center">
                                     <MDBCol size = "6" >   
-                                        <select name="equipamento" required onChange = {this.onHandleChange} style = {{width: "100%"}} value = {this.state.equipamento} className="browser-default custom-select">
+                                        <label className="mt-1" htmlFor="equipamento"><strong>Selecione o Equipamento</strong></label>
+                                        <select name="equipamento" required onChange = {this.onHandleChange} style = {{width: "100%"}} value = {this.state.equipamento} className="browser-default custom-select" id = "equipamento">
                                             {this.state.options}
                                         </select>
                                     </MDBCol>
