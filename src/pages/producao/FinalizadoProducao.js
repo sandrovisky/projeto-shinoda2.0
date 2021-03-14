@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
-import  { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBInput, MDBInputNumeric, MDBInputGroup } from 'mdbreact'
-import { Redirect } from 'react-router-dom'
+import  { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBInput } from 'mdbreact'
+import { Link, Redirect } from 'react-router-dom'
 
 import api from '../../services/api'
 
-export default class LancarProducao extends Component{
+export default class FinalizadoProducao extends Component{
 
     state = {
         idProducao: parseInt(this.props.match.params.idProducao),
         redirecionar: false
-    }
-
-    onHandleChange = event => {
-        this.setState({[event.target.name]: event.target.value})
     }
 
     onSubmitLancarProducao = async (event) => {
@@ -43,14 +39,38 @@ export default class LancarProducao extends Component{
                     clara: response.data.quantidadeClara,
                     status: response.data.status === "1" ? "Em Digitação" : response.data.status === "2" ? "Em Produção" : "Finalizado"
                 })
-            }           
+                if( response.data.status === "3" ) {
+                    this.setState({fim: 
+                        <MDBRow className="text-center justify-content-center">
+                            <MDBCol xl = "4" lg = "4" md = "8" >
+                                <Link to = {`/producao/devolucao/${this.state.idProducao}`}>
+                                    <MDBBtn color = "success" type = "button" >
+                                        Devolução
+                                    </MDBBtn>
+                                </Link>                                
+                            </MDBCol>
+                        </MDBRow>
+                    })
+                } else if ( response.data.status === "4" ) {
+                    api.get(`/devolucoes/producao/${this.state.idProducao}`)
+                    .then(async response => {
+                        this.setState({fim:
+                            <h4 className = "text-center" ><strong>Peso dos paletes:</strong>{" " + response.data.pesoTotal + " kg"}</h4>
+                        })
+                    })
+                } else {
+                    this.setState({redirecionar: true})
+                }
+            } else {
+                this.setState({redirecionar: true})
+            }          
         })
     }
     
     render(){
 
-        if (this.state.devolução) {
-            return <Redirect push to = '/' />
+        if (this.state.redirecionar) {
+            return <Redirect push to = '/producao' />
         }
         
         return (
@@ -92,13 +112,9 @@ export default class LancarProducao extends Component{
 
                         </MDBRow>
 
-                        <MDBRow className="text-center justify-content-center">
-                            <MDBCol xl = "4" lg = "4" md = "8" >
-                                <MDBBtn color = "success" type = "button" >
-                                    Devolução
-                                </MDBBtn>
-                            </MDBCol>
-                        </MDBRow>
+                        {this.state.fim}
+
+                        
 
                     </form>                            
                 </MDBContainer>

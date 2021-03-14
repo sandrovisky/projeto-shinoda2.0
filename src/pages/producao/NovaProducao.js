@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Switch, BrowserRouter as Router } from 'react-router-dom'
 import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBInput, MDBTable, MDBTableHead, MDBTableBody, MDBIcon } from "mdbreact";
 
 import api from '../../services/api'
 
-export default class DatatablePage extends Component{ 
+export default class NovaProducao extends Component{ 
 
     state = {
         formActivePanel1: 1,
@@ -72,6 +72,7 @@ export default class DatatablePage extends Component{
                 createdBy: parseInt(localStorage.getItem('idUsuario')) 
             })
             .then(async resProdItens => {
+                this.setState({codigo: ""})
                 this.gerarTabelaProducaoItens()
             })
             .catch(async errProdItens => {
@@ -218,7 +219,7 @@ export default class DatatablePage extends Component{
 
     render(){
         if (this.state.redirecionar) {
-            return <Redirect to = '/producao' />
+            return <Redirect push to = '/producao' />
         }
         return (
             <div style = {{padding: "0em 2em 2em 2em", borderRadius: "10px", border: "2px solid", borderColor: "black", margin: "5em 1em 0 1em"}}>

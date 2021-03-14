@@ -70,7 +70,7 @@ export default class TabelaEntrada extends Component{
             quantidadePaletes: dados.moveitensvolume.length,
             action:  (dados.analysis === null) ? 
                 (<MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="primary">Coletar</MDBBtn>) : 
-                (parseInt(dados.analysis.status) === 1 ? <MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="warning">Lançar</MDBBtn> : 
+                (dados.analysis.status === "1" ? <MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="warning">Lançar</MDBBtn> : 
                 <MDBBtn onClick={() => window.open(`/laboratorio/finalizado/${dados.id}`, '_self')} color="success">Finalizado</MDBBtn> )        
             })
         })}) 

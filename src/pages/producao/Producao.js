@@ -4,7 +4,7 @@ import { MDBDataTable, MDBBtn, MDBIcon } from 'mdbreact';
 
 import api from '../../services/api'
 
-export default class DatatablePage extends Component{
+export default class Producao extends Component{
 
     state = {
         data: {
@@ -40,7 +40,7 @@ export default class DatatablePage extends Component{
         //manipulando os dados que preencherão a tabela
         products.data.map(dados => rows.push({
             id: dados.id,
-            status: dados.status === "1" ? "Em digitação": dados.status === "2" ? "Em produção" : "Finalizado",
+            status: dados.status === "1" ? "Em digitação": dados.status === "2" ? "Em produção" : dados.status === "3" ? "Pesasem dos paletes": "Finalizado",
             action: dados.status === "1" ? 
                 <Link to = {`/producao/novo/${dados.id}`} >
                     <MDBBtn color = "primary" > Continuar </MDBBtn>
@@ -49,10 +49,14 @@ export default class DatatablePage extends Component{
             <Link to = {`/producao/lancar/${dados.id}`} >
                 <MDBBtn color = "warning" > Lançar Produção </MDBBtn>
             </Link>
-            : 
+            : dados.status === "3" ?
+            <Link to = {`/producao/finalizado/${dados.id}`} >
+                <MDBBtn color = "warning" >Pesar Paletes</MDBBtn>
+            </Link>
+            :  
             <Link to = {`/producao/finalizado/${dados.id}`} >
                 <MDBBtn color = "success" >Finalizado</MDBBtn>
-            </Link>, 
+            </Link>
         }))
 
         this.setState(prevState => {

@@ -94,8 +94,6 @@ class PrintThisComponent extends Component {
     handleSubmit = async (event) => {
 
         event.preventDefault()
-        console.log(this.state.idAnalysis)
-        console.log(this.state.idMove)
 
         if(this.state.idAnalysis === 0){
             await api.post('/analyses', {
