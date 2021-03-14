@@ -20,7 +20,7 @@ export default class Login extends  Component{
                 localStorage.setItem("auth", "true")
                 localStorage.setItem("usuario", "admin")                
                 localStorage.setItem("idUsuario", 9999);
-                window.history.go(-1);
+                window.open.history.go(-1);
             } else if ( response.data ) {
                 localStorage.setItem("auth", "true");
                 localStorage.setItem("usuario", response.data.usuario);
