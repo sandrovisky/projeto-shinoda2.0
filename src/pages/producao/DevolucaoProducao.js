@@ -16,7 +16,7 @@ export default class DevolucaoProducao extends Component{
     }
 
     async componentDidMount () {
-        api.get(`/producoes/${this.state.idProducao}`)
+        await api.get(`/producoes/${this.state.idProducao}`)
         .then( async (response) => {            
             console.log(response.data)
             if ( response.data ) {
@@ -52,7 +52,7 @@ export default class DevolucaoProducao extends Component{
     onSubmitDevolucao = async (event) => {
         event.preventDefault()
         
-        api.post(`/devolucoes`, {
+        await api.post(`/devolucoes`, {
             pesoTotal: this.state.peso,
             idProducao: this.state.idProducao,
             createdBy: parseInt(localStorage.getItem('idUsuario')),

@@ -49,7 +49,7 @@ export default class NovaProducao extends Component{
                 createdBy: parseInt(localStorage.getItem('idUsuario')) 
             })
             .then(async res => {
-                api.post('/producao-itens', { //cria registro na tabela producao-itens
+                await api.post('/producao-itens', { //cria registro na tabela producao-itens
                     idProducao: res.data.id,
                     codigo: this.state.codigo,
                     createdBy: parseInt(localStorage.getItem('idUsuario')) 
@@ -66,7 +66,7 @@ export default class NovaProducao extends Component{
                 alert(error.response.data.err)
             })
         } else {
-            api.post('/producao-itens', { // se ja houver uma producao criada, ele cria registro na tabela producao-itens
+            await api.post('/producao-itens', { // se ja houver uma producao criada, ele cria registro na tabela producao-itens
                 idProducao: this.state.idProducao,
                 codigo: this.state.codigo,
                 createdBy: parseInt(localStorage.getItem('idUsuario')) 
@@ -177,7 +177,7 @@ export default class NovaProducao extends Component{
         } else if ( !this.state.tabela.length){
             alert("Nenhum palete selecionado")
         } else {
-            api.put('/producoes', {
+            await api.put('/producoes', {
                 id: this.state.idProducao,
                 updatedBy: parseInt(localStorage.getItem('idUsuario')),
                 status: "2"
@@ -206,7 +206,7 @@ export default class NovaProducao extends Component{
 
         let options = [<option key = {0} value = ""></option>]
 
-        api.get(`/equipment`)
+        await api.get(`/equipment`)
         .then(async response => {
             response.data.map(dados => options.push(
                 <option key = {dados.id} value = {dados.id}>{dados.nome}</option>
@@ -287,7 +287,7 @@ export default class NovaProducao extends Component{
 
                         </MDBContainer>
                         
-                        <MDBBtn color="danger" rounded className="float-left" onClick = {() => window.history.back()}>cancelar</MDBBtn>
+                        <MDBBtn color="danger" rounded className="float-left" onClick = {() => window.open("/producao", "_self")}>cancelar</MDBBtn>
                         <MDBBtn color="mdb-color" rounded className="float-right" onClick={this.handleNextPrevClick(1)(2)} >next</MDBBtn>
                     </MDBCol>)}
 

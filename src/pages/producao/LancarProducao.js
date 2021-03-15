@@ -17,7 +17,7 @@ export default class LancarProducao extends Component{
 
     onSubmitLancarProducao = async (event) => {
         event.preventDefault()
-        api.put('/producoes', {
+        await api.put('/producoes', {
             id: this.state.idProducao,
             status: "3",
             quantidadeIntegral: this.state.integral, 
@@ -32,7 +32,7 @@ export default class LancarProducao extends Component{
     }
 
     async componentDidMount() {
-        api.get(`/producoes/${this.state.idProducao}`)
+        await api.get(`/producoes/${this.state.idProducao}`)
         .then( async (response) => {
             console.log(response.data)
             if ( response.data ) {

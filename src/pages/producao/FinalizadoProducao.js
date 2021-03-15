@@ -13,7 +13,7 @@ export default class FinalizadoProducao extends Component{
 
     onSubmitLancarProducao = async (event) => {
         event.preventDefault()
-        api.put('/producoes', {
+        await api.put('/producoes', {
             id: this.state.idProducao,
             status: "3",
             quantidadeIntegral: this.state.integral, 
@@ -28,7 +28,7 @@ export default class FinalizadoProducao extends Component{
     }
 
     async componentDidMount() {
-        api.get(`/producoes/${this.state.idProducao}`)
+        await api.get(`/producoes/${this.state.idProducao}`)
         .then( async (response) => {
             console.log(response.data)
             if ( response.data ) {
@@ -52,8 +52,9 @@ export default class FinalizadoProducao extends Component{
                         </MDBRow>
                     })
                 } else if ( response.data.status === "4" ) {
-                    api.get(`/devolucoes/producao/${this.state.idProducao}`)
+                    await api.get(`/devolucoes/producao/${this.state.idProducao}`)
                     .then(async response => {
+                        console.log(response.data)
                         this.setState({fim:
                             <h4 className = "text-center" ><strong>Peso dos paletes:</strong>{" " + response.data.pesoTotal + " kg"}</h4>
                         })
