@@ -33,7 +33,7 @@ export default class Login extends  Component{
                 localStorage.setItem("idUsuario", response.data.id);
                 const url = document.referrer.split('/')[3]
 
-                if (url === "" || url === "login") {
+                if (url === undefined || url === "login") {
                     window.open(`/home`, '_self')
                 } else {
                     window.open(`/${document.referrer.split('/')[3]}`, '_self')
