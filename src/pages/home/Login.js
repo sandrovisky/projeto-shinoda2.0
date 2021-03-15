@@ -20,12 +20,24 @@ export default class Login extends  Component{
                 localStorage.setItem("auth", "true")
                 localStorage.setItem("usuario", "admin")                
                 localStorage.setItem("idUsuario", 9999);
-                window.open.history.go(-1);
+                const url = document.referrer.split('/')[3]
+                
+                if (url === "" || url === "login") {
+                    window.open(`/home`, '_self')
+                } else {
+                    window.open(`/${document.referrer.split('/')[3]}`, '_self')
+                }
             } else if ( response.data ) {
                 localStorage.setItem("auth", "true");
                 localStorage.setItem("usuario", response.data.usuario);
                 localStorage.setItem("idUsuario", response.data.id);
-                window.history.go(-1);
+                const url = document.referrer.split('/')[3]
+
+                if (url === "" || url === "login") {
+                    window.open(`/home`, '_self')
+                } else {
+                    window.open(`/${document.referrer.split('/')[3]}`, '_self')
+                }
             } else {
                 alert("Usuario ou senha invalidos") 
             }
