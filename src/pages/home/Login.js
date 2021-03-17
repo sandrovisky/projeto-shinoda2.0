@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { MDBCol, MDBContainer, MDBInput, MDBRow, MDBBtn } from 'mdbreact'
-import api from '../../services/api'
+
+import * as Auth from '../../services/auth'
 
 export default class Login extends  Component{
 
@@ -10,38 +11,8 @@ export default class Login extends  Component{
     }
 
     onSubmit= async (e) => {
-
         e.preventDefault()
-        this.setState({ver: false})
-        
-        await api.get(`/users/login/${this.state.usuario}/${this.state.senha}`)
-        .then(async response => {
-            if (this.state.usuario === "admin" && this.state.senha === "admin") {
-                localStorage.setItem("auth", "true")
-                localStorage.setItem("usuario", "admin")                
-                localStorage.setItem("idUsuario", 9999);
-                const url = document.referrer.split('/')[3]
-                
-                if (url === "" || url === "login") {
-                    window.open(`/home`, '_self')
-                } else {
-                    window.open(`/${document.referrer.split('/')[3]}`, '_self')
-                }
-            } else if ( response.data ) {
-                localStorage.setItem("auth", "true");
-                localStorage.setItem("usuario", response.data.usuario);
-                localStorage.setItem("idUsuario", response.data.id);
-                const url = document.referrer.split('/')[3]
-
-                if (url === undefined || url === "login") {
-                    window.open(`/home`, '_self')
-                } else {
-                    window.open(`/${document.referrer.split('/')[3]}`, '_self')
-                }
-            } else {
-                alert("Usuario ou senha invalidos") 
-            }
-        })  
+        await Auth.Login(this.state.usuario, this.state.senha)        
     }
 
     onHandleChange = (e) => {

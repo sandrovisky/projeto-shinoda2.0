@@ -99,7 +99,7 @@ export default class FinalizadoProducao extends Component{
 
                         <MDBRow className="justify-content-center">
 
-                            <MDBCol xl = "4" lg = "4" md = "8" >   
+                            <MDBCol xl = "4" lg = "4 m"d = "8" >   
                                 <MDBInput onFocus = {(e) => e.target.autocomplete = "off"} disabled required label="Peso do Integral" value = {this.state.integral} name = "integral" onChange = {this.onHandleChange}/>
                             </MDBCol>
 

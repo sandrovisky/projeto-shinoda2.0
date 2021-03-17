@@ -204,7 +204,7 @@ export default class DatatablePage extends Component{
 
 
         //obtendo os dados dos produtos
-        const products =  await api.get('/products');
+        const products =  await api.get('/products')
 
         let rows = []
 

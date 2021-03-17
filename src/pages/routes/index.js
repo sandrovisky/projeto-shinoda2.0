@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { Route, BrowserRouter as Router, Switch, Redirect } from 'react-router-dom'
 
+import { isAuthenticated } from '../../services/auth'
+
 import Home from '../home/Home'
 
 import Producao from '../producao/Producao'
@@ -27,21 +29,18 @@ import Login from '../home/Login'
 
 export default class Routes extends Component {
 
-    state = {
-        auth: localStorage.getItem("auth") ? localStorage.getItem("auth") : "false"
-    }
-
     onHandleChange = event => {
         this.setState({[event.target.name]: event.target.value})
     }
     
     render () {
-
-        if (this.state.auth === "false") {
+        if (isAuthenticated()) {
             return (
                 <div>                    
                     <Router>
+
                         <Redirect to = "/login" />
+                        
                         <Switch>  
 
                             <Route path = '/' component = {Login} />
