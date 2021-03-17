@@ -60,25 +60,35 @@ export default class TabelaEntrada extends Component{
     async componentDidMount() {
         let rows = []
         await api.get(`/lotes`)
-        .then(async response => {await response.data.map(dados => {
-            rows.push({
-            id: dados.analysis === null ? "" : dados.analysis.id,
-            nf: dados.moveitens.move.nf,
-            dataEntrada: dados.moveitens.move.createdAt,
-            fornecedor: dados.moveitens.move.supplier.nomeFantasia,
-            lote: dados.lote,
-            quantidadePaletes: dados.moveitensvolume.length,
-            action:  (dados.analysis === null) ? 
-                (<MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="primary">Coletar</MDBBtn>) : 
-                (dados.analysis.status === "1" ? <MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="warning">Lançar</MDBBtn> : 
-                <MDBBtn onClick={() => window.open(`/laboratorio/finalizado/${dados.id}`, '_self')} color="success">Finalizado</MDBBtn> )        
-            })
-        })}) 
-        this.setState(prevState => {
-            let data = Object.assign({}, prevState.data); 
-            data.rows = rows;                            
-            return { data };                      
-        })
+        .then(async response => {
+            if ( response.data ) {
+                response.data.map(dados => {
+                    console.log(dados)
+                    if (dados.moveitens.move.status !== "1" ) {
+                        
+                        
+                        rows.push({
+                            id: dados.analysis === null ? "" : dados.analysis.id,
+                            nf: dados.moveitens.move.nf,
+                            dataEntrada: dados.moveitens.move.createdAt,
+                            fornecedor: dados.moveitens.move.supplier.nomeFantasia,
+                            lote: dados.lote,
+                            quantidadePaletes: dados.moveitensvolume.length,
+                            action:  (dados.analysis === null) ? 
+                                (<MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="primary">Coletar</MDBBtn>) : 
+                                (dados.analysis.status === "1" ? <MDBBtn onClick={() =>window.open(`/laboratorio/coletar/${dados.id}`, '_self')} color="warning">Lançar</MDBBtn> : 
+                                <MDBBtn onClick={() => window.open(`/laboratorio/finalizado/${dados.id}`, '_self')} color="success">Finalizado</MDBBtn> )        
+                        })
+                    }
+                })
+                this.setState(prevState => {
+                    let data = Object.assign({}, prevState.data); 
+                    data.rows = rows;                            
+                    return { data };                      
+                })                
+            }            
+        }) 
+        
     }
 
     handleSubmit = async (event) => {

@@ -17,8 +17,10 @@ class App extends React.Component {
     }    
 
     handleOnIdle (event) {
-        if (localStorage.getItem("auth") === "true") {
-            localStorage.setItem("auth", "false")
+        if (localStorage.getItem("token")) {
+            localStorage.removeItem("token")            
+            const url = document.referrer.split('/')[3]
+            localStorage.setItem("url",url)
             alert("Sessão expirada")
             window.location.reload()
         }        

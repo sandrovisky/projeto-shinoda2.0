@@ -4,14 +4,11 @@ export const  Login = async (usuario, senha) => {
     console.log(usuario, " ", senha)
 
     if (usuario === "admin" && senha === "admin") {
-        localStorage.setItem("token", true)
-        const url = document.referrer.split('/')[3]
-        
-        if (url === "" || url === "login") {
-            window.open(`/home`, '_self')
+        localStorage.setItem("token", true)        
+        if (localStorage.getItem("url") === "login" || localStorage.getItem("url") === undefined) {
+            return window.open(`/home`, '_self')
         } else {
-            window.history.go(-2)
-            window.location.reload()
+            return window.open(`/${localStorage.getItem("url")}`, '_self')
         }
     }
 
@@ -19,17 +16,13 @@ export const  Login = async (usuario, senha) => {
         usuario: usuario,
         senhaHash: senha
     })
-    .then(async response => {
-        console.log(response)        
+    .then(async response => {      
         if ( response.data ) {
             localStorage.setItem("token", response.data.token)
-            const url = document.referrer.split('/')[3]
-
-            if (url === undefined || url === "login") {
+            if (localStorage.getItem("url") === undefined || localStorage.getItem("url") === "login") {
                 window.open(`/home`, '_self')
             } else {
-                window.history.go(-2)
-                
+                window.open(`/${localStorage.getItem("url")}`, '_self')
             }
         }
     })
@@ -42,7 +35,9 @@ export const isAuthenticated = () => {
     return  localStorage.getItem("token") === null
 }
 
-export const Logout = async () => {
+export const Logout = async () => {                
+    const url = document.referrer.split('/')[3]
+    localStorage.setItem("url",url)
     await localStorage.removeItem("token")
     window.location.reload()
 }
