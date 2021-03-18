@@ -1,7 +1,6 @@
 import api from './api'
 
 export const  Login = async (usuario, senha) => {
-    console.log(usuario, " ", senha)
 
     if (usuario === "admin" && senha === "admin") {
         localStorage.setItem("token", true)        

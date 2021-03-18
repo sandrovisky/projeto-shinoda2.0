@@ -67,7 +67,7 @@ export default class LancarProducao extends Component{
     render(){
 
         if (this.state.redirecionar) {
-            return window.open("/producao", "_self")
+            return <Redirect push to = '/producao' />
         }
         
         return (

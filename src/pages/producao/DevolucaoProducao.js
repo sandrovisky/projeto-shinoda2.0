@@ -55,7 +55,6 @@ export default class DevolucaoProducao extends Component{
         await api.post(`/devolucoes`, {
             pesoTotal: this.state.peso,
             idProducao: this.state.idProducao,
-            createdBy: parseInt(localStorage.getItem('idUsuario')),
         })
         .then(async response => {
             console.log(response)

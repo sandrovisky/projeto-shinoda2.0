@@ -122,7 +122,6 @@ class PrintThisComponent extends Component {
             quantidadeGema: this.state.pesoGema,
             quantidadeCasca: this.state.pesoCasca,
             quantidadeClara: this.state.pesoClara,
-            createdBy: 1,
         })
         .then((response) => {
             console.log(response.data)
@@ -258,7 +257,7 @@ class PrintThisComponent extends Component {
             
         </div>
     )
-  }
+    }
 }
 
 export default PrintThisComponent

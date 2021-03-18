@@ -16,12 +16,12 @@ class App extends React.Component {
         this.handleOnIdle = this.handleOnIdle.bind(this)
     }    
 
-    handleOnIdle (event) {
+    async handleOnIdle (event) {
         if (localStorage.getItem("token")) {
-            localStorage.removeItem("token")            
+            await localStorage.removeItem("token")            
             const url = document.referrer.split('/')[3]
-            localStorage.setItem("url",url)
-            alert("Sessão expirada")
+            await localStorage.setItem("url",url)
+            await alert("Sessão expirada")
             window.location.reload()
         }        
     }

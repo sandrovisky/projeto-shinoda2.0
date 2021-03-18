@@ -112,10 +112,7 @@ export default class FinalizadoProducao extends Component{
                             </MDBCol>
 
                         </MDBRow>
-
-                        {this.state.fim}
-
-                        
+                        {this.state.fim}                     
 
                     </form>                            
                 </MDBContainer>

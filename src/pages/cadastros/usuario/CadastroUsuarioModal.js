@@ -70,7 +70,7 @@ export default class Modal extends Component {
         }else {
             await api.post('/users', {
                 usuario: this.state.usuario,
-                senha: this.state.senha
+                senhaSemHash: this.state.senha
             })
             .then(async function () {
                 alert('Cadastrado com sucesso');
