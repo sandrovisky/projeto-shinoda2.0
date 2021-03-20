@@ -40,7 +40,7 @@ export default class Producao extends Component{
         //manipulando os dados que preencherão a tabela
         products.data.map(dados => rows.push({
             id: dados.id,
-            status: dados.status === "1" ? "Em digitação": dados.status === "2" ? "Em produção" : dados.status === "3" ? "Pesasem dos paletes": "Finalizado",
+            status: dados.status === "1" ? "Em digitação": dados.status === "2" ? "Em produção" : dados.status === "3" ? "Pesagem dos paletes": "Finalizado",
             action: dados.status === "1" ? 
                 <Link to = {`/producao/novo/${dados.id}`} >
                     <MDBBtn color = "primary" > Continuar </MDBBtn>

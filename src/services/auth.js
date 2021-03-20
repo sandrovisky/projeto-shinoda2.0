@@ -10,8 +10,7 @@ export const  Login = async (usuario, senha) => {
             return window.open(`/${localStorage.getItem("url")}`, '_self')
         }
     }
-
-    alert()
+    
     await api.post(`/login`,{
         usuario: usuario,
         senhaHash: senha
