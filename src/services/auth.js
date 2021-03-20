@@ -10,12 +10,13 @@ export const  Login = async (usuario, senha) => {
             return window.open(`/${localStorage.getItem("url")}`, '_self')
         }
     }
-
+    
     await api.post(`/login`,{
         usuario: usuario,
         senhaHash: senha
     })
-    .then(async response => {      
+    .then(async response => {    
+        console.log(response.data)  
         if ( response.data ) {
             localStorage.setItem("token", response.data.token)
             if (localStorage.getItem("url") === undefined || localStorage.getItem("url") === "login") {

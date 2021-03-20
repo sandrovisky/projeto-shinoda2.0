@@ -65,7 +65,7 @@ export default class Navbar extends Component {
             }           
         })
         .catch(async error => {
-            Logout()
+            localStorage.removeItem("token")
         })      
     }
 
