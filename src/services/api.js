@@ -3,7 +3,7 @@ import axios from 'axios'
 const api = axios.create({
     //http://localhost:3333
     //https://api-shinoda.herokuapp.com
-    baseURL: "http://localhost:3333"
+    baseURL: "https://api-shinoda.herokuapp.com"
 })
 
 api.interceptors.request.use(async config => {
