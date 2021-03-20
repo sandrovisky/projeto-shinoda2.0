@@ -65,15 +65,7 @@ export default class Navbar extends Component {
             }           
         })
         .catch(async error => {
-            if (!isAuthenticated()){
-                return this.setState({logged: [
-                    <MDBNavLink onClick = {() => Logout()} key = "1" to = "">
-                        Usuario: Admin
-                        {" "}<MDBIcon  icon="sign-in-alt" />
-                    </MDBNavLink> 
-                ]})
-            }
-            
+            Logout()
         })      
     }
 
