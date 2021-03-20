@@ -58,7 +58,7 @@ export default class Navbar extends Component {
             if( response.data ) {
                 return this.setState({logged: [
                     <MDBNavLink onClick = {() => Logout()} key = "1" to = "">
-                        Usuario: {response.data.usuario}
+                        Usuario: {(response.data.usuario).trim().replace(/^\w/, (c) => c.toUpperCase())}
                         {" "}<MDBIcon  icon="sign-in-alt" />
                     </MDBNavLink>
                 ]})
